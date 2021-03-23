@@ -1,11 +1,17 @@
-function [r1] = getR1FromSchroedingerEquation(B0,theta,phi,r3,deltaT)
+function [r1WithSchroedingerEquation] = ...
+    calculateR1WithSchroedingerEquation(theta,phi ...
+    ,nearestNeighbourDistancesPow3,deltaT,path2ConstantsFile)
+
 
 %% Define Constants
-Nm = 10^-9;                               % [m] - trajectory format
-hbar = 1.054571628e-34;                   % [Js]
-gammaRad = 2.675222099e8;                 % [rad/Ts]
-mu0 = 4*pi*1e-7;                          % [N/A^2] Vacuum permeability
-w0 = gammaRad*B0;                         % [rad/s]: Larmor (anglular) frequency
+constants = readConstantsFile(path2ConstantsFile);
+
+Nm = constants.Nm;
+hbar = constants.hbar;
+gammaRad = constants.gammaRad;
+B0 = constants.B0;
+mu0 = constants.mu0;
+w0 = gammaRad*B0;
 alpha = mu0/(4*pi)*gammaRad^2*hbar^2/Nm^3;
 
 %% Define Simulation Paramter
@@ -43,12 +49,12 @@ E = -(3/4)*(secondSpinCreation*firstSpinCreation);
 F = -(3/4)*(secondSpinAnnihilation*firstSpinAnnihilation);
 
 % Spherical Harmonics
-SH_A = (1-3*cos(theta).^2)./r3;
-SH_B = (1-3*cos(theta).^2)./r3;
-SH_C = sin(theta).*cos(theta).*exp(-1i*phi)./r3;
-SH_D = sin(theta).*cos(theta).*exp(1i*phi)./r3;
-SH_E = sin(theta).^2.*exp(-2i*phi)./r3;
-SH_F = sin(theta).^2.*exp(2i*phi)./r3;
+SH_A = (1-3*cos(theta).^2)./nearestNeighbourDistancesPow3;
+SH_B = (1-3*cos(theta).^2)./nearestNeighbourDistancesPow3;
+SH_C = sin(theta).*cos(theta).*exp(-1i*phi)./nearestNeighbourDistancesPow3;
+SH_D = sin(theta).*cos(theta).*exp(1i*phi)./nearestNeighbourDistancesPow3;
+SH_E = sin(theta).^2.*exp(-2i*phi)./nearestNeighbourDistancesPow3;
+SH_F = sin(theta).^2.*exp(2i*phi)./nearestNeighbourDistancesPow3;
 
 % Possible states
 psi_pp=kron([1 0],[1 0])';
@@ -67,6 +73,7 @@ transitionProbabilities_mm2mp=zeros(numberOfTimeSteps,1);
 transitionProbabilities_mm2pp=zeros(numberOfTimeSteps,1);
 
 %% Simulation of interacting particles
+r1 = zeros(1,numberOfHs);
 for atomNumber = 1:numberOfHs
     
     disp(['Solve Schroedinger Equation for Atom Number ' ...
@@ -102,22 +109,24 @@ for atomNumber = 1:numberOfHs
             /(deltaT*timeStep);
         transitionRates_mm2pp(timeStep) = abs(dot(psi,psi_pp))^2 ...
             /(deltaT*timeStep);
-        
     end
     
     %R1 = 2*W_(singleFlip)+2*W_(doubleFlip)
     r1(atomNumber) = transitionRates_mm2pm(end) ...
         +transitionRates_mm2mp(end)+2*transitionRates_mm2pp(end);
-    
-    
-end
 end
 
-        %% Runge Kutta-------
-        %         k1=SG(Psi,H_IP);
-        %         k2=SG(Psi+k1*DeltaT/2,H_IP);
-        %         k3=SG(Psi+k2*DeltaT/2,H_IP);
-        %         k4=SG(Psi+k3*DeltaT,H_IP);
-        %         Psi=Psi+1/6*(k1+2*k2+2*k3+k4)*DeltaT;
-        %         Psi=Psi/norm(Psi);
-        %%---------------------------
+r1WithSchroedingerEquation = sum(r1);
+
+end
+
+%% Runge Kutta-------
+%         k1=SG(Psi,H_IP);
+%         k2=SG(Psi+k1*DeltaT/2,H_IP);
+%         k3=SG(Psi+k2*DeltaT/2,H_IP);
+%         k4=SG(Psi+k3*DeltaT,H_IP);
+%         Psi=Psi+1/6*(k1+2*k2+2*k3+k4)*DeltaT;
+%         Psi=Psi/norm(Psi);
+%%---------------------------
+
+

@@ -1,0 +1,5 @@
+Molecule: 20.000000, Mean R1: 
+   PerturbationTheory: 5.747816 
+    Schroedinger Equation: 5.726304Molecule: 1.000000, Mean R1: 
+   PerturbationTheory: 8.015769 
+   Schroedinger Equation: 7.647367
