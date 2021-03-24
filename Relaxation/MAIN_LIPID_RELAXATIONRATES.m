@@ -1,5 +1,5 @@
 %% load configuration
-addpath('library')
+addpath('C:\Users\maxoe\Google Drive\Promotion\Code\library')
 configuration = readConfigurationFile('config.conf');
 
 loaded = configuration.dataLoaded;
@@ -125,7 +125,8 @@ for atomNumber=1:numberOfHs
         ,conj(F2),lags-1);
  
     % Szabo Fit
-    
+    j1 = 2*Get_J_Lipari_Szabo(correlationFunction1,1*omega0,deltaT ...
+        ,timeSteps);
     
     
     [w1,w2] = calculateSpectralDensities(correlationFunction1, ...

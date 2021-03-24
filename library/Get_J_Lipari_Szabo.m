@@ -1,6 +1,5 @@
 function [jw] = Get_J_Lipari_Szabo(COR,omega,DeltaT,Steps)
 
-
 ps=1e-12;
 [Np,lags]=size(COR);
 Time=(0:lags-1)';
