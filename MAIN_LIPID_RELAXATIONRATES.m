@@ -124,6 +124,10 @@ for atomNumber=1:numberOfHs
     correlationFunction2 = calculateCrossCorrelationFunction(F2 ...
         ,conj(F2),lags-1);
  
+    % Szabo Fit
+    
+    
+    
     [w1,w2] = calculateSpectralDensities(correlationFunction1, ...
         correlationFunction2,omega0,deltaT,lags);
     

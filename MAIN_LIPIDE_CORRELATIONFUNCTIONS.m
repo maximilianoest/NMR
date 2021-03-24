@@ -199,7 +199,11 @@ normCorrelation(1,:) = squeeze(meanCorrelation(1,:)) ...
 normCorrelation(2,:) = squeeze(meanCorrelation(2,:)) ...
     /(meanCorrelation(2,1));
 
-save(path2Save,'meanCorrelation','normCorrelation');
+save(path2Save,'meanCorrelation','normCorrelation','correlation');
+fileId = fopen('outputLog.txt','a');
+fprintf(fileId, ['finished' LIPID]);
+fclose(fileId);
+
 if ~runOnServer
     timeAxis = 0:deltaT:(lags-1)*deltaT;
     figure('Name','Correlation Functions') 
@@ -213,136 +217,6 @@ if ~runOnServer
     title(['Correlation Function of ',LIPID])
     axis([0 timeAxis(end) 0 0.5])
 end
-
- %% Start simulation
-% 
-% r1SpectralDensity = zeros(1,numberOfHs);
-% r1SchroedingerEquation = zeros(1,numberOfHs);
-% 
-% meanR1SpectralDensity = zeros(1,numberOfHs);
-% meanR1SchroedingerEquation = zeros(1,numberOfHs);
-% 
-% meanPositions = zeros(numberOfHs,3);
-% 
-% molecules=1:numberOfHs;
-% %molecules=molecules(randperm(length(molecules)));
-% 
-% figure('Name','Relaxation Rates')
-% 
-% for atomNumber=1:numberOfHs
-%     tic
-%     
-%     % positions of obeserved H in world coordinate system
-%     xPosition = trajX(molecules(atomNumber),:);
-%     yPosition = trajY(molecules(atomNumber),:);
-%     zPosition = trajZ(molecules(atomNumber),:);
-%     
-% %     % mean position of oberserved H in time
-% %     meanPositions(moleculeNr,:)=[mean(xPosition) ...
-% %         ,mean(yPosition),mean(zPosition)];
-%     
-%     % positions of other particles relative to observed H
-%     relativeXPositions = bsxfun(@minus,trajX,xPosition);
-%     relativeYPositions = bsxfun(@minus,trajY,yPosition);
-%     relativeZPositions = bsxfun(@minus,trajZ,zPosition);
-%     distance = sqrt(relativeXPositions.^2+relativeYPositions.^2 ... 
-%         +relativeZPositions.^2);
-%     
-%     % Find the n nearest neighbours 
-%     inverseMeanDistance = 1./mean(distance,2);
-%     [~,indx,~] = findNearestNeighbours(inverseMeanDistance...
-%         ,nearestNeighbours+1);
-%     id = false(size(inverseMeanDistance));
-%     id(indx) = true;
-%     id(molecules(atomNumber)) = false;
-% 
-%     nearestNeighboursX = relativeXPositions(id,:);
-%     nearestNeighboursY = relativeYPositions(id,:);
-%     nearestNeighboursZ = relativeZPositions(id,:);
-%     nearestNeighbourDistancesPow3 = distance(id,:).^3;    
-% 
-%     % cartesian to spherical coordinates
-%     hypotuseXY = hypot(nearestNeighboursX,nearestNeighboursY);
-%     theta =pi/2-atan2(nearestNeighboursZ,hypotuseXY);
-%     phi = atan2(nearestNeighboursY,nearestNeighboursX);
-%         
-%     SIN = sin(theta);
-%     COS = cos(theta);
-%          
-%     % spherical harmonics
-%     F1 = SIN.*COS.*exp(-1i*phi)./nearestNeighbourDistancesPow3;
-%     F2 = SIN.^2.*exp(-2i*phi)./nearestNeighbourDistancesPow3;
-%         
-%     % correlation functions
-%     correlationFunction1 = crosscorrelationOverMultipleDimensions(F1 ...
-%         ,conj(F1),lags-1);
-%     correlationFunction2 = crosscorrelationOverMultipleDimensions(F2 ... 
-%         ,conj(F2),lags-1);
-%     
-%     % spectral densities
-%     w1 = 2*(deltaT*cumsum(sum(correlationFunction1) ... 
-%         .*exp(-1i*omega0*deltaT*(0:lags-1))))  ;
-%     w2 = 2*(deltaT*cumsum(sum(correlationFunction2) ...
-%         .*exp(-2i*omega0*deltaT*(0:lags-1))))  ;
-%     
-%     % calculate relaxation rate by using spectral density
-%     r1SpectralDensity(atomNumber) = DD*3/2*(abs(real(mean(w1(lags:end)))) ... 
-%         +abs(real(mean(w2(lags:end)))));
-%     meanR1SpectralDensity(atomNumber) = mean(r1SpectralDensity( ...
-%         1:atomNumber));
-%     
-%     % calculate relaxation rate by solving Schroedingers Equation
-%     if calculateSchroedingerEquation
-%         cur_R1SchroedingerEquation = getR1FromSchroedingerEquation(B0 ...
-%             ,theta,phi,nearestNeighbourDistancesPow3,deltaT);
-%         r1SchroedingerEquation(atomNumber) = ...
-%             sum(cur_R1SchroedingerEquation);
-%         meanR1SchroedingerEquation(atomNumber) = ...
-%             mean(r1SchroedingerEquation(1:atomNumber));
-%     end
-%     
-%     disp(sprintf('Molecule %i, Mean R1:',atomNumber))
-%     disp(sprintf('  spectral density: %f',mean(r1SpectralDensity)))
-%     if calculateSchroedingerEquation
-%         disp(sprintf('  schroedinger equation: %f' ...
-%             ,meanR1SchroedingerEquation))
-%     end
-%     
-% %     SumCor1(moleculeNr,:)=sum(correlationFunction1);
-% %     SumCor2(moleculeNr,:)=sum(correlationFunction2);
-%     
-%     plot(r1SpectralDensity(1:atomNumber),'b','LineWidth',1.5)
-%     hold on
-%     plot(meanR1SpectralDensity(1:atomNumber),'--g','LineWidth',1.5)
-%     if calculateSchroedingerEquation
-%         plot(r1SchroedingerEquation(1:atomNumber),'r','LineWidth',1.5)
-%         plot(meanR1SchroedingerEquation(1:atomNumber),'--y','LineWidth',1.5)
-%         legend('Spectral density','Mean Spectral Density' ...
-%             ,'Schroedinger Equation','Mean Schroedinger Equ.');
-%     else
-%         legend('Spectral density','Mean Spectral Density');
-%     end
-%     title('Relaxation Rate R1')
-%     xlabel('Epoches')
-%     ylabel('R1 [Hz]')
-%     grid on
-%     drawnow
-%     hold off
-%     
-%     if mod(atomNumber,20)==0
-%         if calculateSchroedingerEquation
-%          save(Path2Save ,'meanR1SpectralDensity' ...
-%              ,'meanr1SchroedingerEquation','MeanPositions','DeltaT' ...
-%              ,'timeSteps','lags','numberOfHs','B0')
-%         else
-%             save(Path2Save ,'meanR1SpectralDensity' ...
-%              ,'MeanPositions','DeltaT','timeSteps','lags','numberOfHs' ...
-%              ,'B0')
-%         end
-%     end
-%     
-% end
-
 
 
     
