@@ -1,15 +1,14 @@
-function [jw] = Get_J_Lipari_Szabo(COR,omega,DeltaT,Steps)
+function [jw] = Get_J_Lipari_Szabo(COR,omega,DeltaT,Steps,picoSecond)
 
-ps=1e-12;
-[Np,lags]=size(COR);
-Time=(0:lags-1)';
+[Np,lags] = size(COR);
+Time = (0:lags-1)';
 
-lim1=3500*ps/(Steps*DeltaT);
-lim2=40000*ps/(Steps*DeltaT);
-lim2=0.8;
+lim1 = 3500*picoSecond/(Steps*DeltaT);
+lim2 = 40000*picoSecond/(Steps*DeltaT);
+lim2 = 0.8;
 
-Lipari1=@ (b,x)   b(1)^2*exp(-x/b(3)) +b(2) ;
-Lipari2=@ (b,x)   (1-b(1)^2)*exp(-x/b(2))+b(1)^2*exp(-x/b(3)) ;
+Lipari1 = @ (b,x)   b(1)^2*exp(-x/b(3)) +b(2) ;
+Lipari2 = @ (b,x)   (1-b(1)^2)*exp(-x/b(2))+b(1)^2*exp(-x/b(3)) ;
 
 opts = optimset('Display','off');
 for ii=1:Np
@@ -17,19 +16,24 @@ for ii=1:Np
 
     p1=lsqcurvefit( Lipari1, [1,200,0], Time(1:1:round(lim1*lags)) ...
         ,F(1:1:round(lim1*lags)),[0 0 20],[1 1 600],opts); %perform fit
-%    Fit1= p1(1)^2*exp(-Time(1:round(0.1*lags))/p1(3))+p1(2);
+    Fit1= p1(1)^2*exp(-Time(1:round(0.1*lags))/p1(3))+p1(2);
     
     p2=lsqcurvefit( Lipari2, [0.7,5000,p1(3)] ...
         , Time(1:4:round(lim2*lags)),F(1:4:round(lim2*lags)) ...
         ,[0 100 0.8*p1(3)],[1 2000000 1.2*p1(3)],opts); %perform fit
     Fit2=(1-p2(1)^2)*exp(-Time/p2(2))+p2(1)^2*exp(-Time/p2(3));
     
+%     plot(abs(real(Fit1)))
+%     hold on
+%     plot(abs(real(F)),'x')
+%     hold off
+%     pause(0.2)
     
-    plot(Fit2)
-    hold on
-    plot(F(1:round(lim2*lags)))
-    hold off
-    pause(0.2)
+%     plot(real(Fit2))
+%     hold on
+%     plot(real(F(1:round(lim2*lags))))
+%     hold off
+%     pause(0.2)
     
     
     Amp=p2(1);

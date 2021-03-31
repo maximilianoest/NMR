@@ -58,7 +58,6 @@ calculateSchroedingerEquation = configuration.calculateSchroedingerEquation;
 path2ConstantsFile = configuration.path2ConstantsFile;
 path2Save = [configuration.path2Results fileName '_resultsCorrelationFunctions'];
 showFigures = configuration.showFigures;
-outputLogFileName = configuration.outputLogFileName;
 
 
 %% Define constants
@@ -97,10 +96,8 @@ if showFigures
 end
 
 for atomNumber=1:numberOfHs
-    fileId = fopen(outputLogFileName,'a');
-    fprintf(fileId,['========================== \n' ...
-        ,'  Atom Number: %d \n'],atomNumber);
-    fclose(fileId);
+    tic
+    disp(['================' )'Atom Number: ' num2str(atomNumber)])
     meanPositions(atomNumber,:) = [mean(trajX(atomNumber,:)) ...
         ,mean(trajY(atomNumber,:)),mean(trajZ(atomNumber,:))];
     
@@ -125,9 +122,9 @@ for atomNumber=1:numberOfHs
         ,conj(F2),lags-1);
     
     spectralDensityLiSz1 = estimateSpectralDensityWithLipariSzaboFit( ...
-        correlationFunction1,1*omega0,deltaT,outputLogFileName);
+        correlationFunction1,1*omega0,deltaT);
     spectralDensityLiSz2 = estimateSpectralDensityWithLipariSzaboFit( ...
-        correlationFunction2,2*omega0,deltaT,outputLogFileName);
+        correlationFunction2,2*omega0,deltaT);
     
     [spectralDensity1,spectralDensity2] = calculateSpectralDensities( ...
         correlationFunction1,correlationFunction2,omega0,deltaT,lags);
@@ -151,6 +148,16 @@ for atomNumber=1:numberOfHs
         meanR1WithSchroedingerEquation(atomNumber) = ...
             mean(r1WithSchroedingerEquation(1:atomNumber));
     end
+    
+    fileId = fopen('outputRelaxationsRates.txt','a');
+    fprintf(fileId,['Molecule: %d, Mean R1: \n' ...
+        ,'   PerturbationTheory: %f \n' ...
+        ,'   Lipari Szabo: %f \n' ...
+        ,'   Schroedinger Equation: %f \n'],[atomNumber, ...
+        meanR1WithPerturbationTheory(atomNumber) ...
+        ,meanR1WithLipariSzabo(atomNumber) ...
+        ,meanR1WithSchroedingerEquation(atomNumber)]);
+    fclose(fileId);
     
     if mod(atomNumber,20) == 0
         if calculateSchroedingerEquation
@@ -199,5 +206,6 @@ for atomNumber=1:numberOfHs
         drawnow
         hold off
     end
+    
 end
 
