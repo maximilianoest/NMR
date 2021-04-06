@@ -1,20 +1,31 @@
 function [spectralDensityLiSz] = ...
     estimateSpectralDensityWithLipariSzaboFit(correlationFunction,omega ...
-    ,deltaT,outputLogFileName)
+    ,deltaT,outputLogFileName,LIPID)
 
 [numberOfHs,lags] = size(correlationFunction);
 timeAxis = (0:lags-1)';
-
 spectralDensitysLiSz = zeros(1,numberOfHs);
+
+switch LIPID
+    case 'DOPS'
+        firstFitLimit = 0.01;
+        secondFitLimit = 0.8;
+    case 'PLPC'
+        firstFitLimit = 0.004;
+        secondFitLimit = 0.8;
+    case 'PSM'
+        firstFitLimit = 0.01;
+        secondFitLimit = 0.8;
+    otherwise
+        error('Unknown LIPID!');
+end
 
 firstEstimation = @(b,x) b(1)^2*exp(-x/b(3))+b(2);
 secondEstimation = @(b,x) (1-b(1)^2)*exp(-x/b(2))+b(1)^2*exp(-x/b(3));
-fileId = fopen(outputLogFileName,'a');
 
+fileId = fopen(outputLogFileName,'a');
 opts = optimset('Display','off');
 for atomNumber = 1:numberOfHs
-    firstFitLimit = 0.004; %1000*picoSecond/(timeSteps*deltaT); %3500
-    secondFitLimit = 0.8;
     normalizedCurve = (correlationFunction(atomNumber,:)') ...
         /correlationFunction(atomNumber,1);
     
@@ -63,6 +74,7 @@ for atomNumber = 1:numberOfHs
 %     firstFit = firstEstimationParameters(1)^2 ...
 %         *exp(-timeAxis(1:round(0.1*lags))/firstEstimationParameters(3)) ...
 %         +firstEstimationParameters(2);
+% 
 %     secondFit = (1-secondEstimationParameters(1)^2) ...
 %         *exp(-timeAxis/secondEstimationParameters(2)) ...
 %         +secondEstimationParameters(1)^2 ...
@@ -73,7 +85,7 @@ for atomNumber = 1:numberOfHs
 %     plot(real(normalizedCurve))
 %     hold off
 %     pause(0.2)
-%     
+    
 %     plot(abs(real(firstFit)))
 %     hold on
 %     plot(abs(real(normalizedCurve(1:round(0.1*lags)))),'x')

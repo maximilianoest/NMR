@@ -28,7 +28,7 @@ if not(loaded)
         case{'PSM'}
             fileName = configuration.fileNamePSM;
         otherwise
-            warining(['The lipid "' LIPID '" does not exist'])
+            warning(['The lipid "' LIPID '" does not exist'])
     end
     
     path2File = [path2Data fileName];
@@ -52,7 +52,7 @@ if not(loaded)
     trajZ = squeeze(lipidHydrogens(:,3,:));
 end
 %% Set Up
-clearvars -except  trajX trajY trajZ configuration fileName
+clearvars -except  trajX trajY trajZ configuration fileName LIPID
 
 calculateSchroedingerEquation = configuration.calculateSchroedingerEquation;
 path2ConstantsFile = configuration.path2ConstantsFile;
@@ -74,8 +74,8 @@ DD = 3/4*(mu0/(4*pi)*hbar*gammaRad^2 )^2/(Nm^6);    % J/rad
 omega0 = gammaRad*B0;                               % [rad/s]: Larmor (anglular) frequency
 
 %% Define simulation parameters
-[numberOfHs,timeSteps] = size(trajX);
-lags = round(configuration.fractionForLags*timeSteps);                      
+[numberOfHs,timeSteps] = size(trajX);     
+lags = round(configuration.fractionForLags*timeSteps);
 nearestNeighbours = configuration.nearestNeighbours;     
 
  %% Start simulation
@@ -125,9 +125,9 @@ for atomNumber=1:numberOfHs
         ,conj(F2),lags-1);
     
     spectralDensityLiSz1 = estimateSpectralDensityWithLipariSzaboFit( ...
-        correlationFunction1,1*omega0,deltaT,outputLogFileName);
+        correlationFunction1,1*omega0,deltaT,outputLogFileName,LIPID);
     spectralDensityLiSz2 = estimateSpectralDensityWithLipariSzaboFit( ...
-        correlationFunction2,2*omega0,deltaT,outputLogFileName);
+        correlationFunction2,2*omega0,deltaT,outputLogFileName,LIPID);
     
     [spectralDensity1,spectralDensity2] = calculateSpectralDensities( ...
         correlationFunction1,correlationFunction2,omega0,deltaT,lags);
