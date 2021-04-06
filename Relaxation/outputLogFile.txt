@@ -22,37 +22,16 @@
   Atom Number: 11 
 ========================== 
   Atom Number: 12 
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
 ========================== 
   Atom Number: 13 
 ========================== 
   Atom Number: 14 
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
 ========================== 
   Atom Number: 15 
 ========================== 
   Atom Number: 16 
 ========================== 
   Atom Number: 17 
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
 ========================== 
   Atom Number: 18 
 ========================== 
@@ -105,14 +84,6 @@ Error while fitting first estimation curve. Trying with lower second limit.
   Atom Number: 42 
 ========================== 
   Atom Number: 43 
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
 ========================== 
   Atom Number: 44 
 ========================== 
@@ -123,16 +94,6 @@ Error while fitting first estimation curve. Trying with lower second limit.
   Atom Number: 47 
 ========================== 
   Atom Number: 48 
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
 ========================== 
   Atom Number: 49 
 ========================== 
@@ -141,10 +102,6 @@ Error while fitting first estimation curve. Trying with lower second limit.
   Atom Number: 51 
 ========================== 
   Atom Number: 52 
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
 ========================== 
   Atom Number: 53 
 ========================== 
@@ -203,29 +160,12 @@ Error while fitting first estimation curve. Trying with lower second limit.
   Atom Number: 80 
 ========================== 
   Atom Number: 81 
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
 ========================== 
   Atom Number: 82 
 ========================== 
   Atom Number: 83 
 ========================== 
   Atom Number: 84 
-Error while fitting first estimation curve. Trying with lower second limit.
 ========================== 
   Atom Number: 85 
 ========================== 
@@ -242,7 +182,6 @@ Error while fitting first estimation curve. Trying with lower second limit.
   Atom Number: 91 
 ========================== 
   Atom Number: 92 
-Error while fitting first estimation curve. Trying with lower second limit.
 ========================== 
   Atom Number: 93 
 ========================== 
@@ -359,65 +298,3 @@ Error while fitting first estimation curve. Trying with lower second limit.
   Atom Number: 149 
 ========================== 
   Atom Number: 150 
-========================== 
-  Atom Number: 151 
-========================== 
-  Atom Number: 152 
-========================== 
-  Atom Number: 153 
-========================== 
-  Atom Number: 154 
-========================== 
-  Atom Number: 155 
-========================== 
-  Atom Number: 156 
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-========================== 
-  Atom Number: 157 
-========================== 
-  Atom Number: 158 
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-========================== 
-  Atom Number: 159 
-========================== 
-  Atom Number: 160 
-========================== 
-  Atom Number: 161 
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-========================== 
-  Atom Number: 162 
-========================== 
-  Atom Number: 163 
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.
-Error while fitting first estimation curve. Trying with lower second limit.

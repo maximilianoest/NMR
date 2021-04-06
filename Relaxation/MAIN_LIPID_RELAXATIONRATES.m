@@ -56,7 +56,7 @@ clearvars -except  trajX trajY trajZ configuration fileName
 
 calculateSchroedingerEquation = configuration.calculateSchroedingerEquation;
 path2ConstantsFile = configuration.path2ConstantsFile;
-path2Save = [configuration.path2Results fileName '_resultsCorrelationFunctions'];
+path2Save = [configuration.path2Results fileName '_resultsRelaxationRates'];
 showFigures = configuration.showFigures;
 outputLogFileName = configuration.outputLogFileName;
 
