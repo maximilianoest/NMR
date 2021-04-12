@@ -1,0 +1,2 @@
+This script calculates the dependency of the R1 rate with respect to the fibre orientation.
+The angles phi and theta in the paper are called position aorund the fibre and fibre orientation, respectively.

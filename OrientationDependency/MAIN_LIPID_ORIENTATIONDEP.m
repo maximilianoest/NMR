@@ -47,7 +47,8 @@ clearvars -except  trajX trajY trajZ configuration fileName LIPID
 
 calculateSchroedingerEquation = configuration.calculateSchroedingerEquation;
 path2ConstantsFile = configuration.path2ConstantsFile;
-path2Save = [configuration.path2Results fileName '_resultsRelaxationRates'];
+path2Save = [configuration.path2Results fileName ...
+    configuration.resultsSuffix];
 showFigures = configuration.showFigures;
 outputLogFileName = configuration.outputLogFileName;
 
@@ -67,9 +68,22 @@ omega0 = gammaRad*B0;                               % [rad/s]: Larmor (anglular)
 %% Define simulation parameters
 [numberOfHs,timeSteps] = size(trajX);     
 lags = round(configuration.fractionForLags*timeSteps);
-nearestNeighbours = configuration.nearestNeighbours;     
+nearestNeighbours = configuration.nearestNeighbours; 
+fibreOrientationsCount = configuration.fibreOrientationsCount;
+myelinPositionsCount = configuration.myelinPositionsCount;
 
  %% Start simulation
+orientationAngles = deg2rad(linspace(0,90,fibreOrientationsCount));
+positionAngles = deg2rad(linspace(0,360,myelinPositionsCount+1));
+positionAngles = positionAngles(1:end-1);
+
+orientations = [];
+positions = [];
+for angleNumber = 1:length(positionAngles)
+    orientations = [orientations orientationAngles];
+    positions = [positions ones(1,length(orientationAngles)) ... 
+        *positionAngles(angleNumber)];
+end
 
 r1WithPerturbationTheory = zeros(1,numberOfHs);
 r1WithSchroedingerEquation = zeros(1,numberOfHs);
