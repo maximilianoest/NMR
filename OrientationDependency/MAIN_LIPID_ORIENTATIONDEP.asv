@@ -17,6 +17,8 @@ if not(loaded)
     clearvars -except configuration
     close all
     
+    
+    
     LIPID = configuration.lipid;
     path2Data = configuration.path2Data;
     
@@ -27,20 +29,26 @@ if not(loaded)
             fileName = configuration.fileNamePLPC;
         case{'PSM'}
             fileName = configuration.fileNamePSM;
-        case{'Myelin'}
-            fileName = configuration.fileNameMyelin;
         otherwise
             warning(['The lipid "' LIPID '" does not exist'])
     end
     
-    path2File = [path2Data fileName '.mat'];
-    data = load(path2File);
-    hydrogenTrajectories = data.(configuration.dataFieldName);
-
-    trajX = squeeze(hydrogenTrajectories(:,1,:));
-    trajY = squeeze(hydrogenTrajectories(:,2,:));
-    trajZ = squeeze(hydrogenTrajectories(:,3,:));
+    path2File = [path2Data fileName];
     
+    
+    data = load(path2File);
+    
+%     loadReducedDataSet = configuration.loadReducedDataSet;
+%     if loadReducedDataSet
+%          path2File = [path2File '_reduced.mat'];
+%     else
+%          path2File = [path2File '.mat' ];
+%     end
+% 
+%     if loadReducedDataSet
+%         data = data(1).DataRed;
+%     end
+     
 end
 %% Set Up
 clearvars -except  trajX trajY trajZ configuration fileName LIPID
