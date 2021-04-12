@@ -1,0 +1,318 @@
+Molecule: 1.000000, Mean R1: 
+   PerturbationTheory: 7.688697 
+   Schroedinger Equation: 7.647367 
+Molecule: 2.000000, Mean R1: 
+   PerturbationTheory: 9.569359 
+   Schroedinger Equation: 9.525647 
+Molecule: 3.000000, Mean R1: 
+   PerturbationTheory: 8.278020 
+   Schroedinger Equation: 8.231622 
+Molecule: 4.000000, Mean R1: 
+   PerturbationTheory: 5.202605 
+   Schroedinger Equation: 5.195300 
+Molecule: 5.000000, Mean R1: 
+   PerturbationTheory: 20.035233 
+   Schroedinger Equation: 20.028905 
+Molecule: 6.000000, Mean R1: 
+   PerturbationTheory: 19.048019 
+   Schroedinger Equation: 19.042240 
+Molecule: 7.000000, Mean R1: 
+   PerturbationTheory: 2.041239 
+   Schroedinger Equation: 2.027023 
+Molecule: 8.000000, Mean R1: 
+   PerturbationTheory: 2.358351 
+   Schroedinger Equation: 2.342655 
+Molecule: 9.000000, Mean R1: 
+   PerturbationTheory: 1.001095 
+   Schroedinger Equation: 0.994558 
+Molecule: 10.000000, Mean R1: 
+   PerturbationTheory: 1.627196 
+   Schroedinger Equation: 1.608978 
+Molecule: 11.000000, Mean R1: 
+   PerturbationTheory: 2.930938 
+   Schroedinger Equation: 2.912390 
+Molecule: 12.000000, Mean R1: 
+   PerturbationTheory: 5.845850 
+   Schroedinger Equation: 5.833644 
+Molecule: 13.000000, Mean R1: 
+   PerturbationTheory: 5.945364 
+   Schroedinger Equation: 5.932132 
+Molecule: 14.000000, Mean R1: 
+   PerturbationTheory: 5.461058 
+   Schroedinger Equation: 5.442810 
+Molecule: 15.000000, Mean R1: 
+   PerturbationTheory: 5.434061 
+   Schroedinger Equation: 5.415854 
+Molecule: 16.000000, Mean R1: 
+   PerturbationTheory: 5.278275 
+   Schroedinger Equation: 5.261370 
+Molecule: 17.000000, Mean R1: 
+   PerturbationTheory: 5.571810 
+   Schroedinger Equation: 5.554170 
+Molecule: 18.000000, Mean R1: 
+   PerturbationTheory: 6.086046 
+   Schroedinger Equation: 6.065426 
+Molecule: 19.000000, Mean R1: 
+   PerturbationTheory: 5.139163 
+   Schroedinger Equation: 5.118499 
+Molecule: 20.000000, Mean R1: 
+   PerturbationTheory: 5.747816 
+   Schroedinger Equation: 5.726304 
+Molecule: 21.000000, Mean R1: 
+   PerturbationTheory: 5.725704 
+   Schroedinger Equation: 5.704080 
+Molecule: 22.000000, Mean R1: 
+   PerturbationTheory: 4.397411 
+   Schroedinger Equation: 4.375038 
+Molecule: 23.000000, Mean R1: 
+   PerturbationTheory: 4.171837 
+   Schroedinger Equation: 4.149462 
+Molecule: 24.000000, Mean R1: 
+   PerturbationTheory: 2.952831 
+   Schroedinger Equation: 2.931867 
+Molecule: 25.000000, Mean R1: 
+   PerturbationTheory: 3.241174 
+   Schroedinger Equation: 3.220203 
+Molecule: 26.000000, Mean R1: 
+   PerturbationTheory: 2.694649 
+   Schroedinger Equation: 2.670777 
+Molecule: 27.000000, Mean R1: 
+   PerturbationTheory: 2.979169 
+   Schroedinger Equation: 2.955460 
+Molecule: 28.000000, Mean R1: 
+   PerturbationTheory: 2.290577 
+   Schroedinger Equation: 2.282225 
+Molecule: 29.000000, Mean R1: 
+   PerturbationTheory: 2.029946 
+   Schroedinger Equation: 2.021763 
+Molecule: 30.000000, Mean R1: 
+   PerturbationTheory: 1.823060 
+   Schroedinger Equation: 1.800294 
+Molecule: 31.000000, Mean R1: 
+   PerturbationTheory: 2.607021 
+   Schroedinger Equation: 2.584106 
+Molecule: 32.000000, Mean R1: 
+   PerturbationTheory: 2.684614 
+   Schroedinger Equation: 2.663037 
+Molecule: 33.000000, Mean R1: 
+   PerturbationTheory: 2.388224 
+   Schroedinger Equation: 2.366665 
+Molecule: 34.000000, Mean R1: 
+   PerturbationTheory: 2.643186 
+   Schroedinger Equation: 2.621029 
+Molecule: 35.000000, Mean R1: 
+   PerturbationTheory: 2.685742 
+   Schroedinger Equation: 2.663634 
+Molecule: 36.000000, Mean R1: 
+   PerturbationTheory: 3.156133 
+   Schroedinger Equation: 3.133459 
+Molecule: 37.000000, Mean R1: 
+   PerturbationTheory: 3.563424 
+   Schroedinger Equation: 3.540709 
+Molecule: 38.000000, Mean R1: 
+   PerturbationTheory: 2.179689 
+   Schroedinger Equation: 2.156787 
+Molecule: 39.000000, Mean R1: 
+   PerturbationTheory: 2.143170 
+   Schroedinger Equation: 2.120270 
+Molecule: 40.000000, Mean R1: 
+   PerturbationTheory: 1.188915 
+   Schroedinger Equation: 1.166598 
+Molecule: 41.000000, Mean R1: 
+   PerturbationTheory: 1.462812 
+   Schroedinger Equation: 1.440493 
+Molecule: 42.000000, Mean R1: 
+   PerturbationTheory: 0.933886 
+   Schroedinger Equation: 0.911582 
+Molecule: 43.000000, Mean R1: 
+   PerturbationTheory: 0.927380 
+   Schroedinger Equation: 0.905090 
+Molecule: 44.000000, Mean R1: 
+   PerturbationTheory: 0.448254 
+   Schroedinger Equation: 0.418485 
+Molecule: 45.000000, Mean R1: 
+   PerturbationTheory: 0.395502 
+   Schroedinger Equation: 0.365735 
+Molecule: 46.000000, Mean R1: 
+   PerturbationTheory: 0.520342 
+   Schroedinger Equation: 0.490504 
+Molecule: 47.000000, Mean R1: 
+   PerturbationTheory: 4.455454 
+   Schroedinger Equation: 4.434302 
+Molecule: 48.000000, Mean R1: 
+   PerturbationTheory: 4.540214 
+   Schroedinger Equation: 4.518731 
+Molecule: 49.000000, Mean R1: 
+   PerturbationTheory: 4.450551 
+   Schroedinger Equation: 4.429418 
+Molecule: 50.000000, Mean R1: 
+   PerturbationTheory: 3.811324 
+   Schroedinger Equation: 3.790363 
+Molecule: 51.000000, Mean R1: 
+   PerturbationTheory: 5.129481 
+   Schroedinger Equation: 5.107275 
+Molecule: 52.000000, Mean R1: 
+   PerturbationTheory: 4.765967 
+   Schroedinger Equation: 4.743715 
+Molecule: 53.000000, Mean R1: 
+   PerturbationTheory: 1.237979 
+   Schroedinger Equation: 1.215466 
+Molecule: 54.000000, Mean R1: 
+   PerturbationTheory: 1.476415 
+   Schroedinger Equation: 1.454017 
+Molecule: 55.000000, Mean R1: 
+   PerturbationTheory: 2.333239 
+   Schroedinger Equation: 2.311274 
+Molecule: 56.000000, Mean R1: 
+   PerturbationTheory: 1.906668 
+   Schroedinger Equation: 1.884642 
+Molecule: 57.000000, Mean R1: 
+   PerturbationTheory: 2.701240 
+   Schroedinger Equation: 2.678296 
+Molecule: 58.000000, Mean R1: 
+   PerturbationTheory: 2.813748 
+   Schroedinger Equation: 2.790994 
+Molecule: 59.000000, Mean R1: 
+   PerturbationTheory: 1.201920 
+   Schroedinger Equation: 1.193629 
+Molecule: 60.000000, Mean R1: 
+   PerturbationTheory: 1.442782 
+   Schroedinger Equation: 1.434562 
+Molecule: 61.000000, Mean R1: 
+   PerturbationTheory: 4.863514 
+   Schroedinger Equation: 4.840637 
+Molecule: 62.000000, Mean R1: 
+   PerturbationTheory: 4.744864 
+   Schroedinger Equation: 4.721950 
+Molecule: 63.000000, Mean R1: 
+   PerturbationTheory: 3.666953 
+   Schroedinger Equation: 3.644461 
+Molecule: 64.000000, Mean R1: 
+   PerturbationTheory: 4.192732 
+   Schroedinger Equation: 4.170362 
+Molecule: 65.000000, Mean R1: 
+   PerturbationTheory: 3.597250 
+   Schroedinger Equation: 3.574188 
+Molecule: 66.000000, Mean R1: 
+   PerturbationTheory: 3.231102 
+   Schroedinger Equation: 3.207994 
+Molecule: 67.000000, Mean R1: 
+   PerturbationTheory: 2.431100 
+   Schroedinger Equation: 2.407965 
+Molecule: 68.000000, Mean R1: 
+   PerturbationTheory: 2.234119 
+   Schroedinger Equation: 2.211062 
+Molecule: 69.000000, Mean R1: 
+   PerturbationTheory: 2.158518 
+   Schroedinger Equation: 2.135668 
+Molecule: 70.000000, Mean R1: 
+   PerturbationTheory: 2.253663 
+   Schroedinger Equation: 2.230811 
+Molecule: 71.000000, Mean R1: 
+   PerturbationTheory: 1.442978 
+   Schroedinger Equation: 1.420446 
+Molecule: 72.000000, Mean R1: 
+   PerturbationTheory: 1.539320 
+   Schroedinger Equation: 1.516823 
+Molecule: 73.000000, Mean R1: 
+   PerturbationTheory: 1.374275 
+   Schroedinger Equation: 1.351730 
+Molecule: 74.000000, Mean R1: 
+   PerturbationTheory: 1.244639 
+   Schroedinger Equation: 1.222103 
+Molecule: 75.000000, Mean R1: 
+   PerturbationTheory: 1.531959 
+   Schroedinger Equation: 1.502168 
+Molecule: 76.000000, Mean R1: 
+   PerturbationTheory: 1.720059 
+   Schroedinger Equation: 1.690099 
+Molecule: 77.000000, Mean R1: 
+   PerturbationTheory: 1.469829 
+   Schroedinger Equation: 1.440043 
+Molecule: 78.000000, Mean R1: 
+   PerturbationTheory: 4.528622 
+   Schroedinger Equation: 4.486400 
+Molecule: 79.000000, Mean R1: 
+   PerturbationTheory: 4.574459 
+   Schroedinger Equation: 4.529694 
+Molecule: 80.000000, Mean R1: 
+   PerturbationTheory: 6.979679 
+   Schroedinger Equation: 6.935210 
+Molecule: 81.000000, Mean R1: 
+   PerturbationTheory: 1.378905 
+   Schroedinger Equation: 1.371637 
+Molecule: 82.000000, Mean R1: 
+   PerturbationTheory: 2.332048 
+   Schroedinger Equation: 2.313435 
+Molecule: 83.000000, Mean R1: 
+   PerturbationTheory: 2.616396 
+   Schroedinger Equation: 2.596942 
+Molecule: 84.000000, Mean R1: 
+   PerturbationTheory: 1.479037 
+   Schroedinger Equation: 1.462129 
+Molecule: 85.000000, Mean R1: 
+   PerturbationTheory: 1.492433 
+   Schroedinger Equation: 1.473714 
+Molecule: 86.000000, Mean R1: 
+   PerturbationTheory: 1.210943 
+   Schroedinger Equation: 1.204815 
+Molecule: 87.000000, Mean R1: 
+   PerturbationTheory: 7.114548 
+   Schroedinger Equation: 7.097098 
+Molecule: 88.000000, Mean R1: 
+   PerturbationTheory: 5.087707 
+   Schroedinger Equation: 5.069636 
+Molecule: 89.000000, Mean R1: 
+   PerturbationTheory: 6.220751 
+   Schroedinger Equation: 6.214320 
+Molecule: 90.000000, Mean R1: 
+   PerturbationTheory: 6.889217 
+   Schroedinger Equation: 6.881835 
+Molecule: 91.000000, Mean R1: 
+   PerturbationTheory: 1.779561 
+   Schroedinger Equation: 1.763133 
+Molecule: 92.000000, Mean R1: 
+   PerturbationTheory: 1.396111 
+   Schroedinger Equation: 1.379943 
+Molecule: 93.000000, Mean R1: 
+   PerturbationTheory: 4.496284 
+   Schroedinger Equation: 4.470527 
+Molecule: 94.000000, Mean R1: 
+   PerturbationTheory: 5.565736 
+   Schroedinger Equation: 5.538781 
+Molecule: 95.000000, Mean R1: 
+   PerturbationTheory: 4.277175 
+   Schroedinger Equation: 4.254955 
+Molecule: 96.000000, Mean R1: 
+   PerturbationTheory: 3.615256 
+   Schroedinger Equation: 3.593060 
+Molecule: 97.000000, Mean R1: 
+   PerturbationTheory: 2.324177 
+   Schroedinger Equation: 2.301645 
+Molecule: 98.000000, Mean R1: 
+   PerturbationTheory: 1.940629 
+   Schroedinger Equation: 1.917921 
+Molecule: 99.000000, Mean R1: 
+   PerturbationTheory: 2.704015 
+   Schroedinger Equation: 2.678874 
+Molecule: 100.000000, Mean R1: 
+   PerturbationTheory: 2.272711 
+   Schroedinger Equation: 2.247619 
+Molecule: 101.000000, Mean R1: 
+   PerturbationTheory: 1.909341 
+   Schroedinger Equation: 1.887374 
+Molecule: 102.000000, Mean R1: 
+   PerturbationTheory: 1.783529 
+   Schroedinger Equation: 1.761698 
+Molecule: 103.000000, Mean R1: 
+   PerturbationTheory: 2.515948 
+   Schroedinger Equation: 2.493301 
+Molecule: 104.000000, Mean R1: 
+   PerturbationTheory: 2.960655 
+   Schroedinger Equation: 2.938076 
+Molecule: 105.000000, Mean R1: 
+   PerturbationTheory: 1.919271 
+   Schroedinger Equation: 1.911794 
+Molecule: 106.000000, Mean R1: 
+   PerturbationTheory: 1.436443 
+   Schroedinger Equation: 1.429174 

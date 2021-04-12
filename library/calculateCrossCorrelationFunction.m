@@ -7,6 +7,7 @@ function [crosscorrelationFunction] = ...
 [~,timeSteps] = size(sphericalHarmonic);
 zeroPaddingLength = 2^(nextpow2(timeSteps)+1);
 
+% Convolution
 firstSphericalHarmonicFFT = fft(sphericalHarmonic,zeroPaddingLength,2); 
 secondSphericalHarmonicFFT = fft( ...
     conj(complexConjugatedSphericalHarmonic),zeroPaddingLength,2); 
