@@ -76,6 +76,8 @@ fibreOrientationsCount = configuration.fibreOrientationsCount;
 positionsAtOrientationCount = configuration.myelinPositionsCount;
 
 %% Start simulation
+stopWatch = zeros(1,numberOfHs);
+
 orientationAngles = deg2rad(linspace(0,90,fibreOrientationsCount));
 positionAngles = deg2rad(linspace(0,360,positionsAtOrientationCount+1));
 positionAngles = positionAngles(1:end-1);
@@ -101,8 +103,8 @@ disp('Start Simulation.')
 
 for atomNumber=1:numberOfHs
     if runOnServer
-        disp(['Atom number: ' num2str(atomNumber)])
         disp('=============================')
+        disp(['Atom number: ' num2str(atomNumber)])
     else
         fileId = fopen(outputLogFileName,'a');
         fprintf(fileId,['========================== \n' ...
@@ -121,15 +123,12 @@ for atomNumber=1:numberOfHs
         ,nearestNeighbourDistancesPow3] = findNearestNeighbours( ...
         distances,nearestNeighbours+1,atomNumber,relativeXPositions...
         ,relativeYPositions,relativeZPositions);
-    
-    for orientationNumber = 1:fibreOrientationsCount
+    tic;
+    parfor orientationNumber = 1:fibreOrientationsCount
         orientationAngle = orientationAngles(orientationNumber);
-        if runOnServer
-            disp('----------------------------')
-            disp(['Orientation: ' num2str(rad2deg(orientationAngle))])
-        else
+        if ~runOnServer
             fileId = fopen(outputLogFileName,'a');
-            fprintf(fileId,['--------------------- \n' ...
+            fprintf(fileId,['------------------------- \n' ...
                 'Orientation: %f \n'],rad2deg(orientationAngle));
             fclose(fileId);
         end
@@ -143,9 +142,7 @@ for atomNumber=1:numberOfHs
         
         for positionNumber = 1:positionsAtOrientationCount
             positionAngle = positionAngles(positionNumber);
-            if runOnServer
-                disp(['Position: ' num2str(rad2deg(positionAngle))])
-            else
+            if ~runOnServer
                 fileId = fopen(outputLogFileName,'a');
                 fprintf(fileId,'Position: %f \n',rad2deg(positionAngle));
                 fclose(fileId);
@@ -202,28 +199,28 @@ for atomNumber=1:numberOfHs
                 ,'meanPositions','deltaT' ...
                 ,'timeSteps','lags','atomNumber','B0','-v7.3')
     end
+    stopWatch(atomNumber) = toc;
     
-    % FIXME: change plots to fitting relaxation rates
+    if runOnServer
+        disp(['Atom number: ' num2str(atomNumber) ' done.'])
+        disp(['Needed time: ' num2str(stopWatch(atomNumber)) ' seconds.'])
+    else
+        fileId = fopen(outputLogFileName,'a');
+        fprintf(fileId,['Atom number: %d done \n' ...
+            'Needed time: %d seconds'],[atomNumber ...
+            stopWatch(atomNumber)]);
+        fclose(fileId);
+    end
+    
     if showFigures && ~runOnServer
-        plot(r1WithPerturbationTheory(1:atomNumber),'b','LineWidth',1.5)
-        hold on
-        plot(meanR1WithPerturbationTheory(1:atomNumber),'--b' ...
-            ,'LineWidth',1.5)
-        plot(r1WithLipariSzabo(1:atomNumber),'k','LineWidth',1.5)
-        plot(meanR1WithLipariSzabo(1:atomNumber),'--k' ...
-            ,'LineWidth',1.5)
-        if calculateSchroedingerEquation
-            plot(r1WithSchroedingerEquation(1:atomNumber),'r' ...
-                ,'LineWidth',1.5)
-            plot(meanR1WithSchroedingerEquation(1:atomNumber) ...
-                ,'--r','LineWidth',1.5)
-            legend('Spectral density','Mean Spectral Density' ...
-                ,'Lipari Szabo','Mean Lipari Szabo' ...
-                ,'Schroedinger Equation','Mean Schroedinger Equ.');
-        else
-            legend('Spectral density','Mean Spectral Density' ...
-                ,'Lipari Szabo','Mean Lipari Szabo');
+        legendEntries = {};
+        for orientationNumber = 1:size(effectiveRelaxationRates,1)
+            plot(effectiveRelaxationRates(orientationNumber,1:atomNumber));
+            legendEntries{orientationNumber} = num2str( ...
+                rad2deg(orientationAngles(orientationNumber)), ...
+                'Theta = %.2f°');
         end
+        legend(legendEntries);
         title('Relaxation Rate R1')
         xlabel('Epoches')
         ylabel('R1 [Hz]')
