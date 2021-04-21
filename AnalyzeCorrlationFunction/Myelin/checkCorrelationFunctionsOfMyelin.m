@@ -5,11 +5,10 @@ if ~exist('correlationFunctionW0','var') || dataLoaded
     clc
     clear all
     close all
-    savedData = load(['C:\Users\maxoe\Documents\ServerData' ...
+    loadedData = load(['C:\Users\maxoe\Documents\ServerData' ...
         '\Lipid_ExampleTrajSet_nH676_resultsOrientationDependency.mat']);
-    correlationFunctionW0 = savedData.correlationFunctionW0Saver;
-    correlationFunction2W0 = savedData.correlationFunction2W0Saver;
-    clearvars -except correlationFunctionW0 correlationFunction2W0
+    correlationFunctionW0 = loadedData.correlationFunctionW0Saver;
+    correlationFunction2W0 = loadedData.correlationFunction2W0Saver;
 end
 
 %% analyze data
@@ -60,6 +59,25 @@ grid on
 legend(legendEntries)
 title('Effective Correlation Function at w0')
 xlabel('tau')
+
+%% save all variables except for correlationFunctions
+
+fieldNames = fieldnames(loadedData);
+% dataWithoutCorrelationFunctions = struct([]);
+
+for fieldNr = 1:length(fieldNames)
+    
+    switch fieldNames{fieldNr}
+          case {'correlationFunctionW0Saver' ...
+                  ,'correlationFunction2W0Saver'}
+          otherwise
+            dataWithoutCorrelationFunctions(1).(fieldNames{fieldNr}) = ...
+                loadedData.(fieldNames{fieldNr});
+    end
+end
+
+save(['C:\Users\maxoe\Google Drive\Promotion\Data\Myelin' ...'
+    '\Lipid_RelaxationRates_nH40.mat'],'dataWithoutCorrelationFunctions');
 
 
 

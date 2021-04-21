@@ -175,6 +175,10 @@ for atomNumber=1:numberOfHs
                 ,positionNumber,atomNumber,:) = ...
                 sum(correlationFunction2W0);
             
+            % NOTE: everything done until here is made the right way
+            % TODO: The time between two time steps need to be changed
+            % so that it fits the data set
+            
             [spectralDensityW0,spectralDensity2W0] = ...
                 calculateSpectralDensities(correlationFunctionW0 ...
                 ,correlationFunction2W0,omega0,deltaT,lags);
