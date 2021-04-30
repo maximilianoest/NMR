@@ -67,7 +67,7 @@ positionsAtOrientationCount = configuration.myelinPositionsCount;
 atomsToCalculate = configuration.atomsToCalculate;
 
 %% Start simulation
-stopWatch = zeros(1,numberOfHs);
+stopWatch = zeros(1,atomsToCalculate);
 
 orientationAngles = deg2rad(linspace(0,90,fibreOrientationsCount));
 positionAngles = deg2rad(linspace(0,360,positionsAtOrientationCount+1));
@@ -90,6 +90,7 @@ atomIndex = zeros(1,atomsToCalculate);
 disp('Starting Simulation.')
 
 for atomNumber=randperm(numberOfHs)
+    wholeTic = tic;
     transformationTic = tic;
     disp('=============================')
     disp(['Atom number: ' num2str(atomNumber)])
@@ -111,7 +112,7 @@ for atomNumber=randperm(numberOfHs)
     transformationTime = toc(transformationTic);
     disp(['Time for transformation of data: ' ...
         num2str(transformationTime)]);
-    tic;
+    orientationTic = tic;
     for orientationNumber = 1:fibreOrientationsCount
         orientationAngle = orientationAngles(orientationNumber);
         yAxis = [0 1 0];
@@ -165,23 +166,26 @@ for atomNumber=randperm(numberOfHs)
                 ,atomCounter) = calculateR1WithSpectralDensity( ...
                 spectralDensityW0,spectralDensity2W0,DD);
         end
-        toc(positionsTic)
+        disp(['Time for one orientation: ' num2str(toc(positionsTic))])
     end
-    
+    disp(['Time for all orientations: ' num2str(toc(orientationTic))])
     if mod(atomCounter,10) == 0
-            save(path2Save ,'r1WithPerturbationTheory' ...
-                ,'correlationFunctionW0Saver' ...
-                ,'correlationFunction2W0Saver' ...
-                ,'meanPositions','deltaT' ...
-                ,'timeSteps','lags','atomCounter','B0' ...
-                ,'orientationAngles','positionAngles' ...
-                ,'atomIndex' ...
-                ,'-v7.3')
+        savingTic = tic;
+        save(path2Save ,'r1WithPerturbationTheory' ...
+            ,'correlationFunctionW0Saver' ...
+            ,'correlationFunction2W0Saver' ...
+            ,'meanPositions','deltaT' ...
+            ,'timeSteps','lags','atomCounter','B0' ...
+            ,'orientationAngles','positionAngles' ...
+            ,'atomIndex','nearestNeighbours','atomsToCalculate' ...
+            ,'fileName','stopWatch'...
+            ,'-v7.3')
+        disp(['Time for saving variables: ' num2str(toc(savingTic))])
     end
-    toc
     
+    stopWatch(atomCounter) = toc(wholeTic);
     disp(['Atom ' num2str(atomNumber) ' done.'])
-    disp(['Needed time: ' num2str(stopWatch(atomNumber)) ' seconds.'])
-    
+    disp(['Overall needed time: ' num2str(stopWatch(atomCounter)) ...
+        ' seconds.'])
 end
 
