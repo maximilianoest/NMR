@@ -6,4 +6,4 @@ trajY = bsxfun(@minus,trajY,trajY(atomNumber,:));
 trajZ = bsxfun(@minus,trajZ,trajZ(atomNumber,:));
 distances = sqrt(trajX.^2+trajY.^2+trajZ.^2);
 
-    end
+end

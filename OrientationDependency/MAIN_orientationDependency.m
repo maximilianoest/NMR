@@ -90,6 +90,7 @@ atomIndex = zeros(1,atomsToCalculate);
 disp('Starting Simulation.')
 
 for atomNumber=randperm(numberOfHs)
+    transformationTic = tic;
     disp('=============================')
     disp(['Atom number: ' num2str(atomNumber)])
     disp(['Calculated ' num2str(atomCounter) ' atoms.'])
@@ -100,12 +101,16 @@ for atomNumber=randperm(numberOfHs)
         = calculateRelativePositionsAndDistances(trajectoryX ...
         ,trajectoryY,trajectoryZ,atomNumber);
     
-    % here the nearest neighbours are calculated but shortened for RAM
-    [trajectoryX,trajectoryY,trajectoryZ,nearestNeighbourDistancesPow3] ...
-        = findNearestNeighbours(distances,nearestNeighbours+1 ...
-        ,atomNumber,trajectoryX,trajectoryY,trajectoryZ);
-    clear relativeXPositions relativeYPositions relativeZPositions ...
-        distances
+    [nearestNeighboursX,nearestNeighboursY,nearestNeighboursZ ...
+        ,nearestNeighbourDistancesPow3] = findNearestNeighbours( ...
+        distances,nearestNeighbours+1,atomNumber,trajectoryX ...
+        ,trajectoryY,trajectoryZ);
+    
+    clear distances
+    
+    transformationTime = toc(transformationTic);
+    disp(['Time for transformation of data: ' ...
+        num2str(transformationTime)]);
     tic;
     for orientationNumber = 1:fibreOrientationsCount
         orientationAngle = orientationAngles(orientationNumber);
@@ -114,7 +119,9 @@ for atomNumber=randperm(numberOfHs)
             orientationAngle,yAxis);
         [rotatedX,rotatedY,rotatedZ] = ...
             rotateTrajectoriesWithRotationMatrix( ...
-            rotationMatrixOrientation,trajectoryX,trajectoryY,trajectoryZ);
+            rotationMatrixOrientation,nearestNeighboursX ...
+            ,nearestNeighboursY,nearestNeighboursZ);
+        
         positionsTic = tic;
         for positionNumber = 1:positionsAtOrientationCount
             positionAngle = positionAngles(positionNumber);
@@ -171,7 +178,7 @@ for atomNumber=randperm(numberOfHs)
                 ,'atomIndex' ...
                 ,'-v7.3')
     end
-    stopWatch(atomNumber) = toc;
+    toc
     
     disp(['Atom ' num2str(atomNumber) ' done.'])
     disp(['Needed time: ' num2str(stopWatch(atomNumber)) ' seconds.'])
