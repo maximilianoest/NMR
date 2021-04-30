@@ -16,7 +16,7 @@ end
 loaded = configuration.dataLoaded;
 if not(loaded)
     
-    disp('Start loading data')
+    disp('Loading data')
     
     fileName = configuration.fileName;
     path2File = [path2Data fileName '.mat'];
@@ -44,11 +44,8 @@ else
         configuration.resultsSuffix];
 end
 
-showFigures = configuration.showFigures;
-saveFigures = configuration.saveFigures;
-
-
 %% Define constants
+disp('Defining constants')
 constants = readConstantsFile(path2ConstantsFile);
 picoSecond = constants.picoSecond;
 hbar = constants.hbar;                              % [Js]
@@ -61,6 +58,7 @@ deltaT = configuration.deltaT;
 omega0 = gammaRad*B0;                               % [rad/s]: Larmor (anglular) frequency
 
 %% Define simulation parameters
+disp('Defining simulation parameters')
 [numberOfHs,timeSteps] = size(trajectoryX);
 lags = round(configuration.fractionForLags*timeSteps);
 nearestNeighbours = configuration.nearestNeighbours;
@@ -98,7 +96,6 @@ for atomNumber=randperm(numberOfHs)
     
     meanPositions(atomCounter,:) = [mean(trajectoryX(atomNumber,:)) ...
         ,mean(trajectoryY(atomNumber,:)),mean(trajectoryZ(atomNumber,:))];
-    
     
     [relativeXPositions,relativeYPositions,relativeZPositions ...
         ,distances] = calculatePositionsAndDistances(trajectoryX ...
@@ -181,28 +178,5 @@ for atomNumber=randperm(numberOfHs)
     disp(['Atom ' num2str(atomNumber) ' done.'])
     disp(['Needed time: ' num2str(stopWatch(atomNumber)) ' seconds.'])
     
-    % TODO: effective RelaxationRate is not set!
-%     if showFigures && ~runOnServer
-%         figs(1) = figure(1);
-%         hold on
-%         legendEntries = {};
-%         for orientationNumber = 1:size(effectiveRelaxationRates,1)
-%             plot(effectiveRelaxationRates(orientationNumber,1:atomNumber));
-%             legendEntries{orientationNumber} = num2str( ...
-%                 rad2deg(orientationAngles(orientationNumber)), ...
-%                 'Theta = %.2f°'); %#ok<SAGROW>
-%         end
-%         legend(legendEntries);
-%         title('Relaxation Rate R1')
-%         xlabel('Epoches')
-%         ylabel('R1 [Hz]')
-%         grid on
-%         drawnow
-%         hold off
-%         
-%         if saveFigures
-%            savefig(figs,path2Save); 
-%         end
-%     end
 end
 
