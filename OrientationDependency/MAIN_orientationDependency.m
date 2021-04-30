@@ -55,7 +55,7 @@ hbar = constants.hbar;                              % [Js]
 gammaRad = constants.gammaRad;                      % [rad/Ts]
 mu0 = constants.mu0;                                % [N/A^2] Vacuum permeability
 Nm = constants.Nm;                                  % [m] Nanometer (Traj. format)
-DD = 3/4*(mu0/(4*pi)*hbar*gammaRad^2 )^2/(Nm^6);    % J/rad
+DD = 3/4*(mu0/(4*pi)*hbar*gammaRad^2)^2/(Nm^6);    % J/rad
 B0 = configuration.B0;     
 deltaT = configuration.deltaT;
 omega0 = gammaRad*B0;                               % [rad/s]: Larmor (anglular) frequency
@@ -66,6 +66,7 @@ lags = round(configuration.fractionForLags*timeSteps);
 nearestNeighbours = configuration.nearestNeighbours;
 fibreOrientationsCount = configuration.fibreOrientationsCount;
 positionsAtOrientationCount = configuration.myelinPositionsCount;
+atomsToCalculate = configuration.atomsToCalculate;
 
 %% Start simulation
 stopWatch = zeros(1,numberOfHs);
@@ -80,13 +81,11 @@ correlationFunction2W0Saver = complex(zeros(fibreOrientationsCount ...
     ,positionsAtOrientationCount,lags));
 
 r1WithPerturbationTheory = zeros(fibreOrientationsCount ...
-    ,positionsAtOrientationCount,numberOfHs);
-averageRelaxationRates = zeros(fibreOrientationsCount ...
-    ,positionsAtOrientationCount,numberOfHs);
-effectiveRelaxationRates = zeros(fibreOrientationsCount,numberOfHs);
+    ,positionsAtOrientationCount,atomsToCalculate);
 
-meanPositions = zeros(numberOfHs,3);
+meanPositions = zeros(atomsToCalculate,3);
 atomCounter = 0;
+atomIndex = zeros(1,atomsToCalculate);
 
 disp('Starting Simulation.')
 
@@ -95,18 +94,22 @@ for atomNumber=randperm(numberOfHs)
     disp(['Atom number: ' num2str(atomNumber)])
     disp(['Calculated ' num2str(atomCounter) ' atoms.'])
     atomCounter = atomCounter+1;
+    atomIndex(atomCounter) = atomNumber;
     
-    meanPositions(atomNumber,:) = [mean(trajectoryX(atomNumber,:)) ...
+    meanPositions(atomCounter,:) = [mean(trajectoryX(atomNumber,:)) ...
         ,mean(trajectoryY(atomNumber,:)),mean(trajectoryZ(atomNumber,:))];
     
+    
     [relativeXPositions,relativeYPositions,relativeZPositions ...
-        ,distances] = calculatePositionsAndDistances(trajectoryX,trajectoryY ...
-        ,trajectoryZ,atomNumber);
+        ,distances] = calculatePositionsAndDistances(trajectoryX ...
+        ,trajectoryY,trajectoryZ,atomNumber);
     
     [nearestNeighboursX,nearestNeighboursY,nearestNeighboursZ ...
         ,nearestNeighbourDistancesPow3] = findNearestNeighbours( ...
         distances,nearestNeighbours+1,atomNumber,relativeXPositions...
         ,relativeYPositions,relativeZPositions);
+    clear relativeXPositions relativeYPositions relativeZPositions ...
+        distances
     tic;
     for orientationNumber = 1:fibreOrientationsCount
         orientationAngle = orientationAngles(orientationNumber);
@@ -157,52 +160,49 @@ for atomNumber=randperm(numberOfHs)
                 ,correlationFunction2W0,omega0,deltaT,lags);
             
             r1WithPerturbationTheory(orientationNumber,positionNumber ...
-                ,atomNumber) = calculateR1WithSpectralDensity( ...
+                ,atomCounter) = calculateR1WithSpectralDensity( ...
                 spectralDensityW0,spectralDensity2W0,DD);
         end
         toc(positionsTic)
     end
     
-    averageRelaxationRates(:,:,atomNumber) = mean( ...
-        r1WithPerturbationTheory(:,:,1:atomNumber),3);
-    effectiveRelaxationRates(:,atomNumber) = mean(squeeze( ...
-        averageRelaxationRates(:,:,atomNumber)),2);
-    
-    if mod(atomNumber,10) == 0
+    if mod(atomCounter,10) == 0
             save(path2Save ,'r1WithPerturbationTheory' ...
-                ,'averageRelaxationRates' ...
-                ,'effectiveRelaxationRates' ...
                 ,'correlationFunctionW0Saver' ...
                 ,'correlationFunction2W0Saver' ...
                 ,'meanPositions','deltaT' ...
-                ,'timeSteps','lags','atomNumber','B0','-v7.3')
+                ,'timeSteps','lags','atomCounter','B0' ...
+                ,'orientationAngles','positionAngles' ...
+                ,'atomIndex' ...
+                ,'-v7.3')
     end
     stopWatch(atomNumber) = toc;
     
     disp(['Atom ' num2str(atomNumber) ' done.'])
     disp(['Needed time: ' num2str(stopWatch(atomNumber)) ' seconds.'])
     
-    if showFigures && ~runOnServer
-        figs(1) = figure(1);
-        hold on
-        legendEntries = {};
-        for orientationNumber = 1:size(effectiveRelaxationRates,1)
-            plot(effectiveRelaxationRates(orientationNumber,1:atomNumber));
-            legendEntries{orientationNumber} = num2str( ...
-                rad2deg(orientationAngles(orientationNumber)), ...
-                'Theta = %.2f°'); %#ok<SAGROW>
-        end
-        legend(legendEntries);
-        title('Relaxation Rate R1')
-        xlabel('Epoches')
-        ylabel('R1 [Hz]')
-        grid on
-        drawnow
-        hold off
-        
-        if saveFigures
-           savefig(figs,path2Save); 
-        end
-    end
+    % TODO: effective RelaxationRate is not set!
+%     if showFigures && ~runOnServer
+%         figs(1) = figure(1);
+%         hold on
+%         legendEntries = {};
+%         for orientationNumber = 1:size(effectiveRelaxationRates,1)
+%             plot(effectiveRelaxationRates(orientationNumber,1:atomNumber));
+%             legendEntries{orientationNumber} = num2str( ...
+%                 rad2deg(orientationAngles(orientationNumber)), ...
+%                 'Theta = %.2f°'); %#ok<SAGROW>
+%         end
+%         legend(legendEntries);
+%         title('Relaxation Rate R1')
+%         xlabel('Epoches')
+%         ylabel('R1 [Hz]')
+%         grid on
+%         drawnow
+%         hold off
+%         
+%         if saveFigures
+%            savefig(figs,path2Save); 
+%         end
+%     end
 end
 
