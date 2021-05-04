@@ -1,12 +1,11 @@
-function [F1,F2] = calculateSphericalHarmonics(theta,phi ...
+function [firstOrderSphericalHarmonic,secondOrderSphericalHarmonic] = ...
+    calculateSphericalHarmonics(polarAngle,azimuthAngle ...
     ,nearestNeighbourDistancesPow3)
 % This function calculates the spherical harmonics based on the angles and
 % distances.
 
-SIN = sin(theta);
-COS = cos(theta);
-
-% spherical harmonics
-F1 = SIN.*COS.*exp(-1i*phi)./nearestNeighbourDistancesPow3;
-F2 = SIN.^2.*exp(-2i*phi)./nearestNeighbourDistancesPow3;
+firstOrderSphericalHarmonic = sin(polarAngle).*cos(polarAngle) ...
+    .*exp(-1i*azimuthAngle)./nearestNeighbourDistancesPow3;
+secondOrderSphericalHarmonic = sin(polarAngle).^2 ...
+    .*exp(-2i*azimuthAngle)./nearestNeighbourDistancesPow3;
 end
