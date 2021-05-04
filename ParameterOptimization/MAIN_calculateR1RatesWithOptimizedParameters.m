@@ -1,5 +1,5 @@
 clc
-clearvars
+clear all %#ok<CLALL>
 
 %% configure the System
 configuration = readConfigurationFile('config.conf');
@@ -17,4 +17,30 @@ optimizedParametersFromPaperCase3 = ...
 optimizedParametersFromPaperCase4 = ...
     [0.136 1.14 2.73 0.84 11.2 13.3 0.83];
 
-%% calculate the real R1 Rates
+%% load lipid data
+lipidDataFieldsToLoad = configuration.lipidDataFieldsToLoad;
+path2LipidData = configuration.path2LipidData;
+lipidFieldNamesArray = getFieldNamesArray(lipidDataFieldsToLoad);
+lipidDataFields = loadFieldsFromMatFile(path2LipidData,lipidFieldNamesArray);
+
+lipidR1Rates= lipidDataFields.(lipidFieldNamesArray(1));
+lipidOrientations = rad2deg(lipidDataFields.(lipidFieldNamesArray(2)));
+lipidPositions = rad2deg(lipidDataFields.(lipidFieldNamesArray(3)));
+
+%% load water data
+waterDataFieldsToLoad = configuration.waterDataFieldsToLoad;
+path2WaterData = configuration.path2WaterData;
+waterFieldNamesArray = getFieldNamesArray(waterDataFieldsToLoad);
+waterDataFields = loadFieldsFromMatFile(path2WaterData,waterFieldNamesArray);
+
+waterR1Rates = waterDataFields.(waterFieldNamesArray(1));
+waterOrientations = rad2deg(waterDataFields.(waterFieldNamesArray(2)));
+waterPositions = rad2deg(waterDataFields.(waterFieldNamesArray(3)));
+
+
+%% calculate R1 rates
+
+
+
+
+
