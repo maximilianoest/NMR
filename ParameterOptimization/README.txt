@@ -1,0 +1,1 @@
+Here the readConfiguration and the config.conf file need to be in the same folder like the MAIN scipt.
