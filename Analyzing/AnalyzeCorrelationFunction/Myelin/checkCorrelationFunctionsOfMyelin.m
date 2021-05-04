@@ -3,27 +3,36 @@
 clc
 clear all
 close all
-loadedData = load(['C:\Users\maxoe\Google Drive\Promotion\Results' ...
-    '\Myelin\Relaxation' ...
-    '\Lipid_H_500ns_1ps_nH1000_resultsOriDep_20210426.mat']);
-sumCorrelationFunctionW0 = loadedData.correlationFunctionW0Saver;
-sumCorrelationFunction2W0 = loadedData.correlationFunction2W0Saver;
-relaxationRates = loadedData.averageRelaxationRates;
+
+path2Load = ['C:\Users\maxoe\Google Drive\Promotion\Results\Myelin' ...
+    '\Relaxation\Lipid_H_500ns_1ps_wh_6932_resultsOriDep_20210430.mat'];
+
+data = load(path2Load);
+B0 = data.B0;
+
+path2Save = ['C:\Users\maxoe\Google Drive\Promotion\Results\Myelin' ...
+    '\Correlation\CorrelationFunctionsAt' num2str(B0) 'T.fig'];
+
+sumCorrelationFunctionW0 = data.correlationFunctionW0Saver;
+sumCorrelationFunction2W0 = data.correlationFunction2W0Saver;
+
+relaxationRates = data.r1WithPerturbationTheory;
+[orientationCount,positionCount,~] = size(relaxationRates);
 try
-    atomsCount = loadedData.atomCounter;
+    atomsWithCalculatedR1Rates = (relaxationRates > 0.000001);
+    atomsWithCalculatedR1Rates = logical(squeeze(mean(mean( ...
+        atomsWithCalculatedR1Rates,1),2))');
+    atomCount = data.atomCounter;
 catch
-    warning('Atom Count not defined')
-    calculatedRelaxationRates = squeeze(relaxationRates(1,1,:));
-    relaxationRatesNotZero = calculatedRelaxationRates > 0.0001;
-    atomsCount = sum(relaxationRatesNotZero);
+    atomCount = sum(atomsWithCalculatedR1Rates);
 end
 
 
-deltaT = loadedData.deltaT;
+deltaT = data.deltaT;
 
 %% analyze data
-correlationFunctionW0 = sumCorrelationFunctionW0/atomsCount;
-correlationFunction2W0 = sumCorrelationFunction2W0/atomsCount;
+correlationFunctionW0 = sumCorrelationFunctionW0/atomCount;
+correlationFunction2W0 = sumCorrelationFunction2W0/atomCount;
 
 effectiveRelaxationRates = squeeze(mean(relaxationRates,2));
 
@@ -41,7 +50,7 @@ tauMax = 5e-7;
 valueMin = 0;
 valueMax = 0.5;
 legendEntries = {};
-fig(1) = figure(1)
+figs(1) = figure(1)
 hold on
 for i = 1:orientationsCount
     plot(tauAxis,abs(real(effectiveCorrelationFunctionW0(i,:) ...
@@ -58,7 +67,7 @@ xlabel('tau')
 
 orientationsCount = size(effectiveCorrelationFunction2W0,1);
 legendEntries = {};
-fig(2) = figure(2)
+figs(2) = figure(2)
 hold on
 for i = 1:orientationsCount
     plot(tauAxis,abs(real(effectiveCorrelationFunction2W0(i,:) ...
@@ -73,7 +82,7 @@ legend(legendEntries)
 title('Effective Correlation Function at 2w0')
 xlabel('tau')
 
-savefig(fig,'CorrelationFunctions.fig')
+savefig(figs,path2Save)
 
 
 
