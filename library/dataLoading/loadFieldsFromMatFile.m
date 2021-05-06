@@ -8,8 +8,8 @@ for fieldName = dataFieldNameStrings
     try
         dataFields.(fieldName) = data.(fieldName);
     catch
-        warning(['Field name "' fieldName '"does not exist in the data' ...
-            'you try to read. This data field is skipped']);
+        warning(['Field name "' char(fieldName) '" does not exist in' ...
+            ' the data you try to read. This data field is skipped.']);
     end
 end
 
