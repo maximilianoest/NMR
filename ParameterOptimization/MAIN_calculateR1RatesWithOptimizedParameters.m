@@ -27,9 +27,8 @@ lipidDataFields = loadFieldsFromMatFile(path2LipidData ...
 allLipidR1Rates = lipidDataFields.(lipidFieldNamesArray(1));
 lipidAtomCounter = lipidDataFields.(lipidFieldNamesArray(4));
 allLipidR1Rates = allLipidR1Rates(:,:,1:lipidAtomCounter);
-lipidOrientations = rad2deg(lipidDataFields.(lipidFieldNamesArray(2)));
-lipidPositions = rad2deg(lipidDataFields.(lipidFieldNamesArray(3)));
-
+lipidPositions = rad2deg(lipidDataFields.(lipidFieldNamesArray(2)));
+lipidOrientations = rad2deg(lipidDataFields.(lipidFieldNamesArray(3)));
 %% load water data
 waterDataFieldsToLoad = configuration.waterDataFieldsToLoad;
 path2WaterData = configuration.path2WaterData;
@@ -40,8 +39,8 @@ waterDataFields = loadFieldsFromMatFile(path2WaterData ...
 waterAtomCounter = waterDataFields.(waterFieldNamesArray(4));
 allWaterR1Rates = waterDataFields.(waterFieldNamesArray(1));
 allWaterR1Rates = allWaterR1Rates(:,:,1:waterAtomCounter);
-waterOrientations = rad2deg(waterDataFields.(waterFieldNamesArray(2)));
-waterPositions = rad2deg(waterDataFields.(waterFieldNamesArray(3)));
+waterPositions = rad2deg(waterDataFields.(waterFieldNamesArray(2)));
+waterOrientations = rad2deg(waterDataFields.(waterFieldNamesArray(3)));
 
 lipidOrientationsCount = size(lipidOrientations,2);
 waterOrientationsCount = size(waterOrientations,2);
@@ -51,6 +50,7 @@ if lipidOrientationsCount ~= waterOrientationsCount
         ') are not the same.']);
 else
     orientationsCount = lipidOrientationsCount;
+    orientations = lipidOrientations;
 end
 
 
@@ -61,22 +61,22 @@ end
 
 whichCase = configuration.whichCase;
 switch whichCase
-    case 1
+    case 'meanFractionMyelin'
         optimizedParameters = optimizedParametersFromPaperCase1;
         effectiveLipidR1Rates = mean(mean(allLipidR1Rates,3),2);
         effectiveWaterR1Rates = mean(mean(allWaterR1Rates,3),2);
         effectiveInteractionMyelinFraction = 0.32;
-    case 2
+    case 'medianFractionMyelin'
         optimizedParameters = optimizedParametersFromPaperCase2;
         effectiveLipidR1Rates = median(median(allLipidR1Rates,3),2);
         effectiveWaterR1Rates = median(median(allWaterR1Rates,3),2);
         effectiveInteractionMyelinFraction = 0.32;
-    case 3
+    case 'meanWholeMyelin'
         optimizedParameters = optimizedParametersFromPaperCase3;
         effectiveLipidR1Rates = mean(mean(allLipidR1Rates,3),2);
         effectiveWaterR1Rates = mean(mean(allWaterR1Rates,3),2);
         effectiveInteractionMyelinFraction = 1;
-    case 4
+    case 'medianWholeMyelin'
         optimizedParameters = optimizedParametersFromPaperCase4;
         effectiveLipidR1Rates = median(median(allLipidR1Rates,3),2);
         effectiveWaterR1Rates = median(median(allWaterR1Rates,3),2);
@@ -113,8 +113,10 @@ myelinWaterR1Offset = optimizedParameters(2);
 solidMyelinR1Offset = optimizedParameters(3);
 
 fittedFreeWaterR1Rates = optimizedParameters(4);
-fittedMyelinWaterR1Rates = myelinWaterR1Offset+effectiveWaterR1RateShift;
-fittedSolidMyelinR1RateRates = solidMyelinR1Offset+effectiveLipidR1RateShift;
+fittedMyelinWaterR1Rates = myelinWaterR1Offset ...
+    +effectiveWaterR1RateShift;
+fittedSolidMyelinR1RateRates = solidMyelinR1Offset ...
+    +effectiveLipidR1RateShift;
 
 exchangeRatesSM2MW = optimizedParameters(5);
 exchangeRatesMW2FW = optimizedParameters(6);
@@ -124,7 +126,7 @@ exchangeRatesFW2MW = myelinWaterFraction/freeWaterFraction ...
     *exchangeRatesMW2FW;
 
 %% determination of R1 rate
-predictedR1Rate = zeros(1,orientationsCount);
+predictedR1Rates = zeros(1,orientationsCount);
 
 initialFreeWaterValue = -freeWaterFraction;
 initialMyelinWaterValue = -myelinWaterFraction;
@@ -159,11 +161,24 @@ for orientationNumber = 1:orientationsCount
             -exchangeRatesFW2MW*freeWaterPart(timeStep) ...
             +exchangeRatesMW2FW*myelinWaterPart(timeStep));
     end
+    longitudinalMagnetizsation = myelinWaterPart+freeWaterPart;
+    expontentialCurve = @(r1Fitted,data) (1-2*exp(-r1Fitted(1)*data));
+    startValue = [ 1.2 ]; %#ok<NBRAK>
+    options = optimset('Display','off');
+    predictedR1Rates(orientationNumber) = ...
+        lsqcurvefit(expontentialCurve,startValue,timeAxis ...
+        ,longitudinalMagnetizsation,[],[],options);
 end
 
+%% plotting
 
-
-
+figs(1) = figure(1);
+plot(orientations,predictedR1Rates,'LineWidth',1.5)
+title(whichCase)
+xlabel('Angle \theta [°]')
+ylabel('Relaxation Rate R1 [Hz]')
+grid on
+saveas(figs,configuration.path2SaveFigs)
 
 
 
