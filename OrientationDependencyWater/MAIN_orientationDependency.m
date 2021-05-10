@@ -5,10 +5,10 @@ configuration = readConfigurationFile('config.conf');
 
 runOnServer = configuration.runOnServer;
 if runOnServer
-    addpath(configuration.path2LibraryOnServer);
+    addpath(genpath(configuration.path2LibraryOnServer));
     path2Data = configuration.path2DataOnServer;
 else
-    addpath(configuration.path2LibraryOnLocalMachine)
+    addpath(genpath(configuration.path2LibraryOnLocalMachine))
     path2Data = configuration.path2DataOnLocalMachine;
 end
 
@@ -62,24 +62,26 @@ disp('Defining simulation parameters')
 [numberOfHs,timeSteps] = size(trajectoryX);
 lags = round(configuration.fractionForLags*timeSteps);
 nearestNeighbours = configuration.nearestNeighbours;
-fibreOrientationsCount = configuration.fibreOrientationsCount;
-positionsAtOrientationCount = configuration.myelinPositionsCount;
 atomsToCalculate = configuration.atomsToCalculate;
 
 %% Start simulation
 stopWatch = zeros(1,atomsToCalculate);
 
-orientationAngles = deg2rad(linspace(0,90,fibreOrientationsCount));
-positionAngles = deg2rad(linspace(0,360,positionsAtOrientationCount+1));
-positionAngles = positionAngles(1:end-1);
+orientationAngles = deg2rad(getValuesFromStringEnumeration( ...
+    configuration.fibreOrientations,';','numeric'));
+positionAngles = deg2rad(getValuesFromStringEnumeration( ...
+    configuration.myelinPositions,';','numeric'));
+
+fibreOrientationsCount = size(orientationAngles,2);
+positionsInMyelinCount = size(positionAngles,2);
 
 correlationFunctionW0Saver = complex(zeros(fibreOrientationsCount ...
-    ,positionsAtOrientationCount,lags));
+    ,positionsInMyelinCount,lags));
 correlationFunction2W0Saver = complex(zeros(fibreOrientationsCount ...
-    ,positionsAtOrientationCount,lags));
+    ,positionsInMyelinCount,lags));
 
 r1WithPerturbationTheory = zeros(fibreOrientationsCount ...
-    ,positionsAtOrientationCount,atomsToCalculate);
+    ,positionsInMyelinCount,atomsToCalculate);
 
 meanPositions = [mean(trajectoryX,2) mean(trajectoryY,2) ...
     mean(trajectoryZ,2)];
@@ -124,7 +126,7 @@ for atomNumber=randperm(numberOfHs)
             ,nearestNeighboursY,nearestNeighboursZ);
         
         positionsTic = tic;
-        for positionNumber = 1:positionsAtOrientationCount
+        for positionNumber = 1:positionsInMyelinCount
             positionAngle = positionAngles(positionNumber);
             zAxis = [0 0 1];
             rotationMatrixPosition = get3DRotationMatrix(positionAngle ...
