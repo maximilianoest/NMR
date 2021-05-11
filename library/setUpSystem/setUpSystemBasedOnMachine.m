@@ -2,6 +2,7 @@ function [path2Data,path2Save,path2ConstantsFile] = ...
     setUpSystemBasedOnMachine(configuration)
 
 runOnServer = configuration.runOnServer;
+fileName = configuration.fileName;
 
 if runOnServer
     path2Data = configuration.path2DataOnServer;
