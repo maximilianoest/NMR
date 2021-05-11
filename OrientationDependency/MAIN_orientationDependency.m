@@ -1,66 +1,41 @@
-%% load configuration
+%% Set Up System
 clc
 
 configuration = readConfigurationFile('config.conf');
 
-runOnServer = configuration.runOnServer;
-if runOnServer
+if configuration.runOnServer
     addpath(genpath(configuration.path2LibraryOnServer));
-    path2Data = configuration.path2DataOnServer;
 else
     addpath(genpath(configuration.path2LibraryOnLocalMachine))
-    path2Data = configuration.path2DataOnLocalMachine;
 end
 
-%% Load Trajectories
-loaded = configuration.dataLoaded;
-if not(loaded)
-    
-    disp('Loading data')
-    
-    fileName = configuration.fileName;
-    path2File = [path2Data fileName '.mat'];
-    data = load(path2File);
-    hydrogenTrajectories = data.(configuration.dataFieldName);
-    
-    disp('Data successfully loaded')
-    
-    trajectoryX = squeeze(hydrogenTrajectories(:,1,:));
-    trajectoryY = squeeze(hydrogenTrajectories(:,2,:));
-    trajectoryZ = squeeze(hydrogenTrajectories(:,3,:));
-    
-end
-%% Set Up
+[path2Data,path2Save,path2ConstantsFile] = setUpSystemBasedOnMachine( ...
+    configuration);
+[trajecotryX,trajectoryY,trajectoryZ] = loadTrajectoriesFromData( ...
+    configuration,path2Data);
+fileName = configuration.fileName;
+
 clearvars -except  trajectoryX trajectoryY trajectoryZ configuration ...
-    fileName runOnServer
-
-if runOnServer
-    path2ConstantsFile = configuration.path2ConstantsFileOnServer;
-    path2ResultsDirectory = configuration.path2ResultsOnServer; 
-else
-    path2ConstantsFile = configuration.path2ConstantsFileOnLocalMachine;
-    path2ResultsDirectory = configuration.path2ResultsOnLocalMachine;
-end
-path2Save = [path2ResultsDirectory datestr(date,'yyyymmdd_') fileName ...
-    configuration.resultsSuffix];
+    fileName path2Save path2ConstantsFile
 
 %% Define constants
 disp('Defining constants')
-constants = readConstantsFile(path2ConstantsFile);
-picoSecond = constants.picoSecond;
-hbar = constants.hbar;                              % [Js]
-gammaRad = constants.gammaRad;                      % [rad/Ts]
-mu0 = constants.mu0;                                % [N/A^2] Vacuum permeability
-Nm = constants.Nm;                                  % [m] Nanometer (Traj. format)
-DD = 3/4*(mu0/(4*pi)*hbar*gammaRad^2)^2/(Nm^6);    % J/rad
-B0 = configuration.B0;     
 deltaT = configuration.deltaT;
-omega0 = gammaRad*B0;                               % [rad/s]: Larmor (anglular) frequency
+constants = readConstantsFile(path2ConstantsFile);
+
+picoSecond = constants.picoSecond;
+hbar = constants.hbar;
+gammaRad = constants.gammaRad;
+B0 = configuration.B0;
+mu0 = constants.mu0;
+Nm = constants.Nm;
+DD = 3/4*(mu0/(4*pi)*hbar*gammaRad^2)^2/(Nm^6);
+omega0 = gammaRad*B0; 
 
 %% Define simulation parameters
 disp('Defining simulation parameters')
 [numberOfHs,timeSteps] = size(trajectoryX);
-lags = round(configuration.fractionForLags*timeSteps);
+lag = round(configuration.fractionForLags*timeSteps);
 nearestNeighbours = configuration.nearestNeighbours;
 atomsToCalculate = configuration.atomsToCalculate;
 
@@ -76,9 +51,9 @@ fibreOrientationsCount = size(orientationAngles,2);
 positionsInMyelinCount = size(positionAngles,2);
 
 sumCorrelationFunctionW0Saver = complex(zeros(fibreOrientationsCount ...
-    ,positionsInMyelinCount,lags));
+    ,positionsInMyelinCount,lag));
 sumCorrelationFunction2W0Saver = complex(zeros(fibreOrientationsCount ...
-    ,positionsInMyelinCount,lags));
+    ,positionsInMyelinCount,lag));
 
 r1WithPerturbationTheory = zeros(fibreOrientationsCount ...
     ,positionsInMyelinCount,atomsToCalculate);
@@ -145,10 +120,10 @@ for atomNumber=randperm(numberOfHs)
             
             correlationFunctionW0 = calculateCrossCorrelationFunction( ...
                 firstOrderSphericalHarmonic ...
-                ,conj(firstOrderSphericalHarmonic),lags);
+                ,conj(firstOrderSphericalHarmonic),lag);
             correlationFunction2W0 = calculateCrossCorrelationFunction( ...
                 secondOrderSphericalHarmonic ...
-                ,conj(secondOrderSphericalHarmonic),lags);
+                ,conj(secondOrderSphericalHarmonic),lag);
             
             sumCorrelationFunctionW0Saver(orientationNumber ...
                 ,positionNumber,:) = squeeze( ...
@@ -162,7 +137,7 @@ for atomNumber=randperm(numberOfHs)
             
             [spectralDensityW0,spectralDensity2W0] = ...
                 calculateSpectralDensities(correlationFunctionW0 ...
-                ,correlationFunction2W0,omega0,deltaT,lags);
+                ,correlationFunction2W0,omega0,deltaT,lag);
             
             r1WithPerturbationTheory(orientationNumber,positionNumber ...
                 ,atomCounter) = calculateR1WithSpectralDensity( ...
