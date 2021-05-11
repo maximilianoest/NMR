@@ -5,13 +5,16 @@ clear all
 close all
 
 path2Load = ['C:\Users\maxoe\Google Drive\Promotion\Results\Myelin' ...
-    '\Relaxation\Lipid_H_500ns_1ps_wh_6932_resultsOriDep_20210430.mat'];
+    '\Relaxation\Lipid_H_500ns_2ps_wh_resultsOriDep_20210510.mat'];
 
 data = load(path2Load);
-B0 = data.B0;
+B0 = num2str(data.B0);
+B0 = split(B0,'.');
+B0 = [B0{1} B0{2}];
 
 path2Save = ['C:\Users\maxoe\Google Drive\Promotion\Results\Myelin' ...
-    '\Correlation\CorrelationFunctionsAt' num2str(B0) 'T.fig'];
+    '\Correlation\' datestr(date,'yyyymmdd_') ...
+    'CorrelationsFunctionsOfLipidAt' num2str(B0) 'T.fig'];
 
 sumCorrelationFunctionW0 = data.correlationFunctionW0Saver;
 sumCorrelationFunction2W0 = data.correlationFunction2W0Saver;
@@ -50,7 +53,7 @@ tauMax = 5e-7;
 valueMin = 0;
 valueMax = 0.5;
 legendEntries = {};
-figs(1) = figure(1)
+figs(1) = figure(1);
 hold on
 for i = 1:orientationsCount
     plot(tauAxis,abs(real(effectiveCorrelationFunctionW0(i,:) ...
@@ -67,7 +70,7 @@ xlabel('tau')
 
 orientationsCount = size(effectiveCorrelationFunction2W0,1);
 legendEntries = {};
-figs(2) = figure(2)
+figs(2) = figure(2);
 hold on
 for i = 1:orientationsCount
     plot(tauAxis,abs(real(effectiveCorrelationFunction2W0(i,:) ...
@@ -82,7 +85,7 @@ legend(legendEntries)
 title('Effective Correlation Function at 2w0')
 xlabel('tau')
 
-savefig(figs,path2Save)
+savefig(figs,path2Save);
 
 
 
