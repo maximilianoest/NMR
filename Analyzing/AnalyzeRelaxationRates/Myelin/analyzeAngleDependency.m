@@ -4,7 +4,15 @@ clear all %#ok<CLALL>
 configuration = readConfigurationFile('config.conf');
 addpath(genpath(configuration.path2Library));
 
-data2Load = [configuration.path2Data configuration.fileName '.mat'];
+compartment = configuration.compartment;
+switch compartment
+    case "Water"
+        fileName = configuration.waterFileName;
+    case "Lipid"
+        fileName = configuration.lipidFileName;
+end
+        
+data2Load = [configuration.path2Data fileName '.mat'];
 data = load(data2Load);
 
 r1Perturbation = data.r1WithPerturbationTheory;
@@ -14,15 +22,21 @@ orientationsCount = length(orientationAngles);
 positionsCount = length(positionAngles);
 
 B0 = data.B0;
-dateFromConfig = num2str(configuration.date);
+try
+    startDateOfSimulation = data.startDateOfSimulation;
+catch
+    splittedFileName = split(fileName,'_');
+    startDateOfSimulation = num2str(splittedFileName{1});
+    msgbox(['Date: ' startDateOfSimulation],'Success');
+end
 
 %% set up system
 B0WithoutComma = manipulateB0ValueForSavingPath(B0);
-path2SaveFigures = [configuration.path2Results dateFromConfig ...
-    'RelaxationRatesOf' configuration.compartment 'At' ...
+path2SaveFigures = [configuration.path2Results startDateOfSimulation ...
+    '_RelaxationRatesOf' compartment 'At' ...
     num2str(B0WithoutComma) 'T.fig'];
-path2SaveData = [configuration.path2Results dateFromConfig ...
-    '_ResultsFrom' configuration.compartment '.mat'];
+path2SaveData = [configuration.path2Results startDateOfSimulation ...
+    '_ResultsFrom' compartment 'At' num2str(B0WithoutComma) 'T.mat'];
 
 try
     atomCount = data.atomCounter;
@@ -33,8 +47,8 @@ end
 calculatedR1Rates = r1Perturbation(:,:,1:atomCount);
 
 %% trimm data
-lowerPercentile = 30;
-upperPercentile = 100-lowerPercentile;
+lowerPercentile = configuration.lowerPercentile;
+upperPercentile = configuration.upperPercentile;
 trimmedR1Rates = trimmR1DataWithPercentile(calculatedR1Rates, ...
     lowerPercentile,upperPercentile,orientationsCount,positionsCount);
 
