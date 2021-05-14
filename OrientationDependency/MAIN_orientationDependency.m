@@ -38,6 +38,7 @@ disp('Defining simulation parameters')
 lags = round(configuration.fractionForLags*timeSteps);
 nearestNeighbours = configuration.nearestNeighbours;
 atomsToCalculate = configuration.atomsToCalculate;
+startDateOfSimulation = datestr(now,'yyyymmdd');
 
 %% Start simulation
 stopWatch = zeros(1,atomsToCalculate);
@@ -156,7 +157,7 @@ for atomNumber=randperm(numberOfHs)
             ,'timeSteps','lags','atomCounter','B0' ...
             ,'orientationAngles','positionAngles' ...
             ,'atomIndex','nearestNeighbours','atomsToCalculate' ...
-            ,'fileName','stopWatch','numberOfHs'...
+            ,'fileName','stopWatch','numberOfHs','startDateOfSimulation'...
             ,'-v7.3')
         disp(['Time for saving variables: ' num2str(toc(savingTic))])
     end
