@@ -60,9 +60,9 @@ shiftForCorrelationFunction = configuration.shiftForCorrelationFunction;
 tmp = false(1,lags);
 tmp = tmp(1:shiftForCorrelationFunction:end);
 correlationFunction1W0Saver = complex(zeros(fibreOrientationsCount ...
-    ,positionsInMyelinCount,atomsToCalculate,length(temp)));
+    ,positionsInMyelinCount,atomsToCalculate,length(tmp)));
 correlationFunction2W0Saver = complex(zeros(fibreOrientationsCount ...
-    ,positionsInMyelinCount,atomsToCalculate,length(temp)));
+    ,positionsInMyelinCount,atomsToCalculate,length(tmp)));
 clearvars tmp
 
 r1WithPerturbationTheory = zeros(fibreOrientationsCount ...
