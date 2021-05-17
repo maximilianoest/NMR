@@ -1,5 +1,5 @@
 function [optimizedParameters] = ...
-    getHardcodedOptimizedParametersFromPaper(whichCase,B0)
+    getHardcodedOptimizedParametersFromPaper(whichCaseOfParameters,B0)
 
 configuration = readConfigurationFile('config.conf');
 effectiveInteractionMyelinFraction = ...
@@ -15,53 +15,65 @@ optimizedParametersFromPaperCase3 = ...
 optimizedParametersFromPaperCase4 = ...
     [0.136 1.14 2.73 0.84 11.2 13.3 0.83];
 
+myelinWaterFractionPosition = 1;
+freeWaterOffsetPosition = 4;
+exchangeRatesSM2MWPosition = 5;
+exchangeRatesMW2FW = 6;
+shapeFactorPosition = 7;
+
 optimizedParameters = {};
 optimizedParameters.myelinWaterR1Offset = 1.53*B0^(-0.31);
 optimizedParameters.solidMyelinR1Offset = 5.98*B0^(-0.45);
-optimizedParameters.freeWaterR1Offset = 1.53*B0^(-0.31);
 
-switch whichCase
+switch whichCaseOfParameters
     case 'Case1'
         optimizedParameters.myelinWaterFraction = ...
-            optimizedParametersFromPaperCase1(1);
+            optimizedParametersFromPaperCase1(myelinWaterFractionPosition);
+        optimizedParameters.freeWaterR1Offset = ...
+            optimizedParameteresFromPaperCase1(freeWaterOffsetPosition);
         optimizedParameters.exchangeRatesSM2MW = ...
-            optimizedParametersFromPaperCase1(5);
+            optimizedParametersFromPaperCase1(exchangeRatesSM2MWPosition);
         optimizedParameters.exchangeRatesMW2FW = ...
-            optimizedParametersFromPaperCase1(6);
+            optimizedParametersFromPaperCase1(exchangeRatesMW2FW);
         optimizedParameters.shapeFactor = ...
-            optimizedParametersFromPaperCase1(7);
+            optimizedParametersFromPaperCase1(shapeFactorPosition);
     case 'Case2'
         optimizedParameters.myelinWaterFraction = ...
-            optimizedParametersFromPaperCase2(1);
+            optimizedParametersFromPaperCase2(myelinWaterFractionPosition);
+        optimizedParameters.freeWaterR1Offset = ...
+            optimizedParametersFromPaperCase2(freeWaterOffsetPosition);
         optimizedParameters.exchangeRatesSM2MW = ...
-            optimizedParametersFromPaperCase2(5);
+            optimizedParametersFromPaperCase2(exchangeRatesSM2MWPosition);
         optimizedParameters.exchangeRatesMW2FW = ...
-            optimizedParametersFromPaperCase2(6);
+            optimizedParametersFromPaperCase2(exchangeRatesMW2FW);
         optimizedParameters.shapeFactor = ...
-            optimizedParametersFromPaperCase2(7);
+            optimizedParametersFromPaperCase2(shapeFactorPosition);
     case 'Case3'
         optimizedParameters.myelinWaterFraction = ...
-            optimizedParametersFromPaperCase3(1);
+            optimizedParametersFromPaperCase3(myelinWaterFractionPosition);
+        optimizedParameters.freeWaterR1Offset = ...
+            optimizedParametersFromPaperCase3(freeWaterOffsetPosition);
         optimizedParameters.exchangeRatesSM2MW = ...
-            optimizedParametersFromPaperCase3(5);
+            optimizedParametersFromPaperCase3(exchangeRatesSM2MWPosition);
         optimizedParameters.exchangeRatesMW2FW = ...
-            optimizedParametersFromPaperCase3(6);
+            optimizedParametersFromPaperCase3(exchangeRatesMW2FW);
         optimizedParameters.shapeFactor = ...
-            optimizedParametersFromPaperCase3(7);
+            optimizedParametersFromPaperCase3(shapeFactorPosition);
     case 'Case4'
         optimizedParameters.myelinWaterFraction = ...
-            optimizedParametersFromPaperCase4(1);
+            optimizedParametersFromPaperCase4(myelinWaterFractionPosition);
+        optimizedParameters.freeWaterR1Offset = ...
+            optimizedParametersFromPaperCase4(freeWaterOffsetPosition);
         optimizedParameters.exchangeRatesSM2MW = ...
-            optimizedParametersFromPaperCase4(5);
+            optimizedParametersFromPaperCase4(exchangeRatesSM2MWPosition);
         optimizedParameters.exchangeRatesMW2FW = ...
-            optimizedParametersFromPaperCase4(6);
+            optimizedParametersFromPaperCase4(exchangeRatesMW2FW);
         optimizedParameters.shapeFactor = ...
-            optimizedParametersFromPaperCase4(7);
+            optimizedParametersFromPaperCase4(shapeFactorPosition);
     otherwise 
         error(['Unknown case for optimized parameters. Take a look at' ...
             ' the configuration file.'])
 end
-
 end
 
 
