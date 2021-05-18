@@ -6,7 +6,7 @@ try
     B0WithoutComma = [splittedB0String{1} splittedB0String{2}];
 catch
     B0WithoutComma = B0String;
-    warning('B0 has no comma.')
+    disp('B0 has no comma.')
 end
 
 
