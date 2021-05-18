@@ -1,9 +1,12 @@
 clc
 clear all %#ok<CLALL>
+close all
 %% load data
 configuration = readConfigurationFile('config.conf');
 addpath(genpath(configuration.path2Library));
+compartment = configuration.compartment;
 
+disp(['Loading ' compartment ' data']);
 data = loadResultsFromR1Simulation(configuration);
 
 r1Perturbation = data.r1WithPerturbationTheory;
@@ -34,7 +37,6 @@ try
 catch
     atomCount = findNumberOfCalculatedR1Rates(r1Perturbation);
 end
-
 calculatedR1Rates = r1Perturbation(:,:,1:atomCount);
 
 %% trimm data
@@ -66,18 +68,44 @@ data.effectiveRelaxationRatesMedian = effectiveRelaxationRatesMedian;
 save(path2SaveData,'-struct','data');
 
 %% plotting data and saving them
-figs(1) = figure(1);
+fontSize = 14;
+figs(1) = figure('DefaultAxesFontSize',fontSize);
 plot(orientationAngles,effectiveRelaxationRatesMean,'LineWidth',1.5);
 hold on
 plot(orientationAngles,effectiveRelaxationRatesMedian,'LineWidth',1.5);
 hold off
 legend('Mean','Median')
-grid on
-title(['Angle Dependency of Relaxation Rate at ' num2str(B0) ' Tesla (' ...
-    num2str(lowerPercentile) '-'  num2str(upperPercentile) '-Percentile)'])
-xlabel('Angle [°]')
+grid minor
+title(['Angle Dependency for \theta of Relaxation Rate at ' ...
+    num2str(B0) ' Tesla (' num2str(lowerPercentile) '-' ...
+    num2str(upperPercentile) '-Percentile)'])
+xlabel('Angle \theta [°]')
 ylabel('Relaxation Rates [Hz]')
 
+figs(2) = figure('DefaultAxesFontSize',fontSize);
+hold on
+legendEntries = {};
+legendEntryCounter = 1;
+for positionNumber = 1:positionsCount
+    positionAngle = positionAngles(positionNumber);
+    plot(orientationAngles ...
+        ,meanRelaxationRates(:,positionNumber),'LineWidth',1.5);
+    legendEntries{legendEntryCounter} = ['Mean \phi: ' ...
+        num2str(positionAngle)];  %#ok<SAGROW>
+    legendEntryCounter = legendEntryCounter+1;
+    
+    plot(orientationAngles ...
+        ,medianRelaxationRates(:,positionNumber),'LineWidth',1.5);
+    legendEntries{legendEntryCounter} = ['Median \phi: ' ...
+        num2str(positionAngle)];  %#ok<SAGROW>
+    legendEntryCounter = legendEntryCounter+1;
+end
+hold off
+legend(legendEntries,'Location','NorthWest')
+title(['Relaxation Rates of ' compartment ])
+xlabel('Angle \theta [°]')
+ylabel('Relaxation Rates [Hz]')
 savefig(figs,path2SaveFigures)
+grid minor
 
 
