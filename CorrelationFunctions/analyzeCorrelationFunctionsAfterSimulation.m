@@ -26,14 +26,8 @@ path2SaveFigures = [configuration.path2Results startDateOfSimulation ...
     num2str(B0WithoutComma) 'T.fig'];
 
 %% analyze data
-correlationFunctions1W0 = data.correlationFunction1W0Saver;
-correlationFunctions2W0 = data.correlationFunction2W0Saver;
-atomIndex = data.atomIndex;
-atomIndex = atomIndex(1:atomCount);
-correlationFunctions1W0 = ...
-    squeeze(correlationFunctions1W0(:,:,atomIndex,:));
-correlationFunctions2W0 = ...
-    squeeze(correlationFunctions2W0(:,:,atomIndex,:));
+[correlationFunctions1W0,correlationFunctions2W0] = ...
+    getCorrelationFunctionsFromSimulationData(data);
 
 averageCorrelationFunctions1W0 = squeeze(mean( ...
     correlationFunctions1W0,3));
