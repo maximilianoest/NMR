@@ -4,88 +4,133 @@ clc
 clear all
 close all
 
-path2Load = ['C:\Users\maxoe\Google Drive\Promotion\Results\Myelin' ...
-    '\Relaxation\Lipid_H_500ns_2ps_wh_resultsOriDep_20210510.mat'];
+configuration = readConfigurationFile('config.conf');
+addpath(genpath(configuration.path2Library));
+compartment = configuration.compartment;
 
-data = load(path2Load);
-B0 = num2str(data.B0);
-B0 = split(B0,'.');
-B0 = [B0{1} B0{2}];
+data = loadResultsFromR1Simulation(configuration);
 
-path2Save = ['C:\Users\maxoe\Google Drive\Promotion\Results\Myelin' ...
-    '\Correlation\' datestr(date,'yyyymmdd_') ...
-    'CorrelationsFunctionsOfLipidAt' num2str(B0) 'T.fig'];
+atomCount = data.atomCounter;
+orientationAngles = rad2deg(data.orientationAngles);
+orientationsCount = length(orientationAngles);
+positionAngles = rad2deg(data.positionAngles);
+positionsCount = length(positionAngles);
+deltaT = data.deltaT*data.shiftForCorrelationFunction;
 
-sumCorrelationFunctionW0 = data.correlationFunctionW0Saver;
-sumCorrelationFunction2W0 = data.correlationFunction2W0Saver;
+B0 = data.B0;
+B0WithoutComma = manipulateB0ValueForSavingPath(B0);
 
-relaxationRates = data.r1WithPerturbationTheory;
-[orientationCount,positionCount,~] = size(relaxationRates);
-try
-    atomsWithCalculatedR1Rates = (relaxationRates > 0.000001);
-    atomsWithCalculatedR1Rates = logical(squeeze(mean(mean( ...
-        atomsWithCalculatedR1Rates,1),2))');
-    atomCount = data.atomCounter;
-catch
-    atomCount = sum(atomsWithCalculatedR1Rates);
-end
-
-
-deltaT = data.deltaT;
+startDateOfSimulation = data.startDateOfSimulation;
+path2SaveFigures = [configuration.path2Results startDateOfSimulation ...
+    '_CorrelationFunctionsOf' compartment 'At' ...
+    num2str(B0WithoutComma) 'T.fig'];
+path2SaveData = [configuration.path2Results startDateOfSimulation ...
+    '_ResultsFrom' compartment 'At' num2str(B0WithoutComma) 'T.mat'];
 
 %% analyze data
-correlationFunctionW0 = sumCorrelationFunctionW0/atomCount;
-correlationFunction2W0 = sumCorrelationFunction2W0/atomCount;
+correlationFunctions1W0 = data.correlationFunction1W0Saver;
+correlationFunctions2W0 = data.correlationFunction2W0Saver;
+atomIndex = data.atomIndex;
+atomIndex = atomIndex(1:atomCount);
+correlationFunctions1W0 = ...
+    squeeze(correlationFunctions1W0(:,:,atomIndex,:));
+correlationFunctions2W0 = ...
+    squeeze(correlationFunctions2W0(:,:,atomIndex,:));
 
-effectiveRelaxationRates = squeeze(mean(relaxationRates,2));
+averageCorrelationFunctions1W0 = squeeze(mean( ...
+    correlationFunctions1W0,3));
+averageCorrelationFunctions2W0 = squeeze(mean( ...
+    correlationFunctions2W0,3));
 
-effectiveCorrelationFunctionW0 = squeeze(mean( ...
-    correlationFunctionW0,2));
-effectiveCorrelationFunction2W0 = squeeze(mean( ...
-    correlationFunction2W0,2));
+effectiveCorrelationFunctions1W0 = squeeze(mean( ...
+    averageCorrelationFunctions1W0,2));
+effectiveCorrelationFunctions2W0 = squeeze(mean( ...
+    averageCorrelationFunctions2W0,2));
 
-%% plotting 
-orientationsCount = size(effectiveCorrelationFunctionW0,1);
-orientationAngles = linspace(0,90,orientationsCount);
-tauAxis = 0:deltaT:(size(sumCorrelationFunctionW0,3)-1)*deltaT;
+%% plotting
+tauAxis = 0:deltaT:(size(correlationFunctions1W0,4)-1)*deltaT;
 tauMin = 0;
 tauMax = 5e-7;
 valueMin = 0;
 valueMax = 0.5;
+fontSize = 16;
+
 legendEntries = {};
-figs(1) = figure(1);
+figs(1) = figure('DefaultAxesFontSize',fontSize);
 hold on
-for i = 1:orientationsCount
-    plot(tauAxis,abs(real(effectiveCorrelationFunctionW0(i,:) ...
-        /effectiveCorrelationFunctionW0(i,1))),'LineWidth',1.5)
-    legendEntries{i} = num2str( ...
-        orientationAngles(i),'Theta: %.2f'); %#ok<SAGROW>
+for orientationNumber = 1:orientationsCount
+    plot(tauAxis,abs(real(effectiveCorrelationFunctions1W0( ...
+        orientationNumber,:)/effectiveCorrelationFunctions1W0( ...
+        orientationNumber,1))),'LineWidth',1.5)
+    legendEntries{orientationNumber} = num2str( ...
+        orientationAngles(orientationNumber),'Theta: %.2f'); %#ok<SAGROW>
     axis([tauMin tauMax valueMin valueMax])
 end
 hold off
-grid on
+grid minor
 legend(legendEntries)
-title('Effective Correlation Function at w0')
-xlabel('tau')
+title('Effective Correlation Functions for w0')
+xlabel('\tau')
 
-orientationsCount = size(effectiveCorrelationFunction2W0,1);
 legendEntries = {};
-figs(2) = figure(2);
+figs(2) = figure('DefaultAxesFontSize',fontSize);
 hold on
-for i = 1:orientationsCount
-    plot(tauAxis,abs(real(effectiveCorrelationFunction2W0(i,:) ...
-        /effectiveCorrelationFunction2W0(i,1))),'LineWidth',1.5)
-    legendEntries{i} = num2str( ...
-        orientationAngles(i),'Theta: %.2f'); %#ok<SAGROW>
+for orientationNumber = 1:orientationsCount
+    for positionNumber = 1:positionsCount
+        plot(tauAxis,squeeze(abs(real(averageCorrelationFunctions1W0( ...
+            orientationNumber,positionNumber,:) ...
+            /averageCorrelationFunctions1W0( ...
+            orientationNumber,positionNumber,1)))),'LineWidth',1.5)
+    end
+    legendEntries{orientationNumber} = num2str( ...
+        orientationAngles(orientationNumber),'Theta: %.2f'); %#ok<SAGROW>
+end
+axis([tauMin tauMax valueMin valueMax])
+hold off
+grid minor
+legend(legendEntries)
+title('Average Correlation Functions for w0')
+xlabel('\tau')
+
+legendEntries = {};
+figs(3) = figure('DefaultAxesFontSize',fontSize);
+hold on
+for orientationNumber = 1:orientationsCount
+    plot(tauAxis,abs(real(effectiveCorrelationFunctions2W0( ...
+        orientationNumber,:)/effectiveCorrelationFunctions2W0( ...
+        orientationNumber,1))),'LineWidth',1.5)
+    legendEntries{orientationNumber} = num2str( ...
+        orientationAngles(orientationNumber),'Theta: %.2f'); %#ok<SAGROW>
     axis([tauMin tauMax valueMin valueMax])
 end
 hold off
-grid on
+grid minor
 legend(legendEntries)
-title('Effective Correlation Function at 2w0')
-xlabel('tau')
+title('Effective Correlation Functions for 2w0')
+xlabel('\tau')
 
-savefig(figs,path2Save);
+legendEntries = {};
+figs(4) = figure('DefaultAxesFontSize',fontSize);
+hold on
+for orientationNumber = 1:orientationsCount
+    for positionNumber = 1:positionsCount
+        plot(tauAxis,squeeze(abs(real(averageCorrelationFunctions2W0( ...
+            orientationNumber,positionNumber,:) ...
+            /averageCorrelationFunctions2W0( ...
+            orientationNumber,positionNumber,1)))),'LineWidth',1.5)
+    end
+    legendEntries{orientationNumber} = num2str( ...
+        orientationAngles(orientationNumber),'Theta: %.2f'); %#ok<SAGROW>
+end
+axis([tauMin tauMax valueMin valueMax])
+hold off
+grid minor
+legend(legendEntries)
+title('Average Correlation Functions for w0')
+xlabel('\tau')
+ylabel('G(\tau)')
+
+savefig(figs,path2SaveFigures);
 
 
 
