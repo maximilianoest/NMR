@@ -30,7 +30,8 @@ path2SaveFigures = [configuration.path2Results startDateOfSimulation ...
     '_RelaxationRatesOf' compartment 'At' ...
     num2str(B0WithoutComma) 'T.fig'];
 path2SaveData = [configuration.path2Results startDateOfSimulation ...
-    '_ResultsFrom' compartment 'At' num2str(B0WithoutComma) 'T.mat'];
+    '_FilteredSimulationDataFrom' compartment 'At' ...
+    num2str(B0WithoutComma) 'T.mat'];
 
 try
     atomCount = data.atomCounter;
@@ -76,7 +77,7 @@ plot(orientationAngles,effectiveRelaxationRatesMedian,'LineWidth',1.5);
 hold off
 legend('Mean','Median')
 grid minor
-title(['Angle Dependency for \theta of Relaxation Rate at ' ...
+title(['Dependency of Relaxation Rate from \theta at ' ...
     num2str(B0) ' Tesla (' num2str(lowerPercentile) '-' ...
     num2str(upperPercentile) '-Percentile)'])
 xlabel('Angle \theta [°]')
@@ -105,7 +106,9 @@ legend(legendEntries,'Location','NorthWest')
 title(['Relaxation Rates of ' compartment ])
 xlabel('Angle \theta [°]')
 ylabel('Relaxation Rates [Hz]')
-savefig(figs,path2SaveFigures)
 grid minor
+
+savefig(figs,path2SaveFigures)
+
 
 

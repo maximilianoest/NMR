@@ -6,8 +6,12 @@ addpath(genpath(configuration.path2Library));
 path2ConstantsFile = configuration.path2ConstantsFileOnLocalMachine;
 
 data = loadResultsFromR1Simulation(configuration);
-
 B0 = data.B0;
+startDateOfSimulation = data.startDateOfSimulation;
+path2SaveFigures = [configuration.path2Results startDateOfSimulation ...
+    '_ReconstructedRelaxationRates' configuration.compartment 'At' ...
+    num2str(B0) 'T.fig'];
+
 constants = readConstantsFile(path2ConstantsFile);
 gammaRad = constants.gammaRad;
 omega0 = gammaRad*B0;
@@ -58,7 +62,7 @@ end
 r1RatesMedian = median(r1WithPerturbationTheory,3);
 r1RatesMean = mean(r1WithPerturbationTheory,3);
 
-figure(1)
+figs(1) = figure(1);
 hold on
 legendEntries = {};
 legendEntryCounter = 1;
@@ -81,6 +85,8 @@ ylabel('Relaxation Rate [Hz]')
 title('Relaxation Rates reproduced from Correlation Functions')
 legend(legendEntries,'Location','NorthWest')
 hold off
+
+savefig(figs,path2SaveFigures);
 
 
 
