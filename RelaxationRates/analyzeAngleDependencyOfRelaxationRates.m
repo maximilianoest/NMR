@@ -53,8 +53,9 @@ meanRelaxationRates = mean(trimmedR1Rates,3);
 medianRelaxationRates = median(trimmedR1Rates,3);
 
 effectiveRelaxationRatesMean = mean(meanRelaxationRates,2);
-tmp = reshape(trimmedR1Rates,orientationsCount,atomCount*positionsCount);
-effectiveRelaxationRatesMedian = median(tmp,2);
+% tmp = reshape(trimmedR1Rates,orientationsCount,atomCount*positionsCount);
+% effectiveRelaxationRatesMedian = median(tmp,2);
+effectiveRelaxationRatesMedian = mean(medianRelaxationRates,2);
 
 %% saving data
 data.calculatedR1Rates = calculatedR1Rates;
@@ -75,7 +76,7 @@ plot(orientationAngles,effectiveRelaxationRatesMean,'LineWidth',1.5);
 hold on
 plot(orientationAngles,effectiveRelaxationRatesMedian,'LineWidth',1.5);
 hold off
-legend('Mean','Median')
+legend('Mean','Median','Location','NorthWest')
 grid minor
 title(['Dependency of Relaxation Rate from \theta at ' ...
     num2str(B0) ' Tesla (' num2str(lowerPercentile) '-' ...

@@ -8,7 +8,7 @@ switch compartment
         fileName = configuration.lipidFileName;
 end
         
-data2Load = [configuration.path2Data fileName '.mat'];
+data2Load = [configuration.path2Results fileName '.mat'];
 data = load(data2Load);
 
 end
