@@ -5,7 +5,7 @@ function calculateR1RateRAMandPERFORMANCEoptimized(configuration)
 
 [trajectoryX,trajectoryY,trajectoryZ] = loadTrajectoriesFromData( ...
     configuration,path2Data);
-fileName = configuration.fileName;
+fileName = configuration.fileName; %#ok<NASGU>
 
 clearvars -except  trajectoryX trajectoryY trajectoryZ configuration ...
     fileName path2Save path2ConstantsFile
@@ -16,7 +16,7 @@ disp('Defining constants')
 deltaT = configuration.deltaT;
 constants = readConstantsFile(path2ConstantsFile);
 
-picoSecond = constants.picoSecond;
+picoSecond = constants.picoSecond; %#ok<NASGU>
 hbar = constants.hbar;
 gammaRad = constants.gammaRad;
 B0 = configuration.B0;
@@ -31,7 +31,7 @@ disp('Defining simulation parameters')
 lags = round(configuration.fractionForLags*timeSteps);
 nearestNeighbours = configuration.nearestNeighbours;
 atomsToCalculate = configuration.atomsToCalculate;
-startDateOfSimulation = datestr(now,'yyyymmdd');
+startDateOfSimulation = datestr(now,'yyyymmdd'); %#ok<NASGU>
 
 %% Start simulation
 stopWatch = zeros(1,atomsToCalculate);
@@ -45,7 +45,7 @@ fibreOrientationsCount = size(orientationAngles,2);
 positionsInMyelinCount = size(positionAngles,2);
 
 meanPositions = single([mean(trajectoryX,2) mean(trajectoryY,2) ...
-    mean(trajectoryZ,2)]);
+    mean(trajectoryZ,2)]); %#ok<NASGU>
 
 atomCounter = 0;
 atomIndex = zeros(1,atomsToCalculate);
@@ -66,8 +66,9 @@ rotatedY = zeros(size(nearestNeighboursX));
 rotatedZ = zeros(size(nearestNeighboursX));
 
 
-polarAngle = zeros(size(rotatedX,1),size(rotatedY,2));
-azimuthAngle = zeros(size(rotatedX,1),size(rotatedY,2));
+polarAngle = zeros(size(rotatedX));
+azimuthAngle = zeros(size(rotatedX));
+hypotuseXY = zeros(size(rotatedX));
 
 firstOrderSphericalHarmonic = zeros(size(rotatedX,1),size(rotatedY,2));
 secondOrderSphericalHarmonic = zeros(size(rotatedX,1),size(rotatedY,2));
@@ -139,7 +140,7 @@ for atomNumber = randperm(numberOfHs)
     if mod(atomCounter,5) == 0
         disp('Start saving data.')
         savingTic = tic;
-        lastSavingDate = datestr(now,'yyyymmdd_HHMM');
+        lastSavingDate = datestr(now,'yyyymmdd_HHMM'); %#ok<NASGU>
         save(path2Save ,'r1WithPerturbationTheory' ...
             ,'correlationFunction1W0Saver' ...
             ,'correlationFunction2W0Saver' ...
@@ -258,11 +259,11 @@ end
             correlationFunction1W0Saver(orientationNumber ...
                 ,positionNumber,atomCounter,:) = single( ...
                 correlationFunction1W0( ...
-                1:shiftForCorrelationFunction:end));
+                1:shiftForCorrelationFunction:end)); %#ok<SETNU>
             correlationFunction2W0Saver(orientationNumber ...
                 ,positionNumber,atomCounter,:) = single( ...
                 correlationFunction2W0( ...
-                1:shiftForCorrelationFunction:end));
+                1:shiftForCorrelationFunction:end)); %#ok<SETNU>
         end 
         
         calculateSpectralDensities();
@@ -284,7 +285,7 @@ end
             r1WithPerturbationTheory(orientationNumber,positionNumber ...
                 ,atomCounter) = DD*3/2*( ...
                 abs(real(mean(spectralDensity1W0))) ...
-                +abs(real(mean(spectralDensity2W0))));
+                +abs(real(mean(spectralDensity2W0)))); %#ok<SETNU>
             
         end
         
