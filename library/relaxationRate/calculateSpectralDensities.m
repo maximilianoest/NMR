@@ -9,8 +9,8 @@ spectralDensity1AllTimeSteps = 2*(deltaT*cumsum(correlationFunction1 ...
 spectralDensity2AllTimeSteps = 2*(deltaT*cumsum(correlationFunction2 ...
         .*exp(-2i*omega0*deltaT*(0:lags-1))));
 
-spectralDensity1 = spectralDensity1AllTimeSteps(lags:end);
-spectralDensity2 = spectralDensity2AllTimeSteps(lags:end);
+spectralDensity1 = spectralDensity1AllTimeSteps(end);
+spectralDensity2 = spectralDensity2AllTimeSteps(end);
 
 end
 

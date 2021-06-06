@@ -14,7 +14,7 @@ secondSphericalHarmonicFFT = fft( ...
 
 crosscorrelationFunction = ifft(firstSphericalHarmonicFFT ... 
     .*conj(secondSphericalHarmonicFFT),[],2)/timeSteps;
-crosscorrelationFunction = sum(crosscorrelationFunction(:,(1:numLags)));
+crosscorrelationFunction = sum(crosscorrelationFunction(:,(1:numLags)),1);
 end
 
 
