@@ -12,11 +12,11 @@ waterData = load([configuration.path2WaterData ...
     configuration.waterFileName]);
 
 %% load lipid data
-allLipidR1Rates = lipidData.calculatedR1Rates;
-lipidOrientations = rad2deg(lipidData.positionAngles);
+allLipidR1Rates = lipidData.trimmedR1Rates;
+lipidOrientations = rad2deg(lipidData.orientationAngles);
 
 %% load water data
-allWaterR1Rates = waterData.calculatedR1Rates;
+allWaterR1Rates = waterData.trimmedR1Rates;
 waterOrientations = rad2deg(waterData.orientationAngles);
 
 %% check for same data
@@ -137,16 +137,17 @@ for orientationNumber = 1:orientationsCount
 end
 
 %% plotting
+fontSize = 14;
 informationText = {'Data dates:' ...
     ,['Lipid: ' lipidData.startDateOfSimulation] ...
     ,['Water: ' waterData.startDateOfSimulation]};
-figs(1) = figure(1);
+figs(1) = figure('DefaultAxesFontSize',fontSize);
 plot(orientations,predictedR1Rates,'LineWidth',1.5)
 title([whichCaseForEffectiveR1Rates ' and ' ...
     whichCaseForOptimizedParameters])
 xlabel('Angle \theta [°]')
 ylabel('Relaxation Rate R_1 [Hz]')
-grid on
+grid minor
 annotation('textbox',[.9 .5 .1 .2],'String',informationText ...
     ,'EdgeColor','none')
 saveas(figs,[configuration.path2SaveFigs whichCaseForEffectiveR1Rates ...

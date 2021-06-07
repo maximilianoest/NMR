@@ -27,10 +27,10 @@ end
 %% set up system
 B0WithoutComma = manipulateB0ValueForSavingPath(B0);
 path2SaveFigures = [configuration.path2Results startDateOfSimulation ...
-    '_RelaxationRatesOf' compartment 'At' ...
+    '_' compartment '_RelaxationRatesAt' ...
     num2str(B0WithoutComma) 'T.fig'];
 path2SaveData = [configuration.path2Results startDateOfSimulation ...
-    '_FilteredSimulationDataFrom' compartment 'At' ...
+    '_' compartment '_FilteredSimulationDataAt' ...
     num2str(B0WithoutComma) 'T.mat'];
 
 try
@@ -38,7 +38,18 @@ try
 catch
     atomCount = findNumberOfCalculatedR1Rates(r1Perturbation);
 end
-calculatedR1Rates = r1Perturbation(:,:,1:atomCount);
+
+switch compartment
+    case 'Water'
+        whichLags = configuration.whichLags;
+        calculatedR1Rates = r1Perturbation(:,:,1:atomCount,whichLags);
+    case 'Lipid'
+        calculatedR1Rates = r1Perturbation(:,:,1:atomCount);
+    otherwise
+        error('Compartment not known! Please check for any writing errors')
+end
+
+
 
 %% trimm data
 lowerPercentile = configuration.lowerPercentile;
@@ -53,8 +64,6 @@ meanRelaxationRates = mean(trimmedR1Rates,3);
 medianRelaxationRates = median(trimmedR1Rates,3);
 
 effectiveRelaxationRatesMean = mean(meanRelaxationRates,2);
-% tmp = reshape(trimmedR1Rates,orientationsCount,atomCount*positionsCount);
-% effectiveRelaxationRatesMedian = median(tmp,2);
 effectiveRelaxationRatesMedian = mean(medianRelaxationRates,2);
 
 %% saving data
