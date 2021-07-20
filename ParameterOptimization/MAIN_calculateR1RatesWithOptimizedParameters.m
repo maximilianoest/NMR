@@ -63,8 +63,15 @@ timeAxis = linspace(0,simulationTime,timeSteps);
 deltaT = timeAxis(2)-timeAxis(1);
 
 %% calculate missing parameters
-effectiveInteractionMyelinFraction = ...
-    configuration.effectiveInteractionMyelinFraction;
+switch(configuration.whichCaseForOptimizedParameters)
+    case {'Case1', 'Case2'}
+        effectiveInteractionMyelinFraction = 0.32;
+    case {'Case3', 'Case4'}
+        effectiveInteractionMyelinFraction = 1;
+    otherwise
+        error('Unknown Case')
+end
+
 waterLipidHydrogenDensityRatio = configuration ...
     .waterLipidHydrogenDensityRatio;
 
@@ -148,8 +155,6 @@ title([whichCaseForEffectiveR1Rates ' and ' ...
 xlabel('Angle \theta [°]')
 ylabel('Relaxation Rate R_1 [Hz]')
 grid minor
-annotation('textbox',[.9 .5 .1 .2],'String',informationText ...
-    ,'EdgeColor','none')
 saveas(figs,[configuration.path2SaveFigs whichCaseForEffectiveR1Rates ...
     '_' configuration.fileNameToSaveFigs])
 
