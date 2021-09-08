@@ -4,90 +4,52 @@ clear all %#ok<CLALL>
 %% configure the System
 configuration = readConfigurationFile('config.conf');
 addpath(genpath(configuration.path2Library));
-effectiveInteractionMyelinFraction = ...
-    configuration.effectiveInteractionMyelinFraction;
 
-optimizedParametersFromPaperCase1 = ...
-    [0.15 0.5 2.51 1.2 14.9/effectiveInteractionMyelinFraction 16.3 1];
-optimizedParametersFromPaperCase2 = ...
-    [0.145 0.985 3.04 1.1 10/effectiveInteractionMyelinFraction 12.6 ...
-    0.966];
-optimizedParametersFromPaperCase3 = ...
-    [0.14 0.59 2.57 0.86 14.7 16.0 0.99];
-optimizedParametersFromPaperCase4 = ...
-    [0.136 1.14 2.73 0.84 11.2 13.3 0.83];
+%% get data
+lipidData = load([configuration.path2LipidData ...
+    configuration.lipidFileName]);
+waterData = load([configuration.path2WaterData ...
+    configuration.waterFileName]);
 
 %% load lipid data
-lipidDataFieldsToLoad = configuration.lipidDataFieldsToLoad;
-path2LipidData = configuration.path2LipidData;
-lipidFieldNamesArray = getFieldNamesArray(lipidDataFieldsToLoad);
-lipidDataFields = loadFieldsFromMatFile(path2LipidData ...
-    ,lipidFieldNamesArray);
+allLipidR1Rates = lipidData.trimmedR1Rates;
+lipidOrientations = rad2deg(lipidData.orientationAngles);
 
-allLipidR1Rates = lipidDataFields.(lipidFieldNamesArray(1));
-lipidAtomCounter = lipidDataFields.(lipidFieldNamesArray(4));
-allLipidR1Rates = allLipidR1Rates(:,:,1:lipidAtomCounter);
-lipidPositions = rad2deg(lipidDataFields.(lipidFieldNamesArray(2)));
-lipidOrientations = rad2deg(lipidDataFields.(lipidFieldNamesArray(3)));
 %% load water data
-waterDataFieldsToLoad = configuration.waterDataFieldsToLoad;
-path2WaterData = configuration.path2WaterData;
-waterFieldNamesArray = getFieldNamesArray(waterDataFieldsToLoad);
-waterDataFields = loadFieldsFromMatFile(path2WaterData ...
-    ,waterFieldNamesArray);
+allWaterR1Rates = waterData.trimmedR1Rates;
+waterOrientations = rad2deg(waterData.orientationAngles);
 
-waterAtomCounter = waterDataFields.(waterFieldNamesArray(4));
-allWaterR1Rates = waterDataFields.(waterFieldNamesArray(1));
-allWaterR1Rates = allWaterR1Rates(:,:,1:waterAtomCounter);
-waterPositions = rad2deg(waterDataFields.(waterFieldNamesArray(2)));
-waterOrientations = rad2deg(waterDataFields.(waterFieldNamesArray(3)));
-
+%% check for same data
 lipidOrientationsCount = size(lipidOrientations,2);
 waterOrientationsCount = size(waterOrientations,2);
-if lipidOrientationsCount ~= waterOrientationsCount
-    error(['Lipid Orientations (=' num2str(lipidOrientationsCount) ...
-        ') and Water Orientations (=' num2str(waterOrientationsCount) ...
-        ') are not the same.']);
-else
+if lipidOrientationsCount == waterOrientationsCount
     orientationsCount = lipidOrientationsCount;
     orientations = lipidOrientations;
+else
+    error(['Lipid Orientations (=' num2str(lipidOrientationsCount) ...
+        ') and Water Orientations (=' num2str(waterOrientationsCount) ...
+        ') are not the same!']);
 end
 
-
-%% Percentile
-% TODO: calculate percentiles of the data set
-
-%% calculate R1 rates
-
-whichCase = configuration.whichCase;
-switch whichCase
-    case 'meanFractionMyelin'
-        optimizedParameters = optimizedParametersFromPaperCase1;
-        effectiveLipidR1Rates = mean(mean(allLipidR1Rates,3),2);
-        effectiveWaterR1Rates = mean(mean(allWaterR1Rates,3),2);
-        effectiveInteractionMyelinFraction = 0.32;
-    case 'medianFractionMyelin'
-        optimizedParameters = optimizedParametersFromPaperCase2;
-        effectiveLipidR1Rates = median(median(allLipidR1Rates,3),2);
-        effectiveWaterR1Rates = median(median(allWaterR1Rates,3),2);
-        effectiveInteractionMyelinFraction = 0.32;
-    case 'meanWholeMyelin'
-        optimizedParameters = optimizedParametersFromPaperCase3;
-        effectiveLipidR1Rates = mean(mean(allLipidR1Rates,3),2);
-        effectiveWaterR1Rates = mean(mean(allWaterR1Rates,3),2);
-        effectiveInteractionMyelinFraction = 1;
-    case 'medianWholeMyelin'
-        optimizedParameters = optimizedParametersFromPaperCase4;
-        effectiveLipidR1Rates = median(median(allLipidR1Rates,3),2);
-        effectiveWaterR1Rates = median(median(allWaterR1Rates,3),2);
-        effectiveInteractionMyelinFraction = 1;
-    otherwise 
-        warning('Unknown Case.')
+%% decide which data to calculate and show
+if lipidData.B0 == waterData.B0
+    whichCaseForOptimizedParameters = ...
+        configuration.whichCaseForOptimizedParameters;
+    optimizedParameters = getHardcodedOptimizedParametersFromPaper( ...
+        whichCaseForOptimizedParameters,lipidData.B0);
+    
+    whichCaseForEffectiveR1Rates = ...
+        configuration.whichCaseForEffectiveR1Rates;
+    [effectiveLipidR1Rates,effectiveWaterR1Rates] = ...
+        getEffectiveR1RatesForCase(whichCaseForEffectiveR1Rates ...
+        ,lipidData,waterData);
+else
+    error('The magnetic fields do not have the same strengths!')
 end
+
 
 %% calculate the shifts
-
-shapeFactor = optimizedParameters(7);
+shapeFactor = optimizedParameters.shapeFactor;
 effectiveLipidR1RateShift = shapeFactor*( ...
     effectiveLipidR1Rates - effectiveLipidR1Rates(1));
 effectiveWaterR1RateShift = shapeFactor*( ...
@@ -96,36 +58,47 @@ effectiveWaterR1RateShift = shapeFactor*( ...
 %% configure simulation
 simulationTime = configuration.simulationTime;
 timeSteps = configuration.timeSteps;
-waterLipidHydrogenDensityRatio = configuration ...
-    .waterLipidHydrogenDensityRatio;
 
 timeAxis = linspace(0,simulationTime,timeSteps);
 deltaT = timeAxis(2)-timeAxis(1);
 
 %% calculate missing parameters
-myelinWaterFraction = optimizedParameters(1);
+switch(configuration.whichCaseForOptimizedParameters)
+    case {'Case1', 'Case2'}
+        effectiveInteractionMyelinFraction = 0.32;
+    case {'Case3', 'Case4'}
+        effectiveInteractionMyelinFraction = 1;
+    otherwise
+        error('Unknown Case')
+end
+
+waterLipidHydrogenDensityRatio = configuration ...
+    .waterLipidHydrogenDensityRatio;
+
+myelinWaterFraction = optimizedParameters.myelinWaterFraction;
 solidMyelinFraction = (myelinWaterFraction ...
     /waterLipidHydrogenDensityRatio-myelinWaterFraction) ...
     *effectiveInteractionMyelinFraction;
 freeWaterFraction = (1-myelinWaterFraction);
 
-myelinWaterR1Offset = optimizedParameters(2);
-solidMyelinR1Offset = optimizedParameters(3);
-
-fittedFreeWaterR1Rates = optimizedParameters(4);
+myelinWaterR1Offset = optimizedParameters.myelinWaterR1Offset;
 fittedMyelinWaterR1Rates = myelinWaterR1Offset ...
     +effectiveWaterR1RateShift;
+
+solidMyelinR1Offset = optimizedParameters.solidMyelinR1Offset;
 fittedSolidMyelinR1RateRates = solidMyelinR1Offset ...
     +effectiveLipidR1RateShift;
 
-exchangeRatesSM2MW = optimizedParameters(5);
-exchangeRatesMW2FW = optimizedParameters(6);
+freeWaterR1Offset = optimizedParameters.freeWaterR1Offset;
+
+exchangeRatesSM2MW = optimizedParameters.exchangeRatesSM2MW;
+exchangeRatesMW2FW = optimizedParameters.exchangeRatesMW2FW;
 exchangeRatesMW2SM = solidMyelinFraction/myelinWaterFraction ...
     *exchangeRatesSM2MW;
 exchangeRatesFW2MW = myelinWaterFraction/freeWaterFraction ...
     *exchangeRatesMW2FW;
 
-%% determination of R1 rate
+%% calculate R1 rate
 predictedR1Rates = zeros(1,orientationsCount);
 
 initialFreeWaterValue = -freeWaterFraction;
@@ -156,7 +129,7 @@ for orientationNumber = 1:orientationsCount
             -exchangeRatesMW2FW*myelinWaterPart(timeStep) ...
             +exchangeRatesFW2MW*freeWaterPart(timeStep));
         freeWaterPart(timeStep+1) = freeWaterPart(timeStep) ...
-            +deltaT*(fittedFreeWaterR1Rates ...
+            +deltaT*(freeWaterR1Offset ...
             *(freeWaterFraction-freeWaterPart(timeStep)) ...
             -exchangeRatesFW2MW*freeWaterPart(timeStep) ...
             +exchangeRatesMW2FW*myelinWaterPart(timeStep));
@@ -171,17 +144,19 @@ for orientationNumber = 1:orientationsCount
 end
 
 %% plotting
-
-figs(1) = figure(1);
+fontSize = 14;
+informationText = {'Data dates:' ...
+    ,['Lipid: ' lipidData.startDateOfSimulation] ...
+    ,['Water: ' waterData.startDateOfSimulation]};
+figs(1) = figure('DefaultAxesFontSize',fontSize);
 plot(orientations,predictedR1Rates,'LineWidth',1.5)
-title(whichCase)
+title([whichCaseForEffectiveR1Rates ' and ' ...
+    whichCaseForOptimizedParameters])
 xlabel('Angle \theta [°]')
-ylabel('Relaxation Rate R1 [Hz]')
-grid on
-saveas(figs,configuration.path2SaveFigs)
-
-
-
+ylabel('Relaxation Rate R_1 [Hz]')
+grid minor
+saveas(figs,[configuration.path2SaveFigs whichCaseForEffectiveR1Rates ...
+    '_' configuration.fileNameToSaveFigs])
 
 
 

@@ -3,24 +3,20 @@ For the constants the following units and explanations are given:
 
 hbar 			= [Js] 
 gammaRad		= [rad/Ts] gyromagnetic relation
-B0 				= [T] main magnetic field
-mu0				= [N/A^2] Vacuum permeability 4*pi*1e-7
-Nm				= [m] Nanometer (Trajectory format)
+B0 			= [T] main magnetic field
+mu0			= [N/A^2] Vacuum permeability 4*pi*1e-7
+Nm			= [m] Nanometer (Trajectory format)
+DD 			= [J/rad] Dipol-Dipol ineraction constants (Calculated in Script)
+omega0			= [rad/s] Larmor (anglular) frequency (Calculated in Script)
 
 The config file contains information about paths and computations. The names should be self
 explaining.
 
-Take care for the path of the library. If necessary take a look at the
-code you try to run if you got an error that some function can't be found.
+Processing Stream:
+1) calculate the R1 rates with the orientation dependency script
+2) with the script analyzeAngleDependency.m calculate the trimmed values for the R1 rates and
+	calculate the data for the prediction of the R1 rate
+3) with the script MAIN_calculateR1RatesWithOptimizedParameters.m calculate the predicted R1 rate.
 
-
-Full Datasets (used in paper):
-- Myelin: /home/fschyboll/Dissertation/Paper4/Gromacs_Final/prd/Traj_Extracted
-	-> 250ns simulation time and time between sampling points 2ps
-	-> for simulation the step size of this data set must be changed from 1 to 2 and thus from 1ps to 2 ps.
-	-> example trajectory has already 250ns and 2ps step size (but it can't be used bacause it isn't representative)
-
-- water: /home/fschyboll/Dissertation/Paper3/Matlab/Eval_MonoLayer3/Traj_mat/Short_50ns_025ps/water_H_50ns_025ps_wh.mat
-	-> 50ns simulation time and time between sampling points 0.25ps
 
 
