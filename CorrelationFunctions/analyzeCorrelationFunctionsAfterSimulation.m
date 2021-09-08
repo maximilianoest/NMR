@@ -4,6 +4,7 @@ clc
 clear all
 close all
 
+
 configuration = readConfigurationFile('config.conf');
 addpath(genpath(configuration.path2Library));
 compartment = configuration.compartment;
@@ -174,7 +175,7 @@ for orientationNumber = 1:orientationsCount
     end
 end
 hold off
-ylabel(['Difference to Position at: ' num2str(positionAngles(1)) '°'])
+ylabel(['Difference to Position at: ' num2str(positionAngles(1)) 'ï¿½'])
 xlabel('\tau')
 legend(legendEntries)
 grid minor
