@@ -4,18 +4,15 @@ function [trajectoryX,trajectoryY,trajectoryZ] = ...
 loaded = configuration.dataLoaded;
 if not(loaded)
     
-    disp('Loading data')
-    
     fileName = configuration.fileName;
-    path2File = [path2Data fileName '.mat'];
+    path2File = [path2Data fileName];
     data = load(path2File);
     hydrogenTrajectories = data.(configuration.dataFieldName);
-    
-    disp('Data successfully loaded')
     
     trajectoryX = squeeze(hydrogenTrajectories(:,1,:));
     trajectoryY = squeeze(hydrogenTrajectories(:,2,:));
     trajectoryZ = squeeze(hydrogenTrajectories(:,3,:));
+else
     
 end
 

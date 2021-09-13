@@ -1,5 +1,4 @@
 hbar=1.054571628e-34
-gammaRad=2.675222099e8
-mu0=1.256637061435917e-06
-Nm=1e-9
-picoSecond=1e-12
+gyromagneticRatioOfHydrogenAtom=2.675222099e8
+vaccumPermeability=1.25663706212e-6
+nanoMeter=1e-9
