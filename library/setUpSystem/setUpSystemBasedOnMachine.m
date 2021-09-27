@@ -22,7 +22,7 @@ if ~isfolder(path2Results)
 end
 
 path2Save = [path2Results startingDate '_Results_' ...
-    configuration.kindOfResults '_' fileName '.m'];
+    configuration.kindOfResults '_' fileName '.mat'];
 path2LogFile = [path2Results startingDate '_LogFile_' ...
     configuration.kindOfResults '_' fileName '.txt'];
 

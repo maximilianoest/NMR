@@ -30,7 +30,7 @@ logMessage(sprintf('Data successfully loaded in %.3f s.', ...
 logMemoryUsage(path2LogFile);
 
 %% Define constants
-logMessage('Defining constants.',path2LogFile);
+logMessage('Defining constants.',path2LogFile,false);
 deltaT = configuration.deltaT;
 constants = readConstantsFile(path2ConstantsFile);
 
@@ -42,15 +42,16 @@ omega0 = constants.gyromagneticRatioOfHydrogenAtom ...
 logMemoryUsage(path2LogFile);
 
 %% Define simulation parameters
-logMessage('Defining simulation parameters.',path2LogFile);
+logMessage('Defining simulation parameters.',path2LogFile,false);
 
 [numberOfHs,timeSteps] = size(trajectoryX);
-logMessage(sprintf('Found %d hydrogen atoms at %d time steps of %.3d s' ...
-    ,numberOfHs,timeSteps,deltaT),path2LogFile);
+logMessage(sprintf(['    Found %d hydrogen atoms at %d time steps of ' ...
+    '%.3d s'],numberOfHs,timeSteps,deltaT),path2LogFile,false);
 
 lags = round(configuration.fractionForLags*timeSteps);
-logMessage(sprintf(['The lag is set to %d time steps, resulting in ' ...
-    'a simulation time of %d s'], lags, lags*deltaT),path2LogFile);
+logMessage(sprintf(['    The lag is set to %d time steps, resulting ' ...
+    'in a simulation time of %d s. NO FUNCTIONALITY'], lags, lags*deltaT),path2LogFile ...
+    ,false);
 
 nearestNeighbours = configuration.nearestNeighbours;
 if nearestNeighbours >= numberOfHs
@@ -60,8 +61,9 @@ if nearestNeighbours >= numberOfHs
     error(['The number of nearest neighbours is higher than the number' ...
         'of possible atoms. Please check your config file!']);
 end
-logMessage(sprintf(['Analysing %.f nearst neighbours of overall %.f ' ...
-    'hydrogen atoms'],nearestNeighbours,numberOfHs),path2LogFile);
+logMessage(sprintf(['    Analysing %.f nearst neighbours of overall ' ...
+    '%.f hydrogen atoms'],nearestNeighbours,numberOfHs),path2LogFile ...
+    ,false);
 
 atomsToCalculate = configuration.atomsToCalculate;
 startDateOfSimulation = datestr(now,'yyyymmdd');
@@ -69,15 +71,14 @@ startDateOfSimulation = datestr(now,'yyyymmdd');
 orientationAngles = deg2rad(getValuesFromStringEnumeration( ...
     configuration.fibreOrientations,';','numeric'));
 fibreOrientationsCount = size(orientationAngles,2);
-logMessage(['Found the orientations' sprintf(' %.f',rad2deg( ...
-    orientationAngles))],path2LogFile);
+logMessage(['    Found the orientations' sprintf(' %.f',rad2deg( ...
+    orientationAngles))],path2LogFile,false);
 
 positionAngles = deg2rad(getValuesFromStringEnumeration( ...
     configuration.myelinPositions,';','numeric'));
 positionsInMyelinCount = size(positionAngles,2);
-logMessage(['Found the positions' sprintf(' %.f',rad2deg( ...
-    positionAngles))],path2LogFile);
-logMemoryUsage(path2LogFile);
+logMessage(['    Found the positions' sprintf(' %.f',rad2deg( ...
+    positionAngles))],path2LogFile,false);
 
 shiftForCorrelationFunction = configuration.shiftForCorrelationFunction;
 tmp = false(1,lags);
@@ -89,12 +90,12 @@ correlationFunction2W0Saver = zeros(fibreOrientationsCount ...
     ,positionsInMyelinCount,atomsToCalculate,length(tmp) ...
     ,'like',single(1j));
 clearvars tmp
-logMessage('Created correlation function saver.', path2LogFile);
+logMessage('    Created correlation function saver.' ...
+    , path2LogFile,false);
 logMemoryUsage(path2LogFile);
 
 %% Start simulation
-logMessage('Preallocaiton of some other arrays',path2LogFile);
-stopWatch = zeros(1,atomsToCalculate);
+logMessage('Preallocation of some other arrays.',path2LogFile,false);
 
 r1WithPerturbationTheory = zeros(fibreOrientationsCount ...
     ,positionsInMyelinCount,atomsToCalculate);
@@ -103,9 +104,32 @@ meanPositions = single([mean(trajectoryX,2) mean(trajectoryY,2) ...
 
 atomCounter = 1;
 atomIndex = zeros(1,atomsToCalculate);
-logMemoryUsage(path2LogFile);
 timeTracks.setUp = toc(setUpTimer);
 calculationSteps = fibreOrientationsCount*positionsInMyelinCount;
+
+randomSequenceOfAtoms = randperm(numberOfHs);
+
+relativeX = zeros(numberOfHs,timeSteps);
+relativeY= zeros(numberOfHs,timeSteps);
+relativeZ = zeros(numberOfHs,timeSteps);
+
+nearestNeighboursX = zeros(nearestNeighbours,timeSteps);
+nearestNeighboursY = zeros(nearestNeighbours,timeSteps);
+nearestNeighboursZ = zeros(nearestNeighbours,timeSteps);
+nearestNeighbourDistancesPow3 = zeros(nearestNeighbours,timeSteps);
+
+rotatedX = zeros(nearestNeighbours,timeSteps);
+rotatedY = zeros(nearestNeighbours,timeSteps);
+rotatedZ = zeros(nearestNeighbours,timeSteps);
+
+polarAngle = zeros(nearestNeighbours,timeSteps);
+azimuthAngle = zeros(nearestNeighbours,timeSteps);
+
+firstOrderSphericalHarmonic = zeros(nearestNeighbours,timeSteps);
+secondOrderSphericalHarmonic = zeros(nearestNeighbours,timeSteps);
+
+correlationFunction1W0 = complex(zeros(1,lags));
+correlationFunction2W0 = complex(zeros(1,lags));
 
 timeTracks.relativePositions = zeros(1,atomsToCalculate);
 timeTracks.nearestNeighbours = zeros(1,atomsToCalculate);
@@ -119,12 +143,33 @@ timeTracks.spectralDensity = zeros(1,atomsToCalculate);
 timeTracks.relaxationRate = zeros(1,atomsToCalculate);
 timeTracks.position = zeros(1,atomsToCalculate);
 
+if configuration.reloadOldSimulation
+    logMessage('Loading results from old simulation.',path2LogFile);
+    oldSimulation = load(configuration.path2OldResults);
+    checkForMismatchingConfigurations(configuration);
+    logMessage(sprintf(['The old simulation was started on %s and ' ...
+        'was last saved on %s.'],oldSimulation.startDateOfSimulation ...
+        ,oldSimulation.lastSavingDate),path2LogFile,false);
+    randomSequenceOfAtoms = oldSimulation.randomSequenceOfAtoms;
+    atomCounter = oldSimulation.atomCounter;
+    r1WithPerturbationTheory(:,:,1:atomCounter) = ...
+        oldSimulation.r1WithPerturbationTheory(:,:,1:atomCounter);
+    correlationFunction1W0Saver(:,:,1:atomCounter,:) = ...
+        oldSimulation.correlationFunction1W0Saver(:,:,1:atomCounter,:);
+    correlationFunction2W0Saver(:,:,1:atomCounter,:) = ...
+        oldSimulation.correlationFunction2W0Saver(:,:,1:atomCounter,:);
+    timeTracks = oldSimulation.timeTracks;
+end
+
 logMessage(sprintf('Starting simulation after %f s for set up.' ...
     ,timeTracks.setUp),path2LogFile);
 logMemoryUsage(path2LogFile);
 printBreakLineToLogFile(path2LogFile);
 
-for atomNumber = randperm(numberOfHs)
+
+
+% for atomNumber = randomSequenceOfAtoms(atomCounter:end)
+for atomNumber = 1:numberOfHs
     overallForAtom = tic;
     logMessage(sprintf('Selected atom number %i',atomNumber),path2LogFile);
     atomIndex(atomCounter) = atomNumber;
@@ -135,7 +180,8 @@ for atomNumber = randperm(numberOfHs)
         ,trajectoryY,trajectoryZ,atomNumber);
     timeTracks.relativePositions(atomCounter) = ...
         toc(relativePositionsTimer);
-    logCalculationStep('Relative positions: ',path2LogFile);
+    logMessage('    Relative positions.',path2LogFile,false);
+    logMemoryUsage(path2LogFile);
     
     nearestNeighboursTimer = tic;
     [nearestNeighboursX,nearestNeighboursY,nearestNeighboursZ ...
@@ -144,11 +190,8 @@ for atomNumber = randperm(numberOfHs)
         ,relativeZ);
     timeTracks.nearestNeighbours(atomCounter) = ...
         toc(nearestNeighboursTimer);
-    logCalculationStep('Nearest neighbours',path2LogFile);
-
-    clear relativeX relativeY relativeZ
-    
-    logCalculationStep('Cleared relative positions',path2LogFile);
+    logMessage('    Nearest neighbours.',path2LogFile,false);
+    logMemoryUsage(path2LogFile);
     
     for positionNumber = 1:positionsInMyelinCount
         positionTimer = tic;
@@ -174,7 +217,9 @@ for atomNumber = randperm(numberOfHs)
             timeTracks.transformation(atomCounter) = ...
                 timeTracks.transformation(atomCounter) ...
                 + toc(transformationTimer);
-            logCalculationStep('Coordinate transformation',path2LogFile);
+            logMessage('    Coordinate transformation.',path2LogFile ...
+                ,false);
+            logMemoryUsage(path2LogFile);
             
             sphericalCoordinatesTimer = tic;
             [polarAngle,azimuthAngle] = ... 
@@ -183,7 +228,8 @@ for atomNumber = randperm(numberOfHs)
             timeTracks.sphericalCoordinates(atomCounter) = ...
                 timeTracks.sphericalCoordinates(atomCounter) ...
                 + toc(sphericalCoordinatesTimer);
-            logCalculationStep('Spherical coordinates',path2LogFile);
+            logMessage('    Spherical coordinates.',path2LogFile,false);
+            logMemoryUsage(path2LogFile);
             
             sphericalHarmonicsTimer = tic;
             [firstOrderSphericalHarmonic,secondOrderSphericalHarmonic] ...
@@ -192,15 +238,14 @@ for atomNumber = randperm(numberOfHs)
             timeTracks.sphericalHarmonics(atomCounter) = ...
                 timeTracks.sphericalHarmonics(atomCounter) ...
                 + toc(sphericalHarmonicsTimer);
-            logCalculationStep('Spherical harmonics',path2LogFile);
+            logMessage('    Spherical harmonics.',path2LogFile,false);
+            logMemoryUsage(path2LogFile);
             
             correlationFunctionTimer = tic;
-            correlationFunction1W0 = calculateCrossCorrelationFunction( ...
-                firstOrderSphericalHarmonic ...
-                ,conj(firstOrderSphericalHarmonic),lags);
-            correlationFunction2W0 = calculateCrossCorrelationFunction( ...
-                secondOrderSphericalHarmonic ...
-                ,conj(secondOrderSphericalHarmonic),lags);
+            correlationFunction1W0 = calculateCorrelationFunction( ...
+                firstOrderSphericalHarmonic,lags);
+            correlationFunction2W0 = calculateCorrelationFunction( ...
+                secondOrderSphericalHarmonic,lags);
             correlationFunction1W0Saver(orientationNumber ...
                 ,positionNumber,atomCounter,:) = ...
                 correlationFunction1W0(1:shiftForCorrelationFunction:end);
@@ -210,7 +255,8 @@ for atomNumber = randperm(numberOfHs)
             timeTracks.correlationFunction(atomCounter) = ...
                 timeTracks.correlationFunction(atomCounter) ...
                 + toc(correlationFunctionTimer);
-            logCalculationStep('Correlation function',path2LogFile);
+            logMessage('    Correlation function.',path2LogFile,false);
+            logMemoryUsage(path2LogFile);
             
             spectralDensityTimer = tic;
             [spectralDensityW0,spectralDensity2W0] = ...
@@ -219,7 +265,8 @@ for atomNumber = randperm(numberOfHs)
             timeTracks.spectralDensity(atomCounter) = ...
                 timeTracks.spectralDensity(atomCounter) ...
                 + toc(spectralDensityTimer);
-            logCalculationStep('Spectral densiy',path2LogFile);
+            logMessage('    Spectral density.',path2LogFile,false);
+            logMemoryUsage(path2LogFile);
             
             relaxationRateTimer = tic;
             r1WithPerturbationTheory(orientationNumber,positionNumber ...
@@ -228,17 +275,17 @@ for atomNumber = randperm(numberOfHs)
             timeTracks.relaxationRate(atomCounter) = ...
                 timeTracks.relaxationRate(atomCounter) ...
                 + toc(relaxationRateTimer);
-            logCalculationStep('Relaxation rate',path2LogFile);
+            logMessage('    Relaxation rate.',path2LogFile,false);
+            logMemoryUsage(path2LogFile);
             logMessage(sprintf('---> R1 = %.4f.' ...
                 ,r1WithPerturbationTheory(orientationNumber ...
-                ,positionNumber,atomCounter)),path2LogFile);
-            
+                ,positionNumber,atomCounter)),path2LogFile);   
         end
         timeTracks.position(atomCounter) = ...
             timeTracks.position(atomCounter) + toc(positionTimer);
-        logMessage(sprintf('Finished position %i. Needed time %.4f' ...
-            ,rad2deg(positionAngle),toc(positionTimer)),path2LogFile);
-        logMemoryUsage(path2LogFile);
+        logMessage(sprintf(['Finished position %i°. Needed '...
+            'time %.4f'],rad2deg(positionAngle),toc(positionTimer)) ...
+            ,path2LogFile,false);
     end
     logMemoryUsage(path2LogFile);
     timeTracks.overallForAtom(atomCounter) = toc(overallForAtom);
@@ -260,21 +307,22 @@ for atomNumber = randperm(numberOfHs)
     if mod(atomCounter,1) == 0
         lastSavingDate = datestr(now,'yyyymmdd_HHMM');
         save(path2Save ,'path2Data','path2Save','path2ConstantsFile' ...
-            ,'path2LogFile','timeTracks',...
-            'r1WithPerturbationTheory' ...
+            ,'path2LogFile','timeTracks'...
+            ,'r1WithPerturbationTheory','configuration' ...
             ,'correlationFunction1W0Saver' ...
             ,'correlationFunction2W0Saver','meanPositions','deltaT' ...
             ,'timeSteps','lags','atomCounter','orientationAngles' ...
-            ,'positionAngles' ...
+            ,'positionAngles','atomsToCalculate' ...
             ,'atomIndex','nearestNeighbours','atomsToCalculate' ...
-            ,'fileName','stopWatch','numberOfHs' ...
+            ,'fileName','numberOfHs' ...
             ,'startDateOfSimulation','lastSavingDate','constants' ...
             ,'shiftForCorrelationFunction','dipolDipolConstant' ...
-            ,'constants','lags','-v7.3')
+            ,'constants','lags','randomSequenceOfAtoms','-v7.3')
         logMessage('Saved data',path2LogFile);
     end
     logPerfomanceData(atomNumber,atomCounter,path2LogFile,timeTracks)
     logMessage(sprintf('Calculated %i atoms',atomCounter),path2LogFile);
     printDottedBreakLineToLogFile(path2LogFile);
+    atomCounter = atomCounter + 1;
 end
 
