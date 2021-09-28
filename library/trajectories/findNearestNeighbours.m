@@ -1,9 +1,8 @@
 function [nearestNeighboursX,nearestNeighboursY,nearestNeighboursZ ...
     ,nearestNeighbourDistancesPow3] = findNearestNeighbours( ...
-    numberOfNearstNeighbours,atomIndex,relativeXPositions...
+    numberOfNearestNeighbours,atomIndex,relativeXPositions...
     ,relativeYPositions,relativeZPositions)
-% this function searches for the closest nearest neighbours and
-% calculates the distance in X,Y and Z direction.
+numberOfNearestNeighbours = numberOfNearestNeighbours + 1;
 
 distances = sqrt(relativeXPositions.^2+relativeYPositions.^2 ...
     +relativeZPositions.^2);
@@ -11,7 +10,7 @@ inverseMeanDistances = 1./mean(distances,2);
 inverseDistances = 0;
 sumIndex = 1;
 
-for i=1:numberOfNearstNeighbours
+for i=1:numberOfNearestNeighbours
   smallestDistance = max(inverseMeanDistances);
   closestNeighbourId = inverseMeanDistances == smallestDistance;
   numberOfClosestElements = sum(closestNeighbourId);
@@ -20,15 +19,17 @@ for i=1:numberOfNearstNeighbours
   nearestNeighbourIndex(sumIndex:sumIndex+numberOfClosestElements-1) = ...
       find(inverseMeanDistances == smallestDistance); 
   sumIndex = sumIndex + numberOfClosestElements; 
-  inverseMeanDistances(closestNeighbourId) = min(inverseMeanDistances);  
+  inverseMeanDistances(closestNeighbourId) = min(inverseMeanDistances)-1;  
 end
 
-neighbourIds = false(size(distances));
+neighbourIds = false(size(numberOfNearestNeighbours));
 neighbourIds(nearestNeighbourIndex) = true;
 neighbourIds(atomIndex) = false;
+nearestNeighbourIndex(1) = [];
 
-nearestNeighboursX = relativeXPositions(neighbourIds,:);
-nearestNeighboursY = relativeYPositions(neighbourIds,:);
-nearestNeighboursZ = relativeZPositions(neighbourIds,:);
-nearestNeighbourDistancesPow3 = distances(neighbourIds,:).^3;  
+nearestNeighboursX = relativeXPositions(nearestNeighbourIndex,:);
+nearestNeighboursY = relativeYPositions(nearestNeighbourIndex,:);
+nearestNeighboursZ = relativeZPositions(nearestNeighbourIndex,:);
+nearestNeighbourDistancesPow3 = distances(nearestNeighbourIndex,:).^3;  
+
 end
