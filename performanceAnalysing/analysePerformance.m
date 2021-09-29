@@ -167,7 +167,6 @@ logMemoryUsage(path2LogFile);
 printBreakLineToLogFile(path2LogFile);
 
 
-
 % for atomNumber = randomSequenceOfAtoms(atomCounter:end)
 for atomNumber = 1:numberOfHs
     overallForAtom = tic;
@@ -186,7 +185,7 @@ for atomNumber = 1:numberOfHs
     nearestNeighboursTimer = tic;
     [nearestNeighboursX,nearestNeighboursY,nearestNeighboursZ ...
         ,nearestNeighbourDistancesPow3] = findNearestNeighbours( ...
-        nearestNeighbours+1,atomNumber,relativeX,relativeY ...
+        nearestNeighbours,atomNumber,relativeX,relativeY ...
         ,relativeZ);
     timeTracks.nearestNeighbours(atomCounter) = ...
         toc(nearestNeighboursTimer);
