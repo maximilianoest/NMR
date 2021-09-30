@@ -239,7 +239,7 @@ for atomNumber = 1:numberOfHs
                 + toc(sphericalHarmonicsTimer);
             logMessage('    Spherical harmonics.',path2LogFile,false);
             logMemoryUsage(path2LogFile);
-            
+            sphericalHarmonic = firstOrderSphericalHarmonic;
             correlationFunctionTimer = tic;
             correlationFunction1W0 = calculateCorrelationFunction( ...
                 firstOrderSphericalHarmonic,lags);
