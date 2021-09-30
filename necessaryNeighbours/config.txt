@@ -24,7 +24,6 @@ dataFieldName=Lipid_H_500ns_1ps_nH40
 shiftForCorrelationFunction=100
 
 mainMagneticField=0.35
-nearestNeighbours=20
 nearestNeighbourCases=40;30;20;10;5;4;3;2;1
 numberOfDifferentLags=4
 atomsToCalculate=41
