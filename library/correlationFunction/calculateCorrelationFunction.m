@@ -5,11 +5,13 @@ function [correlationFunction] = ...
 zeroPaddingLength = 2^(nextpow2(timeSteps)+1);
 
 % Convolution
-tic 
-correlationFunction = ifft(fft(sphericalHarmonic,zeroPaddingLength,2) ... 
-    .*conj(fft(sphericalHarmonic,zeroPaddingLength,2)),[],2)/timeSteps;
-correlationFunction = sum(correlationFunction(:,1:numLags),1);
-toc 
+fftSphericalHarmonic = fft(sphericalHarmonic,zeroPaddingLength,2);
+    
+correlationFunction = ifft(fftSphericalHarmonic.*conj( ...
+    sphericalHarmonic),[],2);
+
+correlationFunction = sum(correlationFunction(:,1:numLags),1)/timeSteps;
+
 
 
 % fft creates a vector with higher amplitudes => to get a valid result from
