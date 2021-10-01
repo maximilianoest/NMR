@@ -8,7 +8,7 @@ zeroPaddingLength = 2^(nextpow2(timeSteps)+1);
 fftSphericalHarmonic = fft(sphericalHarmonic,zeroPaddingLength,2);
     
 correlationFunction = ifft(fftSphericalHarmonic.*conj( ...
-    sphericalHarmonic),[],2);
+    fftSphericalHarmonic),[],2);
 
 correlationFunction = sum(correlationFunction(:,1:numLags),1)/timeSteps;
 

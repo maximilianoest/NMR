@@ -125,8 +125,8 @@ rotatedZ = zeros(nearestNeighbours,timeSteps);
 polarAngle = zeros(nearestNeighbours,timeSteps);
 azimuthAngle = zeros(nearestNeighbours,timeSteps);
 
-firstOrderSphericalHarmonic = zeros(nearestNeighbours,timeSteps);
-secondOrderSphericalHarmonic = zeros(nearestNeighbours,timeSteps);
+firstOrderSphericalHarmonic = complex(zeros(nearestNeighbours,timeSteps));
+secondOrderSphericalHarmonic = complex(zeros(nearestNeighbours,timeSteps));
 
 correlationFunction1W0 = complex(zeros(1,lags));
 correlationFunction2W0 = complex(zeros(1,lags));
@@ -239,7 +239,7 @@ for atomNumber = 1:numberOfHs
                 + toc(sphericalHarmonicsTimer);
             logMessage('    Spherical harmonics.',path2LogFile,false);
             logMemoryUsage(path2LogFile);
-            sphericalHarmonic = firstOrderSphericalHarmonic;
+            
             correlationFunctionTimer = tic;
             correlationFunction1W0 = calculateCorrelationFunction( ...
                 firstOrderSphericalHarmonic,lags);

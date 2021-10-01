@@ -25,9 +25,8 @@ shiftForCorrelationFunction=100
 
 mainMagneticField=7
 nearestNeighbours=40
-numberOfDifferentLags=4
 atomsToCalculate=1000
-fibreOrientations=0
+fibreOrientations=0;90
 myelinPositions=0
-fractionForLags=0.9
+fractionForLags=1
 
