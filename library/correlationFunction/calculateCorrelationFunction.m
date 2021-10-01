@@ -5,10 +5,13 @@ function [correlationFunction] = ...
 zeroPaddingLength = 2^(nextpow2(timeSteps)+1);
 
 % Convolution
+
 fftSphericalHarmonic = fft(sphericalHarmonic,zeroPaddingLength,2);
+
+fftSphericalHarmonic = fftSphericalHarmonic.*conj( ...
+    fftSphericalHarmonic);
     
-correlationFunction = ifft(fftSphericalHarmonic.*conj( ...
-    fftSphericalHarmonic),[],2);
+correlationFunction = ifft(fftSphericalHarmonic,[],2);
 
 correlationFunction = sum(correlationFunction(:,1:numLags),1)/timeSteps;
 
