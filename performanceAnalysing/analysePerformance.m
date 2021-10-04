@@ -125,8 +125,8 @@ rotatedZ = zeros(nearestNeighbours,timeSteps);
 polarAngle = zeros(nearestNeighbours,timeSteps);
 azimuthAngle = zeros(nearestNeighbours,timeSteps);
 
-firstOrderSphericalHarmonic = complex(zeros(nearestNeighbours,timeSteps));
-secondOrderSphericalHarmonic = complex(zeros(nearestNeighbours,timeSteps));
+sphericalHarmonicFirstOrder = complex(zeros(nearestNeighbours,timeSteps));
+sphericalHarmonicSecondOrder = complex(zeros(nearestNeighbours,timeSteps));
 
 correlationFunction1W0 = complex(zeros(1,lags));
 correlationFunction2W0 = complex(zeros(1,lags));
@@ -165,7 +165,6 @@ logMessage(sprintf('Starting simulation after %f s for set up.' ...
     ,timeTracks.setUp),path2LogFile);
 logMemoryUsage(path2LogFile);
 printBreakLineToLogFile(path2LogFile);
-
 
 % for atomNumber = randomSequenceOfAtoms(atomCounter:end)
 for atomNumber = 1:numberOfHs
@@ -231,7 +230,7 @@ for atomNumber = 1:numberOfHs
             logMemoryUsage(path2LogFile);
             
             sphericalHarmonicsTimer = tic;
-            [firstOrderSphericalHarmonic,secondOrderSphericalHarmonic] ...
+            [sphericalHarmonicFirstOrder,sphericalHarmonicSecondOrder] ...
                 = calculateSphericalHarmonics(polarAngle,azimuthAngle ...
                 ,nearestNeighbourDistancesPow3);
             timeTracks.sphericalHarmonics(atomCounter) = ...
@@ -242,15 +241,17 @@ for atomNumber = 1:numberOfHs
             
             correlationFunctionTimer = tic;
             correlationFunction1W0 = calculateCorrelationFunction( ...
-                firstOrderSphericalHarmonic,lags);
+                sphericalHarmonicFirstOrder,lags);
+            logMemoryUsage(path2LogFile);
             correlationFunction2W0 = calculateCorrelationFunction( ...
-                secondOrderSphericalHarmonic,lags);
+                sphericalHarmonicSecondOrder,lags);
             correlationFunction1W0Saver(orientationNumber ...
                 ,positionNumber,atomCounter,:) = ...
                 correlationFunction1W0(1:shiftForCorrelationFunction:end);
             correlationFunction2W0Saver(orientationNumber ...
                 ,positionNumber,atomCounter,:) = ...
                 correlationFunction2W0(1:shiftForCorrelationFunction:end);
+
             timeTracks.correlationFunction(atomCounter) = ...
                 timeTracks.correlationFunction(atomCounter) ...
                 + toc(correlationFunctionTimer);

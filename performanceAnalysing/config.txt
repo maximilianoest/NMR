@@ -27,6 +27,6 @@ mainMagneticField=7
 nearestNeighbours=40
 atomsToCalculate=1000
 fibreOrientations=0;90
-myelinPositions=0
+myelinPositions=0;90
 fractionForLags=1
 
