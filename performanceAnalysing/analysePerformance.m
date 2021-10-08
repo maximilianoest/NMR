@@ -86,16 +86,6 @@ correlationFunction1W0Saver = zeros(fibreOrientationsCount ...
     ,positionsInMyelinCount,size(trajectoryX,2),'like',single(1j));
 correlationFunction2W0Saver = zeros(fibreOrientationsCount ...
     ,positionsInMyelinCount,size(trajectoryX,2),'like',single(1j));
-% shiftForCorrelationFunction = configuration.shiftForCorrelationFunction;
-% tmp = false(1,lags);
-% tmp = tmp(1:shiftForCorrelationFunction:end);
-% correlationFunction1W0Saver = zeros(fibreOrientationsCount ...
-%     ,positionsInMyelinCount,atomsToCalculate,length(tmp) ...
-%     ,'like',single(1j));
-% correlationFunction2W0Saver = zeros(fibreOrientationsCount ...
-%     ,positionsInMyelinCount,atomsToCalculate,length(tmp) ...
-%     ,'like',single(1j));
-% clearvars tmp
 logMessage('    Created correlation function saver.' ...
     , path2LogFile,false);
 logMemoryUsage(path2LogFile);
@@ -131,6 +121,7 @@ rotatedZ = zeros(nearestNeighbours,timeSteps);
 polarAngle = zeros(nearestNeighbours,timeSteps);
 azimuthAngle = zeros(nearestNeighbours,timeSteps);
 
+sphericalHarmonicZerothOrder = complex(zeros(nearestNeighbours,timeSteps));
 sphericalHarmonicFirstOrder = complex(zeros(nearestNeighbours,timeSteps));
 sphericalHarmonicSecondOrder = complex(zeros(nearestNeighbours,timeSteps));
 
