@@ -21,8 +21,6 @@ kindOfResults=PerformanceAnalysis
 fileName=Lipid_H_500ns_1ps_nH40
 dataFieldName=Lipid_H_500ns_1ps_nH40
 
-shiftForCorrelationFunction=100
-
 mainMagneticField=7
 nearestNeighbours=40
 atomsToCalculate=1000

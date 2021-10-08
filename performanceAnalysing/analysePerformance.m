@@ -105,28 +105,29 @@ calculationSteps = fibreOrientationsCount*positionsInMyelinCount;
 
 randomSequenceOfAtoms = randperm(numberOfHs);
 
-relativeX = zeros(numberOfHs,timeSteps);
-relativeY= zeros(numberOfHs,timeSteps);
-relativeZ = zeros(numberOfHs,timeSteps);
+relativeX = zeros(numberOfHs,timeSteps,'like',single(1));
+relativeY= zeros(numberOfHs,timeSteps,'like',single(1));
+relativeZ = zeros(numberOfHs,timeSteps,'like',single(1));
 
-nearestNeighboursX = zeros(nearestNeighbours,timeSteps);
-nearestNeighboursY = zeros(nearestNeighbours,timeSteps);
-nearestNeighboursZ = zeros(nearestNeighbours,timeSteps);
-nearestNeighbourDistancesPow3 = zeros(nearestNeighbours,timeSteps);
+nearestNeighboursX = zeros(nearestNeighbours,timeSteps,'like',single(1));
+nearestNeighboursY = zeros(nearestNeighbours,timeSteps,'like',single(1));
+nearestNeighboursZ = zeros(nearestNeighbours,timeSteps,'like',single(1));
+nearestNeighbourDistancesPow3 = zeros(nearestNeighbours,timeSteps,'like',single(1));
 
-rotatedX = zeros(nearestNeighbours,timeSteps);
-rotatedY = zeros(nearestNeighbours,timeSteps);
-rotatedZ = zeros(nearestNeighbours,timeSteps);
+rotatedX = zeros(nearestNeighbours,timeSteps,'like',single(1));
+rotatedY = zeros(nearestNeighbours,timeSteps,'like',single(1));
+rotatedZ = zeros(nearestNeighbours,timeSteps,'like',single(1));
 
-polarAngle = zeros(nearestNeighbours,timeSteps);
-azimuthAngle = zeros(nearestNeighbours,timeSteps);
+polarAngle = zeros(nearestNeighbours,timeSteps,'like',single(1));
+azimuthAngle = zeros(nearestNeighbours,timeSteps,'like',single(1));
 
-sphericalHarmonicZerothOrder = complex(zeros(nearestNeighbours,timeSteps));
-sphericalHarmonicFirstOrder = complex(zeros(nearestNeighbours,timeSteps));
-sphericalHarmonicSecondOrder = complex(zeros(nearestNeighbours,timeSteps));
+sphericalHarmonicZerothOrder = zeros(nearestNeighbours,timeSteps,'like',single(1j));
+sphericalHarmonicFirstOrder = zeros(nearestNeighbours,timeSteps,'like',single(1j));
+sphericalHarmonicSecondOrder = zeros(nearestNeighbours,timeSteps,'like',single(1j));
 
-correlationFunction1W0 = complex(zeros(1,lags));
-correlationFunction2W0 = complex(zeros(1,lags));
+correlationFunction0W0 = zeros(1,lags,'like',single(1j));
+correlationFunction1W0 = zeros(1,lags,'like',single(1j));
+correlationFunction2W0 = zeros(1,lags,'like',single(1j));
 
 timeTracks.relativePositions = zeros(1,atomsToCalculate);
 timeTracks.nearestNeighbours = zeros(1,atomsToCalculate);

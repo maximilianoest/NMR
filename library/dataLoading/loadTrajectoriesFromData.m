@@ -9,9 +9,9 @@ if not(loaded)
     hydrogenTrajectories = data.(configuration.dataFieldName);
     
     
-    trajectoryX = squeeze(hydrogenTrajectories(:,1,:));
-    trajectoryY = squeeze(hydrogenTrajectories(:,2,:));
-    trajectoryZ = squeeze(hydrogenTrajectories(:,3,:));
+    trajectoryX = single(squeeze(hydrogenTrajectories(:,1,:)));
+    trajectoryY = single(squeeze(hydrogenTrajectories(:,2,:)));
+    trajectoryZ = single(squeeze(hydrogenTrajectories(:,3,:)));
 else
     
 end

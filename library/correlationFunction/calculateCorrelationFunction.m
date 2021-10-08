@@ -4,8 +4,7 @@ function [sumCorrelationFunction] = ...
 [~,timeSteps] = size(sphericalHarmonic);
 zeroPaddingLength = 2^(nextpow2(timeSteps)+1);
 
-fftSphericalHarmonic = fft(cast(sphericalHarmonic,'single') ...
-    ,zeroPaddingLength,2);
+fftSphericalHarmonic = fft(sphericalHarmonic,zeroPaddingLength,2);
 
 multiplicationFunction = real(fftSphericalHarmonic).^2 ...
     + imag(fftSphericalHarmonic).^2;
