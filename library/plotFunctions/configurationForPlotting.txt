@@ -1,5 +1,5 @@
-legendFontSize=16
-axisFontSize=16
+legendFontSize=11
+axisFontSize=12
 colors=#6699ff;#00cc66;#ff9933;#873e23
 resolution=-r300
 defaultLineWidth=1.7
