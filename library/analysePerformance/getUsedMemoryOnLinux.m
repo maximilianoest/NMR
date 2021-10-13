@@ -3,7 +3,7 @@ function memoryUsedInMB =  getUsedMemoryOnLinux()
 % undocumented feature; see http://undocumentedmatlab.com/blog/undocumented-feature-function 
 pid = feature('getpid');
 [~,cmdout] = unix(['cat /proc/' num2str(pid) '/status | grep VmRSS']); % Resident Set size
- memoryUsedInMB = str2double(regexp(cmdout, '[0-9]*', 'match'))./1e6;
+ memoryUsedInMB = str2double(regexp(cmdout, '[0-9]*', 'match'))./1e3;
  
  
 

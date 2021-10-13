@@ -2,7 +2,7 @@ clc
 clear all  %#ok<CLALL>
 close all
 
-results = load("C:\Users\maxoe\Google Drive\Promotion\Results\nearestNeighboursAnalysis\Server\20211001_Results_nearestNeighbourAnalysis_Lipid_H_500ns_4ps_wh.mat");
+results = load("C:\Users\maxoe\Google Drive\Promotion\Results\nearestNeighboursAnalysis\Server\20211006_Results_nearestNeighbourAnalysis_water_H_50ns_05ps_wh.mat");
 
 relaxationRates = results.r1WithPerturbationTheory; 
 atomCounter = results.atomCounter;
@@ -73,7 +73,8 @@ end
 hold off
 xlabel('Nearest neighbours')
 ylabel('Relaxation rate shift [Hz]')
-title('Rate shifts in dependence of nearest neighbours and orientation')
+title(['Rate shifts in dependence of nearest neighbours and' ...
+    ' orientation (' fileName ')'])
 grid minor
 legend(legendEntries)
 

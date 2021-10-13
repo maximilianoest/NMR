@@ -22,7 +22,7 @@ for orientationNr = 1:size(orientations,2)
     plot(positions,meanRelaxationRates(orientationNr,:),'Color' ...
         ,colors(orientationNr,:))
     legendEntries{end+1} = strjoin(["Orientation $\theta$: " ...
-        num2str(orientations(orientationNr)) "$^{\circ}$"],'');
+        num2str(orientations(orientationNr)) "$^{\circ}$"],''); %#ok<AGROW>
 end
 lowerBorder = min(min(meanRelaxationRates))*0.95;
 upperBorder = max(max(meanRelaxationRates))*1.05;
