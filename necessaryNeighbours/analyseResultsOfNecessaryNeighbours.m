@@ -2,7 +2,7 @@ clc
 clear all  %#ok<CLALL>
 close all
 
-results = load("C:\Users\maxoe\Google Drive\Promotion\Results\nearestNeighboursAnalysis\Server\20211006_Results_nearestNeighbourAnalysis_water_H_50ns_05ps_wh.mat");
+results = load("C:\Users\maxoe\Google Drive\Promotion\Results\nearestNeighboursAnalysis\Server\20211013_Results_relevantNearestNeighbours_water_H_50ns_05ps_wh.mat");
 
 relaxationRates = results.r1WithPerturbationTheory; 
 atomCounter = results.atomCounter;
@@ -15,7 +15,13 @@ medianR1 = squeeze(median(relaxationRates(:,:,1:atomCounter,:),3));
 effectiveMedianR1 = squeeze(mean(medianR1,2));
 overallMedianR1 = squeeze(mean(effectiveMedianR1,1));
 
-nearestNeighbourCases = results.nearestNeighbourCases;
+try
+    nearestNeighbourCases = results.nearestNeighbourCases;
+catch
+    nearestNeighbourCases = getValuesFromStringEnumeration( ...
+        results.configuration.nearestNeighbourCases,';','numeric');
+end
+
 fileName = results.fileName;
 fileName = strsplit(fileName,'_');
 fileName = fileName{1};
