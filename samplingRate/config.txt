@@ -1,0 +1,30 @@
+runOnServer=0
+printToCommandWindow=1
+dataLoaded=0
+deltaT=1e-12
+reloadOldSimulation=0
+path2OldResults=C:\Users\maxoe\Google Drive\Promotion\Results\OrientationDependency\20210913_Results_OrientationDependency_Lipid_H_500ns_1ps_nH40.mat
+
+path2LibraryOnLocalMachine=C:\Users\maxoe\Google Drive\Promotion\Code\library\
+path2LibraryOnServer=/home/moesterreicher/Matlab/library/
+
+path2ConstantsFileOnLocalMachine=C:\Users\maxoe\Google Drive\Promotion\Code\constants.txt
+path2ConstantsFileOnServer=/home/moesterreicher/Matlab/constants.txt
+
+path2DataOnLocalMachine=C:\Users\maxoe\Google Drive\Promotion\Data\Myelin\
+path2DataOnServer=/home/moesterreicher/Data/Myelin/
+
+path2ResultsOnLocalMachine=C:\Users\maxoe\Google Drive\Promotion\Results\
+path2ResultsOnServer=/home/moesterreicher/Matlab/OrientationDependency/Results/
+kindOfResults=performanceAnalysing
+
+fileName=Lipid_H_500ns_1ps_nH40
+dataFieldName=Lipid_H_500ns_1ps_nH40
+
+mainMagneticField=0.35
+nearestNeighbours=40
+atomsToCalculate=1000
+fibreOrientations=0;90
+myelinPositions=0;90
+fractionForLags=1
+
