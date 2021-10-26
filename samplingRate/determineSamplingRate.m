@@ -4,9 +4,13 @@ clear all %#ok<CLALL>
 
 configuration = readConfigurationFile('config.txt');
 if configuration.runOnServer
-    addpath(genpath(configuration.path2LibraryOnServer));
+    baseConfiguration = readConfigurationFile( ...
+        configuration.path2BaseConfigurationOnServer);
+    addpath(genpath(baseConfiguration.path2LibraryOnServer));
 else
-    addpath(genpath(configuration.path2LibraryOnLocalMachine))
+    baseConfiguration = readConfigurationFile( ...
+        configuration.path2BaseConfigurationOnLocalMachine);
+    addpath(genpath(baseConfiguration.path2LibraryOnLocalMachine))
 end
 
 [path2Data,path2Save,path2ConstantsFile,path2LogFile] = ...
@@ -247,7 +251,7 @@ for atomNumber = randomSequenceOfAtoms(atomCounter:end)
     end
     logMessage(sprintf('Finished atom %i. Needed time %.4f' ...
         ,atomNumber,toc(overallForAtom)),path2LogFile,false);
-    logMessage(sprintf('Calculated %i atoms.',atomCounter),path2LogFile);
+    logMessage(sprintf('Calculated %i atom(s).',atomCounter),path2LogFile);
     printBreakLineToLogFile(path2LogFile);
     atomCounter = atomCounter + 1;
 end

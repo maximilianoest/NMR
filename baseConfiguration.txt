@@ -1,0 +1,12 @@
+path2LibraryOnLocalMachine=C:\Users\maxoe\Google Drive\Promotion\Code\library\
+path2LibraryOnServer=/home/moesterreicher/Matlab/library/
+
+path2ConstantsFileOnLocalMachine=C:\Users\maxoe\Google Drive\Promotion\Code\constants.txt
+path2ConstantsFileOnServer=/home/moesterreicher/Matlab/constants.txt
+
+path2DataOnLocalMachine=C:\Users\maxoe\Google Drive\Promotion\Data\Myelin\
+path2DataOnServer=/home/moesterreicher/Data/Myelin/
+
+path2ResultsOnLocalMachine=C:\Users\maxoe\Google Drive\Promotion\Results\
+path2ResultsOnServer=/home/moesterreicher/Matlab/OrientationDependency/Results/
+

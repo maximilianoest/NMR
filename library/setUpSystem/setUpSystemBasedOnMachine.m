@@ -2,18 +2,26 @@ function [path2Data,path2Save,path2ConstantsFile,path2LogFile] = ...
     setUpSystemBasedOnMachine(configuration)
 
 runOnServer = configuration.runOnServer;
+if runOnServer
+    path2BaseConfiguration = configuration.path2BaseConfigurationOnServer;
+else
+    path2BaseConfiguration = ...
+        configuration.path2BaseConfigurationOnLocalMachine;
+end
+    
+baseConfiguration = readConfigurationFile(path2BaseConfiguration);
 fileName = configuration.fileName;
 startingDate = datestr(date,'yyyymmdd');
 
 if runOnServer
-    path2Data = configuration.path2DataOnServer;
-    path2ConstantsFile = configuration.path2ConstantsFileOnServer;
-    path2Results = [configuration.path2ResultsOnServer ...
+    path2Data = baseConfiguration.path2DataOnServer;
+    path2ConstantsFile = baseConfiguration.path2ConstantsFileOnServer;
+    path2Results = [baseConfiguration.path2ResultsOnServer ...
         configuration.kindOfResults '/'];
 else
-    path2Data = configuration.path2DataOnLocalMachine;
-    path2ConstantsFile = configuration.path2ConstantsFileOnLocalMachine;
-    path2Results = [configuration.path2ResultsOnLocalMachine ...
+    path2Data = baseConfiguration.path2DataOnLocalMachine;
+    path2ConstantsFile = baseConfiguration.path2ConstantsFileOnLocalMachine;
+    path2Results = [baseConfiguration.path2ResultsOnLocalMachine ...
         configuration.kindOfResults '\'];
 end
 
