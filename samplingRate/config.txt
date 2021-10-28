@@ -1,22 +1,23 @@
 runOnServer=0
 printToCommandWindow=1
 dataLoaded=0
-deltaT=1e-12
-reloadOldSimulation=0
+reloadOldSimulation=1
+changeRandomSequenceBetweenDataSets=1
 
-path2OldResults=C:\Users\maxoe\Google Drive\Promotion\Results\OrientationDependency\20210913_Results_OrientationDependency_Lipid_H_500ns_1ps_nH40.mat
+path2OldResults=C:\Users\maxoe\Google Drive\Promotion\Results\determineSamplingRate\20211027_Results_determineSamplingRate_LipidWater.mat
 path2BaseConfigurationOnLocalMachine=C:\Users\maxoe\Google Drive\Promotion\Code\baseConfiguration.txt
 path2BaseConfigurationOnServer=/home/moesterreicher/Matlab/baseConfiguration.txt
 
 kindOfResults=determineSamplingRate
 
-fileName=Lipid_H_500ns_1ps_nH40
-dataFieldName=Lipid_H_500ns_1ps_nH40
-savingInterval=1;
+deltaTs=1e-12;0.25e-12
+fileNames=Lipid_H_500ns_1ps_nH40;Water_H_50ns_025ps_nH100
+dataFieldNames=Lipid_H_500ns_1ps_nH40;Water_H_50ns_025ps_nH100
+savingInterval=1
 
 mainMagneticField=0.35
-nearestNeighbours=40
-atomsToCalculate=1000
+nearestNeighbours=40;30
+atomsToCalculate=10
 fibreOrientations=0
 myelinPositions=0
 fractionForLags=1

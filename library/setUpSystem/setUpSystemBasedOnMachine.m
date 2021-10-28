@@ -10,7 +10,6 @@ else
 end
     
 baseConfiguration = readConfigurationFile(path2BaseConfiguration);
-fileName = configuration.fileName;
 startingDate = datestr(date,'yyyymmdd');
 
 if runOnServer
@@ -29,9 +28,22 @@ if ~isfolder(path2Results)
     mkdir(path2Results);
 end
 
+fileNames = getValuesFromStringEnumeration(configuration.fileNames,';' ...
+    ,'string');
+fileNameArray = string();
+for fileNameNr = 1:length(fileNames)
+    fileName = fileNames(fileNameNr);
+    fileName = strsplit(fileName,'_');
+    fileName = fileName(1);
+    if ~contains(fileNameArray,fileName)
+        fileNameArray = fileNameArray + fileName;
+    end
+end
+fileNameArray = convertStringsToChars(fileNameArray);
+
 path2Save = [path2Results startingDate '_Results_' ...
-    configuration.kindOfResults '_' fileName '.mat'];
+    configuration.kindOfResults '_' fileNameArray '.mat'];
 path2LogFile = [path2Results startingDate '_LogFile_' ...
-    configuration.kindOfResults '_' fileName '.txt'];
+    configuration.kindOfResults '_' fileNameArray '.txt'];
 
 end
