@@ -12,7 +12,7 @@ oldData = load(path2OldData);
 oldR1 = oldData.r1WithPerturbationTheory;
 oldAtomCounter = oldData.atomCounter;
 
-path2NewData = "C:\Users\maxoe\Google Drive\Promotion\Results\PerformanceAnalysis\Server\20211008_Results_performanceAnalysing_Lipid_H_500ns_4ps_wh.mat";
+path2NewData = "C:\Users\maxoe\Google Drive\Promotion\Results\performanceAnalysing\Server\20211008_Results_performanceAnalysing_Lipid_H_500ns_4ps_wh.mat";
 newData = load(path2NewData);
 newR1 = newData.r1WithPerturbationTheory;
 newTimeTracks = newData.timeTracks;
@@ -31,10 +31,10 @@ dateNow = datestr(now,'yyyymmdd_HHMM_');
 
 figure(1)
 hold on
-plot(orientationAngles,oldAveragedR1(:,1),'--*')
-plot(orientationAngles,oldAveragedR1(:,2),'--*')
-plot(orientationAngles,newAveragedR1(:,1),'-.o')
-plot(orientationAngles,newAveragedR1(:,2),'-.o')
+plot(orientationAngles,oldAveragedR1(:,1),'--*','LineWidth',1.5)
+plot(orientationAngles,oldAveragedR1(:,2),'--*','LineWidth',1.5)
+plot(orientationAngles,newAveragedR1(:,1),'-.o','LineWidth',1.5)
+plot(orientationAngles,newAveragedR1(:,2),'-.o','LineWidth',1.5)
 hold off
 legend('double precision \phi = 0°','double precision \phi = 90°' ...
     ,'single precision \phi = 0°','single precision \phi = 90°' ...
@@ -42,11 +42,13 @@ legend('double precision \phi = 0°','double precision \phi = 90°' ...
 legend boxoff
 title(['Averaged relaxation rates with single and double precision' ...
     ' for 1000 atoms.'])
+xlabel('Orientation angle \theta')
+ylabel('Relaxation rate [Hz]')
 grid minor
 saveas(gcf,[path2Conclusions dateNow ...
     'ComparisonSingleDoublePrecision.png'])
 save([path2Conclusions dateNow 'Data_Comparison.mat'])
-close all
+% close all
 
 
 
