@@ -1,7 +1,7 @@
 clc
 clear all
 
-results = load("C:\Users\maxoe\Google Drive\Promotion\Results\PerformanceAnalysis\20211008_Results_PerformanceAnalysis_Lipid_H_500ns_1ps_nH40.mat");
+results = load("C:\Users\maxoe\Google Drive\Promotion\Results\performanceAnalysing\20211008_Results_PerformanceAnalysis_Lipid_H_500ns_1ps_nH40.mat");
 
 effCorrelationFunction0W0 = squeeze(mean(results.correlationFunction0W0Saver,2));
 effCorrelationFunction1W0 = squeeze(mean(results.correlationFunction1W0Saver,2));

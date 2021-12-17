@@ -1,10 +1,10 @@
 close all
 
-results = load("C:\Users\maxoe\Google Drive\Promotion\Results\nearestNeighboursAnalysis\Server\20211001_Results_nearestNeighbourAnalysis_Lipid_H_500ns_4ps_wh.mat");
+results = load("C:\Users\maxoe\Google Drive\Promotion\Results\nearestNeighboursAnalysis\Server\20211013_Results_relevantNearestNeighbours_water_H_50ns_05ps_wh.mat");
 meanPositions = results.meanPositions;
-edges = [0:0.1:3];
+edges = [0:0.01:1];
 
-for atom = 1:10
+for atom = 1:100
     randomAtom = randi([500,size(meanPositions,1)-4000],1);
     relativePositions = meanPositions - meanPositions(randomAtom,:);
     relativeDistances = sqrt(sum(relativePositions.^2,2));
@@ -31,24 +31,24 @@ for atom = 1:10
             & distances >= edges(counter));
     end
     
-    figure(1)
-    quantity = histogram(distances,edges);
-    quantity = quantity.Data;
-    grid minor
-    pause(2)
+%     figure(1)
+%     quantity = histogram(distances,edges);
+%     quantity = quantity.Data;
+%     grid minor
+%     pause(2)
 end
 
-figure(1)
-xlabel('Distance [nm]')
-xlabel('Frequency')
-xlabel('Distance [nm]')
-ylabel('Frequency')
-title(['Frequency of distances for atom ' num2str(randomAtom) ])
+% figure(1)
+% xlabel('Distance [nm]')
+% xlabel('Frequency')
+% xlabel('Distance [nm]')
+% ylabel('Frequency')
+% title(['Frequency of distances for atom ' num2str(randomAtom) ])
 
 averageNearestNeighbours = mean(barCount,1);
 figure(2)
 bar(edges(1:end-1),averageNearestNeighbours)
-title('Frequency of distances.')
+title('Number of nearest neighbours at a certain distance.')
 xlabel('Distance [nm]')
 ylabel('Average frequency')
 grid minor
