@@ -8,14 +8,13 @@ if configuration.runOnServer
     addpath(genpath(configuration.path2LibraryOnServer));
 else
     path2Results = configuration.path2ResultsOnLocalMachine;
-    path2Results = [path2Results 'nearestNeighboursAnalysis' '\']; 
     addpath(genpath(configuration.path2LibraryOnLocalMachine));
 end
 
-results = load("C:\Users\maxoe\Google Drive\Promotion\Results\nearestNeighboursAnalysis\Server\20211013_Results_relevantNearestNeighbours_water_H_50ns_05ps_wh.mat");
+load([path2Results configuration.fileName '.mat']);
 
-relaxationRates = results.r1WithPerturbationTheory; 
-atomCounter = results.atomCounter;
+relaxationRates = r1WithPerturbationTheory; 
+atomCounter = atomCounter;
 
 averageR1 = squeeze(mean(relaxationRates(:,:,1:atomCounter,:),3));
 effectiveR1 = squeeze(mean(averageR1,2));
@@ -25,22 +24,14 @@ medianR1 = squeeze(median(relaxationRates(:,:,1:atomCounter,:),3));
 effectiveMedianR1 = squeeze(mean(medianR1,2));
 overallMedianR1 = squeeze(mean(effectiveMedianR1,1));
 
-try
-    nearestNeighbourCases = results.nearestNeighbourCases;
-catch
-    nearestNeighbourCases = getValuesFromStringEnumeration( ...
-        results.configuration.nearestNeighbourCases,';','numeric');
-end
-
-fileName = results.fileName;
 fileName = strsplit(fileName,'_');
 fileName = fileName{1};
 
 rateShiftMean = effectiveR1 - effectiveR1(1,:);
 rateShiftMedian = effectiveMedianR1 - effectiveMedianR1(1,:);
 
-orientations = rad2deg(results.orientationAngles);
-material = strsplit(results.fileName,'_');
+orientations = rad2deg(orientationAngles);
+material = strsplit(fileName,'_');
 material = material{1};
 
 figure(1)

@@ -1,32 +1,20 @@
-runOnServer=0
-printToCommandWindow=1
+runOnServer=1
+printToCommandWindow=0
 dataLoaded=0
-deltaT=1e-12
 reloadOldSimulation=0
+
 path2OldResults=C:\Users\maxoe\Google Drive\Promotion\Results\OrientationDependency\20210913_Results_OrientationDependency_Lipid_H_500ns_1ps_nH40.mat
+path2BaseConfigurationOnLocalMachine=C:\Users\maxoe\Google Drive\Promotion\Code\baseConfiguration.txt
+path2BaseConfigurationOnServer=/home/moesterreicher/Matlab/baseConfiguration.txt
 
-path2LibraryOnLocalMachine=C:\Users\maxoe\Google Drive\Promotion\Code\library\
-path2LibraryOnServer=/home/moesterreicher/Matlab/library/
+kindOfResults=validationNearestNeighbours
 
-path2ConstantsFileOnLocalMachine=C:\Users\maxoe\Google Drive\Promotion\Code\constants.txt
-path2ConstantsFileOnServer=/home/moesterreicher/Matlab/constants.txt
+fileName=20220110_DOPS_TIP4_Bilayer_50water_lipid_H_nojump_dt2ps_simTime1000ns
 
-path2DataOnLocalMachine=C:\Users\maxoe\Google Drive\Promotion\Data\Myelin\
-path2DataOnServer=/home/moesterreicher/Data/MyelinSimulation/
-
-path2ResultsOnLocalMachine=C:\Users\maxoe\Google Drive\Promotion\Results\
-path2ResultsOnServer=/home/moesterreicher/Matlab/OrientationDependency/Results/
-kindOfResults=nearestNeighboursAnalysis
-
-fileName=Lipid_H_500ns_1ps_nH40
-dataFieldName=Lipid_H_500ns_1ps_nH40
-
-shiftForCorrelationFunction=100
-
-mainMagneticField=0.35
-nearestNeighbourCases=40;30;20;10;5;4;3;2;1
-atomsToCalculate=41
-fibreOrientations=0;45;90
-myelinPositions=0;45;90
+mainMagneticField=3
+nearestNeighbourCases=5000;4000;3000;1000;750;700;600;500;300;200;70;60
+atomsToCalculate=100
+fibreOrientations=0;90
+myelinPositions=0;90
 fractionForLags=1
 

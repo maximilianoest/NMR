@@ -1,6 +1,7 @@
 function [path2Data,path2Save,path2ConstantsFile,path2LogFile] = ...
     setUpSystemBasedOnMachine(configuration)
 
+error('This function is old, please use setUpSystemBasedOnConfiguration');
 runOnServer = configuration.runOnServer;
 if runOnServer
     path2BaseConfiguration = configuration.path2BaseConfigurationOnServer;
@@ -41,9 +42,15 @@ for fileNameNr = 1:length(fileNames)
 end
 fileNameArray = convertStringsToChars(fileNameArray);
 
-path2Save = [path2Results startingDate '_Results_' ...
-    configuration.kindOfResults '_' fileNameArray '.mat'];
-path2LogFile = [path2Results startingDate '_LogFile_' ...
-    configuration.kindOfResults '_' fileNameArray '.txt'];
+if runOnServer
+    addtionalFolder = '';
+else   
+    additionalFolder = [configuration.kindOfResults '_'];
+    
+end
+path2Save = sprintf('%s%s_Results_%s%s.mat',path2Results,startingDate ...
+    ,additionalFolder,fileName);
+path2LogFile = sprintf('%s%s_LogFile_%s%s.txt',path2Results ...
+    ,startingDate,additionalFolder,fileName); 
 
 end
