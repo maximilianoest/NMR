@@ -19,8 +19,11 @@ end
 fclose(fileId);
 
 if configuration.printToCommandWindow
-    fprintf('%s\n',logInformation);
+    if printWithDate
+        fprintf('%s: %s\n', datestr(now,0),logInformation);
+    else
+        fprintf('  %s\n',logInformation);
+    end
 end
-
 
 end

@@ -7,7 +7,7 @@ numberOfNearestNeighbours = numberOfNearestNeighbours + 1;
 distances = sqrt(relativeXPositions.^2+relativeYPositions.^2 ...
     +relativeZPositions.^2);
 inverseMeanDistances = 1./mean(distances,2);
-inverseDistances = 0;
+inverseDistances = [];
 sumIndex = 1;
 
 for i=1:numberOfNearestNeighbours
@@ -22,9 +22,9 @@ for i=1:numberOfNearestNeighbours
   inverseMeanDistances(closestNeighbourId) = min(inverseMeanDistances)-1;  
 end
 
-neighbourIds = false(size(numberOfNearestNeighbours));
-neighbourIds(nearestNeighbourIndex) = true;
-neighbourIds(atomIndex) = false;
+% neighbourIds = false(size(numberOfNearestNeighbours));
+% neighbourIds(nearestNeighbourIndex) = true;
+% neighbourIds(atomIndex) = false;
 nearestNeighbourIndex(1) = [];
 
 nearestNeighboursX = relativeXPositions(nearestNeighbourIndex,:);
