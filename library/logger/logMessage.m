@@ -22,7 +22,7 @@ if configuration.printToCommandWindow
     if printWithDate
         fprintf('%s: %s\n', datestr(now,0),logInformation);
     else
-        fprintf('%s\n',logInformation);
+        fprintf('  %s\n',logInformation);
     end
 end
 
