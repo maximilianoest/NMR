@@ -4,7 +4,7 @@ path2LibraryOnServer=/home/moesterreicher/Matlab/library/
 path2ConstantsFileOnLocalMachine=C:\Users\maxoe\Google Drive\Promotion\Code\constants.txt
 path2ConstantsFileOnServer=/home/moesterreicher/Matlab/constants.txt
 
-path2DataOnLocalMachine=C:\Users\maxoe\Google Drive\Promotion\Data\Myelin\
+path2DataOnLocalMachine=C:\Users\maxoe\Google Drive\Promotion\Data\Lipids\
 path2DataOnServer=/home/moesterreicher/Data/MyelinSimulations/
 
 path2ResultsOnLocalMachine=C:\Users\maxoe\Google Drive\Promotion\Results\

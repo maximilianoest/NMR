@@ -1,7 +1,8 @@
 clc
 clear all
+close all
 
-results = load("C:\Users\maxoe\Google Drive\Promotion\Results\performanceAnalysing\20211008_Results_PerformanceAnalysis_Lipid_H_500ns_1ps_nH40.mat");
+results = load("C:\Users\maxoe\Google Drive\Promotion\Results\relevantNearestNeighboursCorrelationFunction\20220422_Results_relevantNearestNeighboursCorrelationFunction_DOPSlipid4.mat");
 
 effCorrelationFunction0W0 = squeeze(mean(results.correlationFunction0W0Saver,2));
 effCorrelationFunction1W0 = squeeze(mean(results.correlationFunction1W0Saver,2));
@@ -15,18 +16,24 @@ effCorrelationFunction2W0 = effCorrelationFunction2W0 ...
     ./ effCorrelationFunction2W0(:,1);
 
 orientationAngles = results.orientationAngles;
+samplingFrequency = results.samplingFrequency;
+timeAxis = [0:length(effCorrelationFunction0W0)-1] * samplingFrequency;
 
 for orientationNr = 1:length(orientationAngles)
     figure(orientationNr)
-    plot(abs(effCorrelationFunction0W0(orientationNr,:)),'LineWidth',1.5)
     hold on
-    plot(abs(effCorrelationFunction1W0(orientationNr,:)),'LineWidth',1.5)
-    plot(abs(effCorrelationFunction2W0(orientationNr,:)),'LineWidth',1.5)
+    plot(timeAxis,abs(effCorrelationFunction0W0(orientationNr,:)) ...
+        ,'LineWidth',1.5)
+    plot(timeAxis,abs(effCorrelationFunction1W0(orientationNr,:)) ...
+        ,'LineWidth',1.5)
+    plot(timeAxis,abs(effCorrelationFunction2W0(orientationNr,:)) ...
+        ,'LineWidth',1.5)
     hold off
-    grid on
+    grid minor
     legend('0 \omega_0','1 \omega_0','2 \omega_0')
-    title(['Correlation functions for orientation ' ...
+    title(['Normalized correlation functions for orientation ' ...
         num2str(rad2deg(orientationAngles(orientationNr))) '°']) 
+    xlabel('Correlation time [s]')
     
 end
 

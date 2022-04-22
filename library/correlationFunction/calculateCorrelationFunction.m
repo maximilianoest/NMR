@@ -32,6 +32,11 @@ clearvars fftSphericalHarmonic
 correlationFunction = ifft(multiplicationFunction,[],2,'symmetric');
 
 sumCorrelationFunction = sum(correlationFunction(:,1:numLags),1)/timeSteps;
+configuration = readConfigurationFile();
+offsetSuppressionFraction = configuration.offsetSuppressionFraction;
+sumCorrelationFunction = sumCorrelationFunction - mean( ...
+    sumCorrelationFunction(round(length(sumCorrelationFunction) ...
+    *offsetSuppressionFraction):length(sumCorrelationFunction)));
 
  end
 
