@@ -9,8 +9,9 @@ if configuration.runOnServer
     addpath(genpath(baseConfiguration.path2LibraryOnServer));
 else
     baseConfiguration = readConfigurationFile( ...
-        scalingRateConfiguration.path2BaseConfigurationOnLocalMachine);
-    path2Resuts = baseConfiguration.path2ResultsOnLocalMachine;
+        configuration.path2BaseConfigurationOnLocalMachine);
+%     path2Results = baseConfiguration.path2ResultsOnLocalMachine;
+    path2Results = "C:\Users\maxoe\Google Drive\Promotion\Results\LIPIDS\DOPS\nearestNeighbours\20220207_Results_relevantNearestNeighbours_DOPSlipid.mat";
     addpath(genpath(baseConfiguration.path2LibraryOnLocalMachine));
 end
 
@@ -25,6 +26,7 @@ printLineBreakToLogFile(path2LogFile);
 scalingRateConfiguration = readConfigurationFile(scalingRateConfig);
 path2OldResultsFile = [path2Results ...
     scalingRateConfiguration.resultsFileName '.mat'];
+path2OldResultsFile = path2Results;
 results = load(path2OldResultsFile);
 logMessage(sprintf('Determine scaling rates from results: %s'...
     ,path2OldResultsFile),path2LogFile,false);
@@ -54,7 +56,7 @@ logMessage('Found the following cases with their scaling factors:' ...
     ,path2LogFile,false);
 logMessage(sprintf('%.0f \t',nearestNeighbourCasesOldSimulation) ...
     ,path2LogFile,false);
-logMessage(sprintf('%.3f\t',averagedScalingRates),path2LogFile,false);    
+logMessage(sprintf('%.6f\t',averagedScalingRates),path2LogFile,false);    
 
 
 nearestNeighboursForValidation = ...
@@ -77,7 +79,8 @@ printLineBreakToLogFile(path2LogFile);
 
 clearvars -except scalingFactors nearestNeighboursForValidation ...
     resultsConfiguration configuration scalingRateConfiguration ...
-    trajectoryX trajectoryY trajectoryZ simulationConfiguration 
+    trajectoryX trajectoryY trajectoryZ simulationConfiguration ...
+    averagedScalingRates nearestNeighbourCasesOldSimulation
 
 [path2Data,path2Save,path2ConstantsFile,path2LogFile] = ...
     setUpDependenciesBasedOnConfiguration(configuration);

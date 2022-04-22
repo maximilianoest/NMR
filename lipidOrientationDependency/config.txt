@@ -1,23 +1,22 @@
 runOnServer=1
 printToCommandWindow=0
 dataLoaded=0
-reloadOldSimulation=1
+reloadOldSimulation=0
 
 path2OldResults=/home/moesterreicher/Matlab/samplingRate/Results/20220222_Results_samplingRateOptimization_DOPSlipid.mat
 path2BaseConfigurationOnLocalMachine=C:\Users\maxoe\Google Drive\Promotion\Code\baseConfiguration.txt
 path2BaseConfigurationOnServer=/home/moesterreicher/Matlab/baseConfiguration.txt
 
-kindOfResults=samplingRateOptimization
+kindOfResults=orientationDependency
 
 fileName=20220110_DOPS_TIP4_Bilayer_50water_lipid_H_whole_dt2ps_simTime1000ns
 
 mainMagneticField=3
 nearestNeighboursCase=500
 scalingRate=1.027587
-atomsToCalculate=5000
-fibreOrientations=0;90
-myelinPositions=0;90
+atomsToCalculate=2200
+fibreOrientations=0;45;90
+myelinPositions=0;45;90
 fractionForLags=1
 
-samplingFrequencyDecreases=10
 

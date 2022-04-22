@@ -32,8 +32,8 @@ meanDifference = zeros(length(nearestNeighbourCases) ...
     ,size(averagedScaledR1,1),size(averagedScaledR1,2));
 for nNCasesNr = 1:length(nearestNeighbourCases)
     predictedR1ForCase = squeeze(scaledR1Rates(:,:,:,nNCasesNr));
-    difference = abs(scaledR1Rates(:,:,:,1) - predictedR1ForCase);
-    meanDifference(nNCasesNr,:,:) = mean(difference,3);
+    difference = scaledR1Rates(:,:,:,1) - predictedR1ForCase;
+    meanDifference(nNCasesNr,:,:) = abs(mean(difference,3));
 end
 
 figure;

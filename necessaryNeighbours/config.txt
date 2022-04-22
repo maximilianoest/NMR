@@ -7,13 +7,13 @@ path2OldResults=C:\Users\maxoe\Google Drive\Promotion\Results\OrientationDepende
 path2BaseConfigurationOnLocalMachine=C:\Users\maxoe\Google Drive\Promotion\Code\baseConfiguration.txt
 path2BaseConfigurationOnServer=/home/moesterreicher/Matlab/baseConfiguration.txt
 
-kindOfResults=validationNearestNeighbours
+kindOfResults=relevantNearestNeighbours
 
-fileName=20220110_DOPS_TIP4_Bilayer_50water_lipid_H_nojump_dt2ps_simTime1000ns
+fileName=20220401_PLPC_TIP4_Bilayer_50water_lipid_H_whole_dt2ps_simTime1000ns
 
 mainMagneticField=3
 nearestNeighbourCases=5000;4000;3000;1000;750;700;600;500;300;200;70;60
-atomsToCalculate=100
+atomsToCalculate=200
 fibreOrientations=0;90
 myelinPositions=0;90
 fractionForLags=1

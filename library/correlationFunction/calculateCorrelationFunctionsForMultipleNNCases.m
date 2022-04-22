@@ -33,6 +33,4 @@ for nNCaseNr = 1:length(nNCases)
     correlationFunctionsOfCases(nNCaseNr,:) = sum(correlationFunctions( ...
         1:nNCase,1:numLags),1)/timeSteps;
 end
-
-
 end
