@@ -34,10 +34,44 @@ for orientationNr = 1:length(orientationAngles)
     title(['Normalized correlation functions for orientation ' ...
         num2str(rad2deg(orientationAngles(orientationNr))) '°']) 
     xlabel('Correlation time [s]')
+    axis([0 inf 0 0.2])
     
 end
+atomCounter = results.atomCounter;
+effCorrelationFunction0W0 = squeeze(mean(results.sumCorrelationFunction0W0Saver,2))/atomCounter;
+effCorrelationFunction1W0 = squeeze(mean(results.sumCorrelationFunction1W0Saver,2))/atomCounter;
+effCorrelationFunction2W0 = squeeze(mean(results.sumCorrelationFunction2W0Saver,2))/atomCounter;
+
+effCorrelationFunction0W0 = effCorrelationFunction0W0 ...
+    ./ effCorrelationFunction0W0(:,1);
+effCorrelationFunction1W0 = effCorrelationFunction1W0 ...
+    ./ effCorrelationFunction1W0(:,1);
+effCorrelationFunction2W0 = effCorrelationFunction2W0 ...
+    ./ effCorrelationFunction2W0(:,1);
+
+orientationAngles = results.orientationAngles;
+samplingFrequency = results.samplingFrequency;
+timeAxis = [0:length(effCorrelationFunction0W0)-1] * samplingFrequency;
 
 
+for orientationNr = 1:length(orientationAngles)
+    figure;
+    hold on
+    plot(timeAxis,abs(effCorrelationFunction0W0(orientationNr,:)) ...
+        ,'LineWidth',1.5)
+    plot(timeAxis,abs(effCorrelationFunction1W0(orientationNr,:)) ...
+        ,'LineWidth',1.5)
+    plot(timeAxis,abs(effCorrelationFunction2W0(orientationNr,:)) ...
+        ,'LineWidth',1.5)
+    hold off
+    grid minor
+    legend('0 \omega_0','1 \omega_0','2 \omega_0')
+    title(['Normalized N correlation functions for orientation ' ...
+        num2str(rad2deg(orientationAngles(orientationNr))) '°']) 
+    xlabel('Correlation time [s]')
+    axis([0 inf 0 0.2])
+    
+end
 
 
 

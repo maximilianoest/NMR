@@ -13,7 +13,7 @@ fileName=20220110_DOPS_TIP4_Bilayer_50water_lipid4_H_whole_dt2ps_simTime1000ns
 
 mainMagneticField=3
 nearestNeighbourCases=20;10
-atomsToCalculate=10
+atomsToCalculate=70
 fibreOrientations=0;90
 myelinPositions=0;90
 fractionForLags=1
