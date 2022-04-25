@@ -37,8 +37,8 @@ for orientationNr = 1:length(orientationAngles)
            stdR1(atomNr) = std(...
                r1ForOriAndPos(1:(atomNr-1)*atomNrStepsSize+1));
         end 
-       errorbar(numberOfAtomsAxis,averageR1,stdR1);
-       legendEntries{end+1} = sprintf("$\\theta$: %d, $\\varphi$: %d" ...
+       errorbar(numberOfAtomsAxis,averageR1,stdR1,'LineWidth', 1.3);
+       legendEntries{end+1} = sprintf("$\\theta$: %.2f, $\\varphi$: %.2f" ...
            ,rad2deg(orientationAngles(orientationNr)) ...
            ,rad2deg(positionAngles(positionNr))); %#ok<SAGROW>
     end
@@ -47,7 +47,8 @@ hold off
 legend(legendEntries,'Interpreter','latex');
 xlabel('Number of calculated atoms');
 ylabel('Relaxation Rate with STD [Hz]');
-title('Relaxation rate in dependence of calculated atoms')
+title(sprintf('Relaxation rate in dependence of calculated atoms (%s)' ...
+    ,results.whichLipid))
 grid minor
 
 if saving

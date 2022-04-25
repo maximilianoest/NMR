@@ -2,100 +2,119 @@ clc
 clear all  %#ok<CLALL>
 close all
 
-configuration = readConfigurationFile('config.txt');
-if configuration.runOnServer
-    path2Results = configuration.path2ResultsOnServer;
-    addpath(genpath(configuration.path2LibraryOnServer));
-else
-    path2Results = configuration.path2ResultsOnLocalMachine;
-    addpath(genpath(configuration.path2LibraryOnLocalMachine));
+% configuration = readConfigurationFile('config.txt');
+% if configuration.runOnServer
+%     path2Results = configuration.path2ResultsOnServer;
+%     addpath(genpath(configuration.path2LibraryOnServer));
+% else
+%     path2Results = configuration.path2ResultsOnLocalMachine;
+%     addpath(genpath(configuration.path2LibraryOnLocalMachine));
+% end
+results = load("C:\Users\maxoe\Google Drive\Promotion\Results\LIPIDS\PLPC\necessaryNearestNeighbours\20220419_Results_relevantNearestNeighbours_PLPClipid.mat");
+
+r1 = results.r1WithPerturbationTheory;
+saving = 1;
+savingPath = sprintf(['C:\\Users\\maxoe\\Google Drive\\Promotion' ...
+    '\\Zwischenergebnisse\\%s_numberOfAtoms_%s\\'] ...
+    ,datestr(date,'yyyymmdd'),results.whichLipid);
+if ~exist(savingPath,'dir')
+    mkdir(savingPath);
 end
+atomCounter = results.atomCounter;
 
-load([path2Results configuration.fileName '.mat']);
-
-relaxationRates = r1WithPerturbationTheory; 
-atomCounter = atomCounter;
-
-averageR1 = squeeze(mean(relaxationRates(:,:,1:atomCounter,:),3));
+averageR1 = squeeze(mean(r1(:,:,1:atomCounter,:),3));
 effectiveR1 = squeeze(mean(averageR1,2));
 overallR1 = squeeze(mean(effectiveR1,1));
 
-medianR1 = squeeze(median(relaxationRates(:,:,1:atomCounter,:),3));
+medianR1 = squeeze(median(r1(:,:,1:atomCounter,:),3));
 effectiveMedianR1 = squeeze(mean(medianR1,2));
 overallMedianR1 = squeeze(mean(effectiveMedianR1,1));
 
-fileName = strsplit(fileName,'_');
-fileName = fileName{1};
+whichLipid = results.whichLipid;
+nearestNeighbourCases = results.nearestNeighbourCases;
 
 rateShiftMean = effectiveR1 - effectiveR1(1,:);
 rateShiftMedian = effectiveMedianR1 - effectiveMedianR1(1,:);
 
-orientations = rad2deg(orientationAngles);
-material = strsplit(fileName,'_');
-material = material{1};
+orientations = rad2deg(results.orientationAngles);
 
-figure(1)
+figurePosAndSize = [50 50 900 600];
+figure('Position',figurePosAndSize);
+set(gcf,'DefaultLineLineWidth',1.5)
+set(gca,'FontSize',16)
 hold on
 plot(nearestNeighbourCases,overallR1,'--','LineWidth', 1.5)
 plot(nearestNeighbourCases,overallMedianR1,'-.','LineWidth',1.5)
 hold off
-legend('Mean', 'Median')
+legend('Mean', 'Median','Location','East')
 xlabel('Nearest Neighbours')
 ylabel('Overall R1 [Hz]')
-title(['Necessity of number of nearest Neighbours (' material ')'])
+title(sprintf('Overall nearest neighbour-dependent R_1 (%s)' ...
+    ,whichLipid));
 grid minor
-creationDate = datestr(now,'yyyymmdd');
-filePath = sprintf('%s%s_%s_%s.png',path2Results,creationDate ...
-    ,material,'EffRelaxationRateNNDependent');
-saveas(gcf,filePath);
 
-figure(2)
-legendEntries = {};
+if saving
+    savingName = sprintf('overallR1NNDependent_%s',whichLipid);
+    print(gcf,[savingPath savingName],'-dpng','-r300');
+end
+
+figurePosAndSize = [50 50 900 600];
+figure('Position',figurePosAndSize);
+set(gcf,'DefaultLineLineWidth',1.5)
+set(gca,'FontSize',16)
 hold on
-for orientationCounter = 1:length(orientations)
-    plot(nearestNeighbourCases,effectiveR1(orientationCounter,:),'*-' ...
+legendEntries = {};
+for orientationNr = 1:length(orientations)
+    plot(nearestNeighbourCases,effectiveR1(orientationNr,:),'*-' ...
         ,'LineWidth', 1.5)
-    legendEntries{end+1} = ['Mean, Orientation ' ...
-        num2str(orientations(orientationCounter))];
-    plot(nearestNeighbourCases,effectiveMedianR1(orientationCounter,:) ...
+    legendEntries{end+1} = sprintf('Mean, \\theta: %.2f ' ...
+        ,orientations(orientationNr)); %#ok<SAGROW>
+    plot(nearestNeighbourCases,effectiveMedianR1(orientationNr,:) ...
         ,'*-','LineWidth', 1.5)
-    legendEntries{end+1} = ['Median, Orientation ' ...
-        num2str(orientations(orientationCounter))];
+    legendEntries{end+1} = sprintf('Median, \\theta: %.2f' ...
+        ,orientations(orientationNr)); %#ok<SAGROW>
 end 
 hold off
-legend(legendEntries)
+legend(legendEntries,'Location','East')
 xlabel('Nearest neighbours')
 ylabel('Relaxation rate [Hz]')
-title(['Nearest Neighbours for orientation dependency (' material ')'])
+title(sprintf('Effective nearest neighbour-dependent R_1 (%s)' ...
+    ,whichLipid));
 grid minor
-creationDate = datestr(now,'yyyymmdd');
-filePath = sprintf('%s%s_%s_%s.png',path2Results,creationDate ...
-    ,material,'RelaxationRateNNDependent');
-saveas(gcf,filePath);
 
-figure(3)
-legendEntries = {};
+if saving
+    savingName = sprintf('effectiveR1NNAndOrientationDependent_%s',whichLipid);
+    print(gcf,[savingPath savingName],'-dpng','-r300');
+end
+
+figurePosAndSize = [50 50 900 600];
+figure('Position',figurePosAndSize);
+set(gcf,'DefaultLineLineWidth',1.5)
+set(gca,'FontSize',16)
 hold on
-for orientationCounter = 1:length(orientations)
-    plot(nearestNeighbourCases,rateShiftMean(orientationCounter,:) ...
+legendEntries = {};
+for orientationNr = 1:length(orientations)
+    plot(nearestNeighbourCases,rateShiftMean(orientationNr,:) ...
         ,'*-','LineWidth', 1.5)
-    legendEntries{end+1} = ['Mean, Orientation ' ...
-        num2str(orientations(orientationCounter))];
-    plot(nearestNeighbourCases,rateShiftMedian(orientationCounter,:) ...
+    legendEntries{end+1} = sprintf('Mean, \\theta: %.2f ' ...
+        ,orientations(orientationNr)); %#ok<SAGROW>
+    plot(nearestNeighbourCases,rateShiftMedian(orientationNr,:) ...
         ,'*-','LineWidth', 1.5)
-    legendEntries{end+1} = ['Median, Orientation ' ...
-        num2str(orientations(orientationCounter))];
+    legendEntries{end+1} = sprintf('Median, \\theta: %.2f' ...
+        ,orientations(orientationNr)); %#ok<SAGROW>
 end 
 hold off
 xlabel('Nearest neighbours')
 ylabel('Relaxation rate shift [Hz]')
-title(['Rate shifts in dependence of nearest neighbours and' ...
-    ' orientation (' material ')'])
+title(sprintf('Nearest neighours and orientation-dependent R_1 (%s)' ...
+    ,whichLipid));
 grid minor
-legend(legendEntries)
-creationDate = datestr(now,'yyyymmdd');
-filePath = sprintf('%s%s_%s_%s.png',path2Results,creationDate ...
-    ,material,'orientationShiftNNDependent');
-saveas(gcf,filePath);
+legend(legendEntries,'Location','East')
+
+if saving
+    savingName = sprintf('r1ShiftNNAndOrientationDependent_%s',whichLipid);
+    print(gcf,[savingPath savingName],'-dpng','-r300');
+end
+
 
 
