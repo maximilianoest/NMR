@@ -20,6 +20,12 @@ function [sumCorrelationFunction] = ...
 % ifft(fft(x)) = original amplitudes => with ifft(fft(x) *fft(y)) you need
 % to devide by the length but only once
 
+% it is not possible to just cut the correlation function with lags to get
+% a location dependent correlation function. The reason for that is that
+% if there is a lot of movement in space, the spherical harmonics contain
+% also information about fluctutations different from the location
+% considered. Therefore, the simulation time has to be shortended.
+
 [~,timeSteps] = size(sphericalHarmonic);
 zeroPaddingLength = 2^(nextpow2(timeSteps));
 
@@ -32,7 +38,8 @@ clearvars fftSphericalHarmonic
 correlationFunction = ifft(multiplicationFunction,[],2,'symmetric');
 
 sumCorrelationFunction = sum(correlationFunction(:,1:numLags),1)/timeSteps;
-configuration = readConfigurationFile();
+
+configuration = readConfigurationFile('config.txt');
 offsetSuppressionFraction = configuration.offsetSuppressionFraction;
 sumCorrelationFunction = sumCorrelationFunction - mean( ...
     sumCorrelationFunction(round(length(sumCorrelationFunction) ...

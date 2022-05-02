@@ -1,5 +1,5 @@
-runOnServer=1
-printToCommandWindow=0
+runOnServer=0
+printToCommandWindow=1
 dataLoaded=0
 reloadOldSimulation=0
 
@@ -9,14 +9,15 @@ path2BaseConfigurationOnServer=/home/moesterreicher/Matlab/baseConfiguration.txt
 
 kindOfResults=orientationDependency
 
-fileName=20220110_DOPS_TIP4_Bilayer_50water_lipid_H_whole_dt2ps_simTime1000ns
+fileName=20220110_DOPS_TIP4_Bilayer_50water_lipid4_H_whole_dt2ps_simTime1000ns
 
 mainMagneticField=3
-nearestNeighboursCase=500
+nearestNeighboursCase=50
 scalingRate=1.027587
-atomsToCalculate=2200
+atomsToCalculate=20
 fibreOrientations=0;45;90
 myelinPositions=0;45;90
 fractionForLags=1
+offsetSuppressionFraction=0.85
 
 

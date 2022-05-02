@@ -7,15 +7,18 @@ path2OldResults=C:\Users\maxoe\Google Drive\Promotion\Results\OrientationDepende
 path2BaseConfigurationOnLocalMachine=C:\Users\maxoe\Google Drive\Promotion\Code\baseConfiguration.txt
 path2BaseConfigurationOnServer=/home/moesterreicher/Matlab/baseConfiguration.txt
 
-kindOfResults=relevantNearestNeighboursCorrelationFunction
+kindOfResults=locationDependentR1
 
 fileName=20220110_DOPS_TIP4_Bilayer_50water_lipid4_H_whole_dt2ps_simTime1000ns
 
 mainMagneticField=3
-nearestNeighbourCases=20;10
-atomsToCalculate=10
+nearestNeighbourCases=10
+atomsToCalculate=50
 fibreOrientations=0;90
 myelinPositions=0;90
-fractionForLags=1
-offsetSuppressionFraction=0.8
+fractionForLags=0.8
+simulationTimeFraction=1;0.8;0.6;0.5;0.4;0.3;0.2;0.1
+offsetSuppressionFraction=0.85
+
+scalingRate=1.027587
 

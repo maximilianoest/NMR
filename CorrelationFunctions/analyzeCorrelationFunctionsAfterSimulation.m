@@ -2,76 +2,124 @@ clc
 clear all
 close all
 
-results = load("C:\Users\maxoe\Google Drive\Promotion\Results\relevantNearestNeighboursCorrelationFunction\20220422_Results_relevantNearestNeighboursCorrelationFunction_DOPSlipid4.mat");
+results = load("C:\Users\maxoe\Google Drive\Promotion\Results\locationDependentR1\20220426_Results_locationDependentR1_DOPSlipid4.mat");
+baseConfiguration = readConfigurationFile('../baseConfiguration.txt');
+addpath(genpath(baseConfiguration.path2LibraryOnLocalMachine));
 
-effCorrelationFunction0W0 = squeeze(mean(results.correlationFunction0W0Saver,2));
-effCorrelationFunction1W0 = squeeze(mean(results.correlationFunction1W0Saver,2));
-effCorrelationFunction2W0 = squeeze(mean(results.correlationFunction2W0Saver,2));
+saving = 1;
+savingPath = sprintf(['C:\\Users\\maxoe\\Google Drive\\Promotion' ...
+    '\\Zwischenergebnisse\\%s_simulationLength_%s\\'] ...
+    ,datestr(date,'yyyymmdd'),results.whichLipid);
+if ~exist(savingPath,'dir')
+    mkdir(savingPath);
+end
 
-effCorrelationFunction0W0 = effCorrelationFunction0W0 ...
-    ./ effCorrelationFunction0W0(:,1);
-effCorrelationFunction1W0 = effCorrelationFunction1W0 ...
-    ./ effCorrelationFunction1W0(:,1);
-effCorrelationFunction2W0 = effCorrelationFunction2W0 ...
-    ./ effCorrelationFunction2W0(:,1);
-
-orientationAngles = results.orientationAngles;
+orientationAngles = rad2deg(results.orientationAngles);
 samplingFrequency = results.samplingFrequency;
-timeAxis = [0:length(effCorrelationFunction0W0)-1] * samplingFrequency;
+lineStyle = ["-","--","-.",":"];
+lineStyle = [lineStyle lineStyle lineStyle lineStyle lineStyle lineStyle];
 
+
+fractionNames = fieldnames(results.correlationFunction0W0Saver);
+maxSize = size(results.correlationFunction0W0Saver.(fractionNames{1}),3);
+timeAxis = [0:maxSize-1] * samplingFrequency;
 for orientationNr = 1:length(orientationAngles)
-    figure(orientationNr)
-    hold on
-    plot(timeAxis,abs(effCorrelationFunction0W0(orientationNr,:)) ...
-        ,'LineWidth',1.5)
-    plot(timeAxis,abs(effCorrelationFunction1W0(orientationNr,:)) ...
-        ,'LineWidth',1.5)
-    plot(timeAxis,abs(effCorrelationFunction2W0(orientationNr,:)) ...
-        ,'LineWidth',1.5)
-    hold off
-    grid minor
-    legend('0 \omega_0','1 \omega_0','2 \omega_0')
-    title(['Normalized correlation functions for orientation ' ...
-        num2str(rad2deg(orientationAngles(orientationNr))) '°']) 
+    currentFigure = initializeFigure();
+    legendEntries = {};
+    orientationAngle = orientationAngles(orientationNr);
+    for simTimeNr = 1:2:length(fractionNames)
+        simTimeFraction = results.simulationTimeFractions(simTimeNr);
+        fractionName = fractionNames{simTimeNr};
+        corrFunc = results.correlationFunction0W0Saver.(fractionName);
+        effCorrFunc = squeeze(mean(corrFunc(orientationNr,:,:),2));
+        normEffCorrFunc = effCorrFunc'/effCorrFunc(1);
+        normEffCorrFunc(end+1:maxSize+1) = NaN;
+        plot(timeAxis,normEffCorrFunc(1:end-1),lineStyle(simTimeNr))
+        legendEntries{end+1} = sprintf('SimTimeFraction: %.2f' ...
+            ,simTimeFraction); %#ok<SAGROW>
+    end
     xlabel('Correlation time [s]')
-    axis([0 inf 0 0.2])
+    axis([0 inf -inf 0.2])
+    title(sprintf(['Normalized correlation 0 $\\omega_0$ functions ' ...
+        'for $\\theta$: %.2f $^\\circ$'],orientationAngle));
+    legend(legendEntries)
+    
+    initializeFigure();
+    legendEntries = {};
+    orientationAngle = orientationAngles(orientationNr);
+    for simTimeNr = 1:2:length(fractionNames)
+        simTimeFraction = results.simulationTimeFractions(simTimeNr);
+        fractionName = fractionNames{simTimeNr};
+        corrFunc = results.correlationFunction1W0Saver.(fractionName);
+        effCorrFunc = squeeze(mean(corrFunc(orientationNr,:,:),2));
+        normEffCorrFunc = effCorrFunc'/effCorrFunc(1);
+        normEffCorrFunc(end+1:maxSize+1) = NaN;
+        plot(timeAxis,normEffCorrFunc(1:end-1),lineStyle(simTimeNr))
+        legendEntries{end+1} = sprintf('SimTimeFraction: %.2f' ...
+            ,simTimeFraction); %#ok<SAGROW>
+    end
+    xlabel('Correlation time [s]')
+    axis([0 inf -inf 0.2])
+    title(sprintf(['Normalized correlation 1 $\\omega_0$ functions ' ...
+        'for $\\theta$: %.2f $^\\circ$'],orientationAngle));
+    legend(legendEntries)
+    
+    initializeFigure();
+    legendEntries = {};
+    orientationAngle = orientationAngles(orientationNr);
+    for simTimeNr = 1:2:length(fractionNames)
+        simTimeFraction = results.simulationTimeFractions(simTimeNr);
+        fractionName = fractionNames{simTimeNr};
+        corrFunc = results.correlationFunction2W0Saver.(fractionName);
+        effCorrFunc = squeeze(mean(corrFunc(orientationNr,:,:),2));
+        normEffCorrFunc = effCorrFunc'/effCorrFunc(1);
+        normEffCorrFunc(end+1:maxSize+1) = NaN;
+        plot(timeAxis,normEffCorrFunc(1:end-1),lineStyle(simTimeNr))
+        legendEntries{end+1} = sprintf('SimTimeFraction: %.2f' ...
+            ,simTimeFraction); %#ok<SAGROW>
+    end
+    xlabel('Correlation time [s]')
+    axis([0 inf -inf 0.2])
+    title(sprintf(['Normalized correlation 2 $\\omega_0$ functions ' ...
+        'for $\\theta$: %.2f $^\\circ$'],orientationAngle));
+    legend(legendEntries)
     
 end
-atomCounter = results.atomCounter;
-effCorrelationFunction0W0 = squeeze(mean(results.sumCorrelationFunction0W0Saver,2))/atomCounter;
-effCorrelationFunction1W0 = squeeze(mean(results.sumCorrelationFunction1W0Saver,2))/atomCounter;
-effCorrelationFunction2W0 = squeeze(mean(results.sumCorrelationFunction2W0Saver,2))/atomCounter;
-
-effCorrelationFunction0W0 = effCorrelationFunction0W0 ...
-    ./ effCorrelationFunction0W0(:,1);
-effCorrelationFunction1W0 = effCorrelationFunction1W0 ...
-    ./ effCorrelationFunction1W0(:,1);
-effCorrelationFunction2W0 = effCorrelationFunction2W0 ...
-    ./ effCorrelationFunction2W0(:,1);
-
-orientationAngles = results.orientationAngles;
-samplingFrequency = results.samplingFrequency;
-timeAxis = [0:length(effCorrelationFunction0W0)-1] * samplingFrequency;
-
-
-for orientationNr = 1:length(orientationAngles)
-    figure;
-    hold on
-    plot(timeAxis,abs(effCorrelationFunction0W0(orientationNr,:)) ...
-        ,'LineWidth',1.5)
-    plot(timeAxis,abs(effCorrelationFunction1W0(orientationNr,:)) ...
-        ,'LineWidth',1.5)
-    plot(timeAxis,abs(effCorrelationFunction2W0(orientationNr,:)) ...
-        ,'LineWidth',1.5)
-    hold off
-    grid minor
-    legend('0 \omega_0','1 \omega_0','2 \omega_0')
-    title(['Normalized N correlation functions for orientation ' ...
-        num2str(rad2deg(orientationAngles(orientationNr))) '°']) 
-    xlabel('Correlation time [s]')
-    axis([0 inf 0 0.2])
-    
-end
+% atomCounter = results.atomCounter;
+% effCorrelationFunction0W0 = squeeze(mean(results.sumCorrelationFunction0W0Saver,2))/atomCounter;
+% effCorrelationFunction1W0 = squeeze(mean(results.sumCorrelationFunction1W0Saver,2))/atomCounter;
+% effCorrelationFunction2W0 = squeeze(mean(results.sumCorrelationFunction2W0Saver,2))/atomCounter;
+% 
+% effCorrelationFunction0W0 = effCorrelationFunction0W0 ...
+%     ./ effCorrelationFunction0W0(:,1);
+% effCorrelationFunction1W0 = effCorrelationFunction1W0 ...
+%     ./ effCorrelationFunction1W0(:,1);
+% effCorrelationFunction2W0 = effCorrelationFunction2W0 ...
+%     ./ effCorrelationFunction2W0(:,1);
+% 
+% orientationAngles = results.orientationAngles;
+% samplingFrequency = results.samplingFrequency;
+% timeAxis = [0:length(effCorrelationFunction0W0)-1] * samplingFrequency;
+% 
+% 
+% for orientationNr = 1:length(orientationAngles)
+%     figure;
+%     hold on
+%     plot(timeAxis,abs(effCorrelationFunction0W0(orientationNr,:)) ...
+%         ,'LineWidth',1.5)
+%     plot(timeAxis,abs(effCorrelationFunction1W0(orientationNr,:)) ...
+%         ,'LineWidth',1.5)
+%     plot(timeAxis,abs(effCorrelationFunction2W0(orientationNr,:)) ...
+%         ,'LineWidth',1.5)
+%     hold off
+%     grid minor
+%     legend('0 \omega_0','1 \omega_0','2 \omega_0')
+%     title(['Normalized N correlation functions for orientation ' ...
+%         num2str(rad2deg(orientationAngles(orientationNr))) '°']) 
+%     xlabel('Correlation time [s]')
+%     axis([0 inf 0 0.2])
+%     
+% end
 
 
 
