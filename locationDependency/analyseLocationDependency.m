@@ -1,4 +1,4 @@
-clc; clear all; close all;
+clc; clear all; close all
 
 
 %% initialize
@@ -72,11 +72,11 @@ for positionNr = 1:size(positionAngles,2)
     orientationAxis = [orientationAxis;orientationAngles]; %#ok<AGROW>
 end
 orientationAxis = orientationAxis';
-CO(:,:,1) = zeros(3,5); % red
-CO(:,:,2) = ones(3,5).*linspace(0.2,0.8,3)'; % green
-CO(:,:,3) = ones(3,5).*linspace(0.2,0.8,5); % blue
+coloring(:,:,1) = zeros(3,5); % red
+coloring(:,:,2) = ones(3,5).*linspace(0.2,0.8,3)'; % green
+coloring(:,:,3) = ones(3,5).*linspace(0.2,0.8,5); % blue
 
-surf(positionAxis,orientationAxis,averagedR1,CO,'FaceAlpha',0.8)
+surf(positionAxis,orientationAxis,averagedR1,coloring,'FaceAlpha',0.8);
 viewAngle = -45;
 additionalAngle = 30;
 view(viewAngle,30)
@@ -134,7 +134,3 @@ if saving
     fprintf(fileId,'----------------------------------------- \r\n\r\n');
     fclose(fileId);
 end
-
-
-
-
