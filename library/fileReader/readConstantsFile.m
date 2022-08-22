@@ -1,7 +1,12 @@
 function [constants] = readConstantsFile(path2ConstantsFile)
 
 constants = {};
-constantFileId = fopen(path2ConstantsFile);
+if exist(path2ConstantsFile,'file')
+    constantFileId = fopen(path2ConstantsFile);
+else
+    error('Constants file cannot be found.');
+end
+
 data = textscan(constantFileId, '%s %s','Delimiter','=');
 fclose(constantFileId);
 

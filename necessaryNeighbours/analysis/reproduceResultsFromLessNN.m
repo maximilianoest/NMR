@@ -2,13 +2,20 @@ clc
 clear all %#ok<CLALL>
 close all
 
-results = load("C:\Users\maxoe\Google Drive\Promotion\Results\LIPIDS\PLPC\necessaryNearestNeighbours\20220425_Results_relevantNearestNeighbours_PLPClipid.mat");
+results = load("C:\Users\maxoe\Google Drive\Promotion\Results\LIPIDS\PSM\necessaryNearestNeighbours\20220517_Results_relevantNearestNeighbours_PSMlipid.mat");
 creationDate = results.startDateOfSimulation;
 whichLipid = results.whichLipid;
-savingPath = initializeSystemForSavingPlots('necessaryNearestNeighbours' ...
-    ,whichLipid);
+configuration = readConfigurationFile("config.txt");
+baseConfiguration =  readConfigurationFile(configuration ...
+    .path2BaseConfigurationOnLocalMachine);
+addpath(genpath(baseConfiguration.path2LibraryOnLocalMachine))
 saving = 1;
+if saving
+    savingPath = initializeSystemForSavingPlots("necessaryNearestNeighbours" ... 
+        ,whichLipid);
+end
 
+saving = 1;
 
 r1 = results.r1WithPerturbationTheory;
 orientationAngles = rad2deg(results.orientationAngles);

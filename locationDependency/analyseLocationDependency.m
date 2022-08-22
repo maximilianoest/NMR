@@ -1,136 +1,137 @@
-clc; clear all; close all
+clear all; clc; close all;
 
+%% first
+% close all
+colorArray = [252, 3, 3;252, 194, 3;82, 252, 3;3, 252, 240;3, 252, 240; ...
+    173, 3, 252;252, 3, 181;3, 186, 252;231, 252, 3;3, 152, 252]/252;
 
-%% initialize
-results = load("C:\Users\maxoe\Google Drive\Promotion\Results\LIPIDS\PLPC\orientationDependency\20220502_Results_orientationDependency_PLPClipid.mat");
-whichLipid = results.whichLipid;
-savingPath = initializeSystemForSavingPlots("orientationDependency" ...
-    ,whichLipid);
+baseConfiguration = readConfigurationFile('../baseConfiguration.txt');
+addpath(genpath(baseConfiguration.path2LibraryOnLocalMachine));
+results = load("C:\Users\maxoe\Google Drive\Promotion\Results\LIPIDS\PSM\orientationDependency\20220530_Results_orientationDependency_PSMlipid.mat");
+
 saving = 1;
-trimming = 0;
-trimmingString = ''; %#ok<NASGU>
-
-atomCounter = results.atomCounter;
-allR1 = results.scaledR1Rates(:,:,1:atomCounter);
-averagedR1 = mean(allR1,3);
-orientationAngles = rad2deg(results.orientationAngles);
-positionAngles = rad2deg(results.positionAngles);
-orientationCount = size(orientationAngles,2);
-positionsCount = size(positionAngles,2);
-
-
-%% trimm data
-if trimming
-    lowerPercentile = 10; %#ok<*UNRCH>
-    upperPercentile = 80;
-
-    trimmedR1 = trimmR1DataWithPercentile(allR1,lowerPercentile ...
-        ,upperPercentile,orientationCount,positionsCount);
-    trimmingString = sprintf('TRIMMED_%.0f_%.0f',lowerPercentile ...
-        ,upperPercentile);
-    allR1 = trimmedR1;
+if saving
+    savingPath = initializeSystemForSavingPlots('locationDependency' ...
+    ,results.whichLipid);
 end
+atomIndex = results.atomIndex(1:results.atomCounter);
+positionAnglesIndex = 3;
+orientationAngleIndex = 1;
+positionAngle = results.positionAngles(positionAnglesIndex)
+orientationAngle = results.orientationAngles(orientationAngleIndex)
+zAxis = [0 0 1];
+rotationMatrixPosition = get3DRotationMatrix( ...
+    positionAngle,zAxis);
+yAxis = [0 1 0];
+rotationMatrixOrientation = get3DRotationMatrix( ...
+    orientationAngle,yAxis);
+totalRotationMatrix = ...
+    rotationMatrixOrientation*rotationMatrixPosition;
+untouchedMeanPositions = results.meanPositions(atomIndex,:);
+meanPositions = (totalRotationMatrix*untouchedMeanPositions')';
 
-%% determine STD
-standardDeviations = zeros(orientationCount,positionsCount)*NaN;
-for orientationNr = 1:orientationCount
-    for positionNr = 1:positionsCount
-        standardDeviations(orientationNr,positionNr) = ...
-            std(allR1(orientationNr,positionNr,:));
+allR1 = results.scaledR1Rates;
+allR1 = allR1(:,:,1:results.atomCounter);
+% overallR1 = squeeze(mean(mean(allR1,2),1))';
+overallR1 = squeeze(allR1(orientationAngleIndex,positionAnglesIndex,:));
+
+dimensions = ["X", "Y", "Z"];
+
+initializeFigure('legend',false);
+plot3(meanPositions(:,1),meanPositions(:,2),meanPositions(:,3),'*');
+xlabel('X');
+ylabel('Y');
+zlabel('Z');
+
+for dimension = 1:size(dimensions,2)
+    initializeFigure('legend',false);
+    scatter(meanPositions(:,dimension),overallR1,'LineWidth',1.3);
+    title(sprintf('Relaxation rate R$_1$ in dimension %s (%s)' ...
+        ,dimensions(dimension),results.whichLipid));
+    xlabel(sprintf('Location in %s direction',dimensions(dimension)));
+    if saving
+        savingName = sprintf('scatterPlotLocationDepR1_Dim%s_%s' ...
+            ,dimensions(dimension),results.whichLipid);
+        print(gcf,[savingPath savingName],'-dpng','-r300');
     end
 end
 
-%% plot and save stuff
+% THE RELAXATION RATES AT THE TAILS ARE SMALLER THAN AT THE HEADS LIKE
+% PRESENTED BY SCHYBOLL 2019
+% Comparison with Fig. 20.16 in Levitt: Heads will be positioned more to
+% the minimum of the curve while the tails will be placed more to lower
+% correlation times what is in accordance with the results of this
+% investigation.
+
+%% second
+% averaged over regions:
 initializeFigure();
 legendEntries = {};
-for positionNr = 1:length(positionAngles)
-    legendEntries{end+1} = sprintf('$\\varphi$ = %.1f$^{\\circ}$' ...
-        ,positionAngles(positionNr)); %#ok<SAGROW>
-    plot(orientationAngles ...
-        ,squeeze(averagedR1(:,positionNr)));
-end
-legend(legendEntries,'Location','northwest');
-title(sprintf('Orientation-dependent R1 (%s)',whichLipid));
-xlabel('Orientation angle $\theta$ [$^{\circ}$]');
-ylabel('Relaxation rate [Hz]');
-if saving
-    savingName = sprintf('%s_%sorientationDependentR1_%s' ...
-        ,results.startDateOfSimulation,trimmingString,whichLipid); 
-    print(gcf,[savingPath savingName],'-dpng','-r300');
-end
+locationSteps = 25;
 
-initializeFigure('legend',false);
-averagedR1 = mean(allR1,3);
-orientationAngles = rad2deg(results.orientationAngles);
-positionAngles = rad2deg(results.positionAngles);
-positionAxis = [];
-for orientationNr = 1:size(orientationAngles,2)
-    positionAxis = [positionAxis;positionAngles]; %#ok<AGROW>
-end
-orientationAxis = [];
-for positionNr = 1:size(positionAngles,2)
-    orientationAxis = [orientationAxis;orientationAngles]; %#ok<AGROW>
-end
-orientationAxis = orientationAxis';
-coloring(:,:,1) = zeros(3,5); % red
-coloring(:,:,2) = ones(3,5).*linspace(0.2,0.8,3)'; % green
-coloring(:,:,3) = ones(3,5).*linspace(0.2,0.8,5); % blue
+averageR1 = zeros(1,locationSteps);
+averagePositions = zeros(1,locationSteps);
 
-surf(positionAxis,orientationAxis,averagedR1,coloring,'FaceAlpha',0.8);
-viewAngle = -45;
-additionalAngle = 30;
-view(viewAngle,30)
-title(sprintf('Orientation- and position-dependent R1 (%s)' ...
-    ,whichLipid));
-xlabel('$\varphi$ [$^{\circ}$]')%,'rotation', -viewAngle-additionalAngle);
-ylabel('$\theta$ [$^{\circ}$]')%,'rotation', viewAngle+additionalAngle);
-zlabel('Relaxation rate [Hz]');
-if saving
-    savingName = sprintf('%s_%s3dDependentR1_%s' ...
-        ,results.startDateOfSimulation,trimmingString,whichLipid); 
-    print(gcf,[savingPath savingName],'-dpng','-r300');
-end
-
-
-effectiveR1 = squeeze(mean(averagedR1,2)) %#ok<NOPTS>
-initializeFigure('legend',false);
-p = plot(orientationAngles,effectiveR1);
-title(sprintf('Orientation-dependent effective R1 (%s)',whichLipid));
-xlabel('Orientation angle $\theta$ [$^{\circ}$]');
-ylabel('Effective relaxation rate [Hz]');
-
-overallR1 = mean(effectiveR1) %#ok<NOPTS>
-
-if saving
-    savingName = sprintf('%s_%sorientationDependentEffectiveR1_%s' ...
-        ,results.startDateOfSimulation,trimmingString,results.whichLipid); 
-    print(gcf,[savingPath savingName],'-dpng','-r300');
-    formatToSave = [orientationAngles; effectiveR1'];
-    fileId = fopen([savingPath sprintf('%s_orientationDependentR1_%s.txt' ...
-        ,results.startDateOfSimulation,results.whichLipid)],'a');
-    if trimming
-        fprintf(fileId,['TRIMMED DATA (percentiles lower = %.2f, upper ' ...
-            '= %.2f) \r\n'],lowerPercentile,upperPercentile);
-    else
-        fprintf(fileId,'UNTRIMMED DATA: \r\n');
+for dimension = 1:size(dimensions,2)
+    positionsHydrogenDim = meanPositions(:,dimension);
+    minLocation = floor(min(positionsHydrogenDim));
+    maxLocation = ceil(max(positionsHydrogenDim));
+    locationsToAverage = linspace(minLocation,maxLocation,locationSteps);
+    for locationNr = 1:size(locationsToAverage,2)-1
+        indices = (positionsHydrogenDim>=locationsToAverage(locationNr)) & ...
+            (positionsHydrogenDim<=locationsToAverage(locationNr+1));
+        averageR1(locationNr) = mean(overallR1(indices));
     end
-    fprintf(fileId,'Relaxation Rate (Standard deviation): \r\n');
-    fprintf(fileId,'%11s','Theta\\Phi');
-    fprintf(fileId,'%20.2f',positionAngles);
-    fprintf(fileId,'\n');
-    for orientationNr = 1:orientationCount
-        fprintf(fileId,'%11.2f',orientationAngles(orientationNr));
-        for positionNr = 1:positionsCount
-            fprintf(fileId,'   %7.4f (%7.4f)',averagedR1(orientationNr ...
-                ,positionNr),standardDeviations(orientationNr,positionNr));
-        end
-        fprintf(fileId,'\r\n');
-    end
-    fprintf(fileId,'\r\n\r\n');
-    fprintf(fileId,'Effective R1: \r\n');
-    fprintf(fileId,'\tTheta = %6.2f: %.4f\r\n',formatToSave);
-    fprintf(fileId,'\r\nOverall R1: \r\n');
-    fprintf(fileId,'\t%10s%.4f \r\n',' ',overallR1);
-    fprintf(fileId,'----------------------------------------- \r\n\r\n');
-    fclose(fileId);
+    plot(locationsToAverage,averageR1);
+    legendEntries{end+1} = sprintf('Dimension: %s',dimensions(dimension)); %#ok<SAGROW>
 end
+legend(legendEntries);
+
+title(sprintf('Relaxation rate dependent on location in lipid (%s)' ...
+    ,results.whichLipid));
+if saving
+    savingName = sprintf('locationDependentR1_%s',results.whichLipid);
+    print(gcf,[savingPath savingName],'-dpng','-r300');
+end
+
+
+%% YOU CAN DETERMINE R1 OF HEADS IF KNOWN POSITIONS
+% leftEnd = 2.2;
+% rightEnd = 5.9;
+% headPositions = (meanPositions(:,1) <= 2.2 | meanPositions(:,1) >= 5.9);
+% r1OfHead = overallR1(headPositions);
+% for dimension = 1:1 %size(dimensions,2)
+%     initializeFigure('legend',false);
+%     scatter(meanPositions(headPositions,dimension) ...
+%         ,r1OfHead,'LineWidth',1.3);
+%     title(sprintf('Relaxation rate R$_1$ of heads in dimension %s (%s)' ...
+%         ,dimensions(dimension),results.whichLipid));
+%     xlabel(sprintf('Location in %s direction',dimensions(dimension)));
+%     if saving
+%         savingName = sprintf('scatterPlotLocationDepR1ofHeads_Dim%s_%s' ...
+%             ,dimensions(dimension),results.whichLipid);
+%         print(gcf,[savingPath savingName],'-dpng','-r300');
+%     end
+% end
+% 
+% initializeFigure('legend',false);
+% histogram(r1OfHead,'BinWidth',1);
+% xlabel('Relaxation rate $R_1$ [Hz]');
+% ylabel('Frequency');
+% title('Distribution of relaxation rates at the lipid heads');
+% if saving
+%     savingName = sprintf('histogramR1LipidHeads_Dim%s_%s' ...
+%         ,'X',results.whichLipid);
+%     print(gcf,[savingPath savingName],'-dpng','-r300');
+% end
+
+
+% You see there is nearly no change of R1 in Y and Z direction 
+
+
+
+
+
+% diffusion coefficient
+
+% minus average to get the same zentral position for each lipid

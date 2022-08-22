@@ -1,0 +1,16 @@
+
+corrFuncPLPCForScalFac_path=C:\Users\maxoe\Google Drive\Promotion\Results\LIPIDS\PLPC\necessaryNearestNeighbours\20220425_Results_relevantNearestNeighbours_PLPClipid.mat
+corrFuncPSMForScalFac_path=C:\Users\maxoe\Google Drive\Promotion\Results\LIPIDS\PSM\necessaryNearestNeighbours\20220517_Results_relevantNearestNeighbours_PSMlipid.mat
+corrFuncDOPSForScalFac_path=C:\Users\maxoe\Google Drive\Promotion\Results\LIPIDS\DOPS\nearestNeighbours\20220615_Results_relevantNearestNeighbours_DOPSlipid.mat
+
+corrFuncPLPCToScale_path=C:\Users\maxoe\Google Drive\Promotion\Results\LIPIDS\PLPC\necessaryNearestNeighbours\20220706_Results_relevantNearestNeighbours_PLPClipid.mat
+corrFuncPSMToScale_path=C:\Users\maxoe\Google Drive\Promotion\Results\LIPIDS\PSM\necessaryNearestNeighbours\20220708_Results_relevantNearestNeighbours_PSMlipid.mat
+corrFuncDOPSToScale_path=C:\Users\maxoe\Google Drive\Promotion\Results\LIPIDS\DOPS\nearestNeighbours\20220704_Results_relevantNearestNeighbours_DOPSlipid.mat
+
+baseConfig_path=C:\Users\maxoe\Google Drive\Promotion\Code\baseConfiguration.txt
+interimResults_path=C:\Users\maxoe\Google Drive\Promotion\Zwischenergebnisse
+
+fieldStrengths=3
+plotCorrelationFunctions=0
+offsetSuppressionRegion=0.5;0.8
+cutOffFraction=0.7

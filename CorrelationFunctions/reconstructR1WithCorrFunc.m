@@ -2,16 +2,19 @@ clc
 clear all
 close all
 
-results = load("C:\Users\maxoe\Google Drive\Promotion\Results\locationDependentR1\20220426_Results_locationDependentR1_DOPSlipid4.mat");
+colorArray = [252, 3, 3;252, 194, 3;82, 252, 3;3, 252, 240;3, 252, 240; ...
+    173, 3, 252;252, 3, 181;3, 186, 252;231, 252, 3;3, 152, 252]/252;
+PSM = "C:\Users\maxoe\Google Drive\Promotion\Results\LIPIDS\PSM\orientationDependency\20220530_Results_orientationDependency_PSMlipid.mat";
+DOPS = "C:\Users\maxoe\Google Drive\Promotion\Results\LIPIDS\DOPS\orientationDependency\20220307_Results_orientationDependency_DOPSlipid.mat";
+PLPC = "C:\Users\maxoe\Google Drive\Promotion\Results\LIPIDS\PLPC\orientationDependency\20220502_Results_orientationDependency_PLPClipid.mat";
+results = load(PLPC);
 baseConfiguration = readConfigurationFile('../baseConfiguration.txt');
 addpath(genpath(baseConfiguration.path2LibraryOnLocalMachine));
 
 saving = 1;
-savingPath = sprintf(['C:\\Users\\maxoe\\Google Drive\\Promotion' ...
-    '\\Zwischenergebnisse\\%s_simulationLength_%s\\'] ...
-    ,datestr(date,'yyyymmdd'),results.whichLipid);
-if ~exist(savingPath,'dir')
-    mkdir(savingPath);
+if saving
+    savingPath = initializeSystemForSavingPlots('reconstructionR1' ...
+    ,results.whichLipid);
 end
 
 orientationAngles = rad2deg(results.orientationAngles);
@@ -19,60 +22,153 @@ positionAngles = rad2deg(results.positionAngles);
 
 correlationFunctions1W0 = results.correlationFunction1W0Saver;
 correlationFunctions2W0 = results.correlationFunction2W0Saver;
+corrFuncLength = size(correlationFunctions1W0,3);
 
-fractionNames = results.fractionNames;
+offsetReduction = 1;
 
-for timeNr = 1:length(fractionNames)
-    fractionName = fractionNames{timeNr};
+if offsetReduction
+    
+    offsetReductionRegion = [round(0.5*corrFuncLength) ...
+        :round(0.8*corrFuncLength)];
+    initializeFigure('legend',false);
+    title(sprintf('Unchanged correlation function (%s)', ...
+        results.whichLipid));
     for orientationNr = 1:length(orientationAngles)
         for positionNr = 1:length(positionAngles)
-            correlationFunction1W0 = squeeze(correlationFunctions1W0.( ...
-                fractionName)(orientationNr,positionNr,:))';
-            correlationFunction2W0 = squeeze(correlationFunctions2W0.( ...
-                fractionName)(orientationNr,positionNr,:))';
+            plot(squeeze(correlationFunctions1W0(orientationNr, ...
+                positionNr,:)));
+            plot(squeeze(correlationFunctions2W0(orientationNr, ...
+                positionNr,:)));
+        end
+    end
+    if saving
+        savingName = sprintf('originalCorrFunctions');
+        print(gcf,[savingPath savingName],'-dpng','-r300');
+    end
+
+    % subtract the offset
+    for orientationNr = 1:length(orientationAngles)
+        for positionNr = 1:length(positionAngles)
+            correlationFunctions1W0(orientationNr,positionNr,:) = ...
+                correlationFunctions1W0(orientationNr,positionNr,:) ...
+                - mean(correlationFunctions1W0(orientationNr,positionNr ...
+                ,offsetReductionRegion));
+            correlationFunctions2W0(orientationNr,positionNr,:) = ...
+                correlationFunctions2W0(orientationNr,positionNr,:) ...
+                - mean(correlationFunctions2W0(orientationNr,positionNr ...
+                ,offsetReductionRegion));
+        end
+    end
+end
+
+% cut correlation function to avoid the increase of the correlation
+% function caused by FFT
+cutOffFraction = 0.7;
+cutOffRegion = [1:round(corrFuncLength*cutOffFraction)-1];
+for orientationNr = 1:length(orientationAngles)
+    for positionNr = 1:length(positionAngles)
+        cuttedCorrelationFunctions1W0(orientationNr,positionNr,:) = ...
+            correlationFunctions1W0(orientationNr,positionNr,cutOffRegion);
+        cuttedCorrelationFunctions2W0(orientationNr,positionNr,:) = ...
+            correlationFunctions2W0(orientationNr,positionNr,cutOffRegion);
+    end
+end
+
+% plot correlation functions after cut and offset substraction
+initializeFigure('legend',false);
+title(sprintf('Offset substracted and cutted correlation functions (%s)', ...
+    results.whichLipid));
+for orientationNr = 1:length(orientationAngles)
+    for positionNr = 1:length(positionAngles)
+        plot(squeeze(cuttedCorrelationFunctions1W0(orientationNr ...
+            ,positionNr,:)));
+        plot(squeeze(cuttedCorrelationFunctions2W0(orientationNr ...
+            ,positionNr,:)));
+    end
+end
+if saving
+    savingName = sprintf('offsetReductedAndCuttedCorrFunctions');
+    print(gcf,[savingPath savingName],'-dpng','-r300');
+end
+
+for orientationNr = 1:length(orientationAngles)
+        for positionNr = 1:length(positionAngles)
+            correlationFunctions1W0(orientationNr,positionNr,:) = ...
+                correlationFunctions1W0(orientationNr,positionNr,:) ...
+                - mean(correlationFunctions1W0(orientationNr,positionNr ...
+                ,offsetReductionRegion));
+            correlationFunctions2W0(orientationNr,positionNr,:) = ...
+                correlationFunctions2W0(orientationNr,positionNr,:) ...
+                - mean(correlationFunctions2W0(orientationNr,positionNr ...
+                ,offsetReductionRegion));
+        end
+end
+
+timeSkips = [1 2 3 5 10];
+for timeNr = 1:length(timeSkips)
+    timeSkip = timeSkips(timeNr);
+    deltaT = results.samplingFrequency*timeSkip;
+    for orientationNr = 1:length(orientationAngles)
+        for positionNr = 1:length(positionAngles)
+            correlationFunction1W0 = squeeze(cuttedCorrelationFunctions1W0( ...
+                orientationNr,positionNr,1:timeSkip:end))';
+            correlationFunction2W0 = squeeze(cuttedCorrelationFunctions2W0( ...
+                orientationNr,positionNr,1:timeSkip:end))';
             [spectralDensity1W0,spectralDensity2W0] = ...
                 calculateSpectralDensities(correlationFunction1W0 ...
                 ,correlationFunction2W0,results.omega0 ...
-                ,results.samplingFrequency,length(correlationFunction1W0));
-            r1WithPerturbationTheory(orientationNr,positionNr,timeNr) = ...
+                ,deltaT,length(correlationFunction1W0));
+            r1WithPerturbationTheory(timeNr,orientationNr,positionNr) = ...
                 calculateR1WithSpectralDensity(spectralDensity1W0 ...
-                ,spectralDensity2W0,results.dipolDipolConstant);  %#ok<SAGROW>
+                ,spectralDensity2W0,results.dipolDipolConstant) ...
+                *results.configuration.scalingRate;  %#ok<SAGROW>
             
         end
     end
 end
-r1Sim = squeeze(mean(results.r1WithPerturbationTheory,3));
+
+
+r1Sim = squeeze(mean(results.scaledR1Rates(:,:,1:results.atomCounter),3));
+
 lineStyles = [":" "--" "-." "-"]; 
+initializeFigure();
+legendEntries = {};
 for positionNr = 1:length(positionAngles)
-    legendEntries = {};
-    initializeFigure('legendFontSize',12);
-    
-    lineStyleCounter = 1;
-    for timeNr = 1:2:length(fractionNames)
-        plot(orientationAngles,r1WithPerturbationTheory( ...
-            :,positionNr,timeNr),lineStyles(lineStyleCounter));
-        legendEntries{end+1} = sprintf('Reconstruction, %.2f' ...
-            ,results.simulationTimeFractions(timeNr)); %#ok<SAGROW>
-        
-        plot(orientationAngles,r1Sim(:,positionNr,timeNr) ...
-            ,lineStyles(lineStyleCounter));
-        legendEntries{end+1} = sprintf('Simulation, %.2f' ...
-            ,results.simulationTimeFractions(timeNr));  %#ok<SAGROW>
-        
-        lineStyleCounter = lineStyleCounter+1;
-    end
-    title(sprintf('Position $\\varphi$: %.2f',positionAngles(positionNr)));
-    xlabel(sprintf('Orientation Angle $\\theta$'));
-    ylabel(sprintf('Relaxation rate (%s)',results.whichLipid));
-    legend(legendEntries);
-    if saving
-        savingName = sprintf('simulationLengthDependentR1_phi%i_%s' ...
-            ,positionAngles(positionNr),results.whichLipid);
-        print(gcf,[savingPath savingName],'-dpng','-r300');
-    end
+    plot(orientationAngles,r1WithPerturbationTheory(1, ...
+        :,positionNr),lineStyles(1),'color',colorArray(positionNr,:));
+    legendEntries{end+1} = sprintf('Reconstructed, %.2f', ...
+        positionAngles(positionNr)); %#ok<SAGROW>
+    plot(orientationAngles,r1Sim(:,positionNr) ...
+        ,lineStyles(2),'color',colorArray(positionNr,:));
+    legendEntries{end+1} = sprintf('Simulated, %.2f', ...
+        positionAngles(positionNr));  %#ok<SAGROW>
 
 end
+legend(legendEntries);
+xlabel(sprintf('Orientation Angle $\\theta$'));
+ylabel(sprintf('Relaxation rate [Hz]'));
+ title(sprintf('Reconstructed vs. simulated R1 (%s)', ...
+        results.whichLipid));
+if saving
+    savingName = sprintf('reconstructedVsSimulatedR1');
+    print(gcf,[savingPath savingName],'-dpng','-r300');
+end
 
+%% print results
+fprintf('%s:\n',results.whichLipid);
+fprintf('  averaged R1 Simulation:\n    deltaT = %.2d: %.4f \n', ...
+    results.samplingFrequency,mean(mean(r1Sim)));
+fprintf('  averaged R1 Reconstruction:\n')
+for timeNr = 1:length(timeSkips)
+    deltaT = results.samplingFrequency*timeSkips(timeNr);
+    fprintf('    deltaT = %.2d: %.4f\n', ...
+        deltaT,mean(mean(r1WithPerturbationTheory(timeNr,:,:),3),2));
+end
+
+% fprintf(['%s: \n    averaged relaxation rate simulation: %.4f \n' ...
+%     '    averaged relaxation rate reconstruction: %.4f\n'], ...
+%     results.whichLipid,mean(mean(r1Sim)), ...
+%     mean(mean(r1WithPerturbationTheory,3),2));
 
 
 

@@ -1,0 +1,18 @@
+
+corrFuncPLPCToScale_path=C:\Users\maxoe\Google Drive\Promotion\Results\LIPIDS\PLPC\orientationDependency\20220502_Results_orientationDependency_phiCHANGED_PLPClipid.mat
+corrFuncPSMToScale_path=C:\Users\maxoe\Google Drive\Promotion\Results\LIPIDS\PSM\orientationDependency\20220530_Results_orientationDependency_phiCHANGED_PSMlipid.mat
+corrFuncDOPSToScale_path=C:\Users\maxoe\Google Drive\Promotion\Results\LIPIDS\DOPS\orientationDependency\20220713_Results_orientationDependency_DOPSlipid.mat
+
+scalingFactorsPLPC_path=C:\Users\maxoe\Google Drive\Promotion\Zwischenergebnisse\scalingFactors\PLPC_r120220425_3Tesla_scalingFactors.mat
+scalingFactorsPSM_path=C:\Users\maxoe\Google Drive\Promotion\Zwischenergebnisse\scalingFactors\PSM_r120220517_3Tesla_scalingFactors.mat
+scalingFactorsDOPS_path=C:\Users\maxoe\Google Drive\Promotion\Zwischenergebnisse\scalingFactors\DOPS_r120220615_3Tesla_scalingFactors.mat
+
+baseConfig_path=C:\Users\maxoe\Google Drive\Promotion\Code\baseConfiguration.txt
+interimResults_path=C:\Users\maxoe\Google Drive\Promotion\Zwischenergebnisse
+
+numberOfPhiAngles=3
+
+fieldStrength=3
+plotCorrelationFunctions=0
+offsetSuppressionRegion=0.5;0.8
+cutOffFraction=0.7

@@ -1,0 +1,13 @@
+function r1WithExplIntegration = ...
+    calculateR1FromCorrFuncWithExplIntegration(corrFunc1W0,corrFunc2W0 ...
+    ,deltaT,omega0,lags,dipolDipolConstant)
+
+% This function takes the auto-correlation functions for the first (1W0) and
+% second (2W0) order spherical harmonics and the necessary other
+% constants to calculate R1.
+
+[spectralDensity1W0,spectralDensity2W0] = ...
+    calculateSpectralDensities(corrFunc1W0,corrFunc2W0,omega0,deltaT,lags);
+r1WithExplIntegration = calculateR1WithSpectralDensity( ...
+    spectralDensity1W0,spectralDensity2W0,dipolDipolConstant);
+end
